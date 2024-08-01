@@ -24,9 +24,10 @@ const { ServerConstants } = require("./server/ServerConstants")
 const { DebugUtils } = require("./server/utils/debug_utils");
 const { RegisteredParishes, registeredParishes } = require("./server/routes_callbacks/sys_admin/registeredParishes");
 const { updateOutstation } = require("./server/routes_callbacks/parish/updateOutstation");
+const { homeCallback } = require("./server/routes_callbacks/parish/homeCallback");
 
 try {
-    // app.get('/', homeCallback);
+    app.get('/', homeCallback);
     // app.post('/', (req, resp) => { DebugUtils.PRINT(req.body); });
     app.post('/parish/login', parishLogInCallback);
     app.post('/parish/login/details', parishLogInDetails);

@@ -1,5 +1,5 @@
 function homeCallback(req, resp) {
-    resp.json({ 'response': 'sent' })
+    resp.redirect('parish/index')
 }
 
 module.exports = { homeCallback }
