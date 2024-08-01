@@ -6,82 +6,22 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pdm | admin</title>
+    <title>pdm | member upload</title>
 
     <!-- AgDataGrid -->
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
 
+    <!-- XLSX -->
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+    <!-- partial features -->
+    <!-- <script src="exceljs.js"></script> -->
+
     <link rel="stylesheet" href="../../css/index.css">
     <link rel="stylesheet" href="../../css/drawer.css">
     <link rel="stylesheet" href="../../css/modal.css">
-
-    <style>
-        .other-btn {
-            width: 100px;
-            background-color: royalblue;
-            color: white;
-            padding: 10px;
-            border-radius: 0px;
-            border: 1px solid;
-        }
-
-        .padded-div {
-            padding: 10px;
-            margin: 5px;
-        }
-
-        :root {
-            --fc-small-font-size: .85em;
-            --fc-page-bg-color: #fff;
-            --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
-            --fc-neutral-text-color: #808080;
-            --fc-border-color: #ddd;
-
-            --fc-button-text-color: #fff;
-            --fc-button-bg-color: #2C3E50;
-            --fc-button-border-color: #2C3E50;
-            --fc-button-hover-bg-color: #1e2b37;
-            --fc-button-hover-border-color: #1a252f;
-            --fc-button-active-bg-color: #1a252f;
-            --fc-button-active-border-color: #151e27;
-
-            --fc-event-bg-color: #3788d8;
-            --fc-event-border-color: #3788d8;
-            --fc-event-text-color: #fff;
-            --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
-
-            --fc-more-link-bg-color: #d0d0d0;
-            --fc-more-link-text-color: inherit;
-
-            --fc-event-resizer-thickness: 8px;
-            --fc-event-resizer-dot-total-width: 8px;
-            --fc-event-resizer-dot-border-width: 1px;
-
-            --fc-non-business-color: rgba(215, 215, 215, 0.3);
-            --fc-bg-event-color: rgb(143, 223, 130);
-            --fc-bg-event-opacity: 0.3;
-            --fc-highlight-color: rgba(188, 232, 241, 0.3);
-            --fc-today-bg-color: rgba(255, 220, 40, 0.15);
-            --fc-now-indicator-color: red;
-        }
-
-        .fc .fc-col-header-cell-cushion {
-            /* needs to be same precedence */
-            padding-top: 5px;
-            /* an override! */
-            padding-bottom: 5px;
-            /* an override! */
-        }
-
-        #calendar a,
-        table,
-        tbody,
-        td {
-            background-color: transparent;
-            color: royalblue;
-            padding: 3px;
-        }
-    </style>
 
 </head>
 
@@ -149,8 +89,35 @@
         </div>
     </div>
 
+    <div class="container flex-column  align-center justify-center">
+        <div class="flex-column  align-center justify-center"
+            style="background-color: royalblue; width: 60%; height: 80%; color: white;">
+
+            <div class="full-height align-start justify-start" style="flex: 1;">
+                <h1 style="color: white; font-weight: 100;">Upload members</h1>
+            </div>
+
+            <div class="flex-column full-height full-width align-center justify-space-between" style="flex: 2;">
+                <div class="flex-column">
+                    <input id="file-source" type="file" accept=".xlsx, .xls"
+                        style=" color: white; border-color: white;">
+                    <button id="submit-members" style="background-color: white; color: #000;">Upload</button>
+                </div>
+
+                <div class="flex-column align-center">
+                    <p>Please confirm that your data has the manadatory fields</p>
+                    <button id="sample"
+                        style="background-color: gainsboro; color: gray; width: 100px; height: 45px; padding: 3px; margin: 10px;">sample
+                        data</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <script type="module" src="../scripts/drawer.js"></script>
     <script type="module" src="../scripts/help.js"></script>
+    <script type="module" src="../scripts/uploadMembers.js"></script>
 </body>
 
 </html>

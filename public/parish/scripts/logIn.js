@@ -35,22 +35,21 @@ async function LogIn() {
         GET_EL_BY_ID('logInButton').onclick = null;
         const parishDetails = await (await NetTool.POST_CLIENT('/parish/details',
             NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
-            JSON.stringify({
-                'code': code
-            })
-        )).json()
+            JSON.stringify({ 'code': code })
+        )).json();
 
-        const parishId = parishDetails['name'];
+        const parishId = parishDetails['id'];
         const outstations = await (await NetTool.POST_CLIENT('/get/outstations',
             NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE, JSON.stringify({
-                id: parishId
+                parish_id: parishId
             }))).json();
 
-        LocalStorageContract.SAVE_DATA(PARISH_CONSTATS.local_storage_key, parishDetails)
+        console.log(outstations);
+        LocalStorageContract.SAVE_DATA(PARISH_CONSTATS.local_storage_key, parishDetails);
         if (!outstations || outstations.length < 1) {
-            SimplifiedNavigator.NavigateByReplacement('set up page')
+            SimplifiedNavigator.NavigateByReplacement('set up page');
         } else {
-            SimplifiedNavigator.NavigateByReplacement('pdm')
+            SimplifiedNavigator.NavigateByReplacement('pdm');
         }
     }
 

@@ -22,19 +22,20 @@ const { addParishEvent } = require("./server/routes_callbacks/parish/addParishEv
 
 const { ServerConstants } = require("./server/ServerConstants")
 const { DebugUtils } = require("./server/utils/debug_utils");
-const { RegisteredParishes, registeredParishes } = require("./server/routes_callbacks/sys_admin/registeredParishes");
+const { registeredParishes } = require("./server/routes_callbacks/sys_admin/registeredParishes");
 const { updateOutstation } = require("./server/routes_callbacks/parish/updateOutstation");
 const { homeCallback } = require("./server/routes_callbacks/parish/homeCallback");
+const { uploadMembersCallback } = require("./server/routes_callbacks/parish/uploadMembersCallback");
 
 try {
     app.get('/', homeCallback);
-    // app.post('/', (req, resp) => { DebugUtils.PRINT(req.body); });
     app.post('/parish/login', parishLogInCallback);
     app.post('/parish/login/details', parishLogInDetails);
     app.post('/register/parish', registerParishCallback);
     app.post('/parish/details', parishDetails);
     app.post('/update/parish/details', updateParish);
     app.post('/parish/data', parishData);
+    app.post('/upload/members', uploadMembersCallback);
     app.post('/load/members', loadMembers);
     app.post('/register/member', registerMember);
     app.post('/update/member', updateMember);

@@ -58,7 +58,6 @@
 
 import { CREATE_ELEMENT, GEL_INPUT_EL_VALUE_BY_ID, GET_EL_BY_ID } from "../../tools/dom.js";
 import { MessegePopup } from "../../tools/messegePopup.js";
-import { SimplifiedNavigator } from "../../tools/navigator.js";
 import { NetTool } from "../../tools/netTool.js";
 import { LocalStorageContract } from "../../tools/storage.js";
 import { IS_NULL_OR_EMPTY } from "../../tools/stringUtils.js";
@@ -66,7 +65,6 @@ import { IS_NULL_OR_EMPTY } from "../../tools/stringUtils.js";
 window.onload = () => {
     const saveButton = GET_EL_BY_ID('save-button');
     const addSCCButton = GET_EL_BY_ID('add-scc');
-    const outstationName = GEL_INPUT_EL_VALUE_BY_ID('outstation-name');
 
     addSCCButton.onclick = addInputElement;
 
@@ -95,10 +93,10 @@ window.onload = () => {
 
         if (result.response === 'success') {
             MessegePopup.ShowMessegePuppy('Success');
-            window.location.reload();
 
             setTimeout(() => {
-                SimplifiedNavigator.NavigateByReplacement('pdm');
+                window.location.reload();
+                // SimplifiedNavigator.NavigateByReplacement('pdm');
             }, 2400);
         }
     }

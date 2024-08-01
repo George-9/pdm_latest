@@ -2,8 +2,6 @@
 <html lang="en">
 
 <head>
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pdm | admin</title>
@@ -96,8 +94,11 @@
 
     <!-- Drawer -->
     <div class="drawer flex-column">
-        <div class="align-center justify-center flex-row" id="heading" style="margin-bottom: 10px;">
-            <p style="font-size: 16px; font-weight: 100;">PDM Parish Data Manager</p>
+        <div class="full-width align-center justify-center flex-column" id="heading" style="margin-bottom: 10px;">
+            <p style="font-size: 16px; font-weight: 100; text-align: start;">
+                <span> PDM</span><br>
+                <span> Parish Data Manager</span>
+            </p>
         </div>
 
         <hr width="100%">
@@ -145,60 +146,49 @@
         </div>
     </div>
 
-
     <!-- Main Body -->
     <div class="container" style="position: fixed; top: 30px;">
+        <h1 id="profile-details" style="font-weight: 100;"></h1>
+
         <!-- Calendar -->
         <div class="flex-column full-width" style="padding: 10px;">
             <div id="calendar"></div>
         </div>
 
+        <span>quick links</span>
 
-        <h1 id="profile-details" style="font-weight: 100;"></h1>
+        <div class="flex-column align-start">
+            <a id="register-member" style="background-color: transparent; color: grey;">register a
+                member</a>
+            <a style="background-color: transparent; color: grey;">create a
+                notification</a>
+        </div>
+        <hr>
 
-        <div class="flex-row align-center justify-end">
-            <div class="full-width flex-row justify-space-between align-center"
-                style="border: 1px solid; background-color: rgb(168, 220, 255); color: black;">
+        <div class="flex-row full-width align-center justify-space-between">
+            <div class="padded-div">
+                <p>events</p>
+                <h3 id="parish-events"></h3>
+            </div>
 
-                <div class="flex-column" style="border-right: solid 1px;">
-                    <div class="flex-row align-center justify-end">
-                        <img id="add-event" class="icon" src="../../resources/icons/add_icon.png"
-                            style="padding-top: 10px; padding-right: 10px;" title="add a new event" />
-                    </div>
-                    <div class="padded-div">
-                        <p>events</p>
-                        <h3 id="parish-events"></h3>
-                    </div>
-
-                </div>
-
-
-                <div class="flex-column align-center justify-start">
-                    <span>quick links</span>
-                    <div class="flex-column">
-                        <a id="register-member" style="background-color: transparent; color: white;">register a
-                            member</a>
-                        <a href="register a member" style="background-color: transparent; color: white;">create a
-                            notification</a>
-                    </div>
-                </div>
+            <div>
+                <img id="add-event" class="icon" src="../../resources/icons/add_icon.png"
+                    style="padding-top: 10px; padding-right: 10px;" title="add a new event" />
             </div>
         </div>
+        <hr>
 
-        <div id="inner-main" class="full-width full-height flex-column align-start">
+        <div class="flex-row full-width align-start justify-space-between">
+            <div class="padded-div">
+                <div class="flex-row full-width align-start justify-space-between">
+                    <div>
+                        <p>reminders</p>
+                        <h3 id="parish-reminders"></h3>
+                    </div>
 
-            <div class="flex-column full-width"
-                style="border: 1px solid crimson;background-color: crimson;color: white; margin-top: 10px;">
-                <div class="flex-row align-center justify-start">
-                    <img id="add-reminder" class="icon" src="../../resources/icons/add_white.png"
-                        style="padding-top: 10px; padding: 20px;" title="add a new reminder" />
+                    <img id="add-reminder" class="icon" src="../../resources/icons/add_icon.png"
+                        style="padding-top: 10px; padding-right: 10px; z-index: 1000;" title="add a new event" />
                 </div>
-
-                <div class="padded-div">
-                    <p>reminders</p>
-                    <h3 id="parish-reminders"></h3>
-                </div>
-
             </div>
         </div>
 

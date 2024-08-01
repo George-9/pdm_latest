@@ -7,26 +7,38 @@
     <title>pdm log in</title>
 
     <link rel="stylesheet" href="../../css/index.css">
+
+    <style>
+        input {
+            border: none;
+            padding: 12px;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="flex-column container align-center">
+    <div class="flex-column full-width container align-center" style="padding: 30px;">
+        <div class="flex-column justify-center align-center full-height"
+            style="background-color: royalblue; width: 800px; margin: 3%; color: white;;">
 
-        <div class="flex-column justify-center align-center full-height" style="padding: 20px; height: 500px; background-color: royalblue;
-             color: white;">
-            <p id="notifier"></p>
-            <br>
+            <div class="flex-column full-height align-start full-width" style="background-color: white; flex: 1;">
+                <h1 style="font-weight: 100; padding: 10px; color: gray;">Log In</h1>
+                <p id="notifier"></p>
+            </div>
 
-            <input id="code" type="text" placeholder="parish code">
-            <input id="password" type="password" placeholder="password">
+            <div class="flex-column" style="flex: 8;">
+                <input id="code" type="text" placeholder="parish code">
+                <input id="password" type="password" placeholder="password">
 
-            <button id="logInButton" style="background-color: white; color: grey;">Log In</button>
-            <br>
-            <p id="messege"></p>
+                <button id="logInButton" style="background-color: white; color: grey;">Log In</button>
+                <br>
+                <p id="messege"></p>
+            </div>
         </div>
 
     </div>
 
+    <script type="module" src="../scripts/drawer.js"></script>
     <script type="module" src="../scripts/logIn.js"></script>
 </body>
 

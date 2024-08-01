@@ -75,35 +75,35 @@ NetTool.POST_CLIENT('/load/members',
         gridOptions = {
             columnDefs: [
                 {
-                    field: "name",
-                    headerCheckboxSelection: true,
-                    checkboxSelection: true,
+                    'field': "NAME",
+                    'headerCheckboxSelection': true,
+                    'checkboxSelection': true,
                     'editable': true,
                 },
                 {
-                    field: "dob",
-                    headerName: 'Date of Birth',
-                    filter: 'agDateColumnFilter',
+                    'field': "DOB",
+                    'headerName': 'Date of Birth',
+                    'filter': 'agDateColumnFilter',
                     'editable': true,
-                    cellEditor: 'datePicker'
+                    'cellEditor': 'datePicker'
                 },
-                { 'field': 'gender', cellEditor: "agSelectCellEditor" },
+                { 'field': 'GENDER', cellEditor: "agSelectCellEditor" },
                 { 'field': 'father', 'editable': true },
                 { 'field': 'mother', 'editable': true },
                 {
                     'field': 'God_Parent',
                     'headerName': 'God Parent', 'editable': true
                 },
-                { field: "home_address", 'editable': true },
-                { field: "telephone_number", 'editable': true },
+                { 'field': "home_address", 'editable': true },
+                { 'field': "telephone_number", 'editable': true },
                 {
-                    headerName: 'outstation',
+                    'headerName': 'outstation',
                     'editable': true,
-                    field: "outstation",
+                    'field': "outstation",
                     'editable': true,
-                    filter: 'agSetColumnFilter'
+                    'filter': 'agSetColumnFilter'
                 },
-                { field: "scc", 'editable': true },
+                { 'field': "scc", 'editable': true },
                 {
                     cellRenderer: (params) => {
                         let eGui = document.createElement('div');
