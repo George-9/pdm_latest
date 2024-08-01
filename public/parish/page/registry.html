@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pdm | registry</title>
+
+
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/drawer.css">
+    <link rel="stylesheet" href="../../css/modal.css">
+
+    <style>
+        .container {
+            background-color: rgb(243, 243, 243);
+        }
+
+        .container a {
+            background-color: unset;
+            color: gray;
+            border: solid 1px royalblue;
+            padding: 3px;
+            border-radius: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav-bar flex-row align-end justify-space-between"
+        style="border: none; padding: 20px; background-color: rgb(231, 231, 231); position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
+        <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
+        <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
+            style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
+    </nav>
+
+    <!-- Drawer -->
+    <div class="drawer flex-column">
+        <div class="align-center justify-center flex-row" id="heading" style="margin-bottom: 10px;">
+            <p style="font-size: 16px; font-weight: 100;">PDM Parish Data Manager</p>
+        </div>
+
+        <hr width="100%">
+
+        <div class="flex-column" style="padding: 10px;">
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/person_white.png" alt="">
+                <a id="profile" href="pdm">profile</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/groups_white.png" alt="">
+                <a id="members" href="members">members</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/home_white.png" alt="">
+                <a href="outstations">outstations</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/edit_white.png" alt="">
+                <a id="registry" href="registry">registry</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/leaderboard_white.png" alt="">
+                <a id="office" href="office">office</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/groups_white.png" alt="">
+                <a id="groups" href="groups">groups</a>
+            </div>
+
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/help_white.png" alt="">
+                <a id="help">help</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Main Body -->
+    <div class="container" style="position: fixed; top: 30px;">
+        <h1 style="font-weight: 100;">
+            Registry
+        </h1>
+
+        <div class="flex-column full-width justify-center align-center">
+            <a id="register-member">register a member</a>
+            <a id="register-outstation" href="register outstation">add an outstation to the parish</a>
+        </div>
+    </div>
+
+
+    <script type="module" src="../scripts/drawer.js"></script>
+    <script type="module" src="../scripts/help.js"></script>
+    <script type="module" src="../scripts/registry.js"></script>
+</body>
+
+</html>

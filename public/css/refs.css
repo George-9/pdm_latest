@@ -1,0 +1,102 @@
+.nav-bar {
+    width: 100%;
+    position: static;
+    color: white;
+    padding: 10px;
+    border-bottom: 1px solid grey;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+
+.full-width {
+    width: 100%;
+}
+
+
+.full-height {
+    height: 100%;
+}
+
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.align-start {
+    align-items: start;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.align-end {
+    align-items: end;
+}
+
+.justify-space-evenly {
+    justify-content: space-evenly;
+}
+
+.justify-space-between {
+    justify-content: space-between;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-end {
+    justify-content: end;
+}
+
+.scroll-y {
+    overflow-y: scroll;
+}
+
+.scroll-x {
+    overflow-x: scroll;
+}
+
+
+.nav-bar .icon {
+    padding: 20px;
+}
+
+.icon {
+    width: 20px;
+    max-width: 20px;
+    height: 20px;
+    max-height: 20px;
+    cursor: pointer;
+}
+
+.btn-normal {
+    background-color: gainsboro;
+    max-width: 100px;
+    color: gray;
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+.drawer div a {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding-top: 3px;
+    padding-bottom: 10px;
+    background-color: transparent;
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Up</title>
+
+    <link rel="stylesheet" href="../../css/index.css">
+
+</head>
+
+<body>
+    <div class="container flex-column align-center">
+
+        <div class="flex-column align-center justify-center" style="padding: 20px; max-width: 80%;">
+
+            You need to add outstations to your parish.
+
+            <h4>
+                For seamless member registration it is required that every parish should add one or more outstation
+            </h4>
+
+            <div class="full-width flex-column align-start"
+                style="border: 1px solid; border-radius: 10px; padding: 10px; background-color: royalblue; color: white; overflow-y: scroll;">
+                <div class="full-width flex-row justify-end">
+                    <button id="save-button" style="width: 100px; background-color: white; color: gray;">save</button>
+                </div>
+                <br>
+                <input id="outstation-name" type="text" placeholder="outstation name">
+
+                <p class="full-width flex-row justify-space-between">add one or more Small Christian Community(ies)
+                    (SCC) to the
+                    outstation
+                    <span id="add-scc"
+                        style="text-align: center;border: solid 1px; border-radius: 20px; width: 20px; height: 20px; padding: 5px; cursor: pointer; background-color: royalblue; color: white;">+</span>
+                </p>
+                <p>you can add more SCC(s)</p>
+                <div class="flex-column" id="sccs-entry">
+                    <input type="text" placeholder="SCC name">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/setUp.js"></script>
+</body>
+
+</html>

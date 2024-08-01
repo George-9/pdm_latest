@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pdm | outstations</title>
+
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/drawer.css">
+    <link rel="stylesheet" href="../../css/modal.css">
+
+    <style>
+        button {
+            width: fit-content;
+            height: 50px;
+            padding: 3px;
+            background-color: white;
+            color: grey;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="nav-bar flex-row align-end justify-end" style="border: none;">
+        <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png" alt="" />
+    </nav>
+
+    <!-- Drawer -->
+    <div class="drawer flex-column">
+        <div class="align-center justify-center flex-row" id="heading" style="margin-bottom: 10px;">
+            <p style="font-size: 16px; font-weight: 100;">PDM Parish Data Manager</p>
+        </div>
+
+        <hr width="100%">
+
+        <div class="flex-column" style="padding: 10px;">
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/person_white.png" alt="">
+                <a id="profile" href="pdm">profile</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/groups_white.png" alt="">
+                <a id="members" href="members">members</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/home_white.png" alt="">
+                <a href="outstations">outstations</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/edit_white.png" alt="">
+                <a id="registry" href="registry">registry</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/leaderboard_white.png" alt="">
+                <a id="office" href="office">office</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/groups_white.png" alt="">
+                <a id="groups" href="groups">groups</a>
+            </div>
+
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/help_white.png" alt="">
+                <a id="help">help</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="main-div"></div>
+    </div>
+
+    <script type="module" src="../scripts/drawer.js"></script>
+    <script type="module" src="../scripts/outstations.js"></script>
+    <script type="module" src="../scripts/help.js"></script>
+</body>
+
+</html>

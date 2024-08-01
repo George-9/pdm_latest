@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pdm | admin</title>
+
+    <!-- AgDataGrid -->
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/drawer.css">
+    <link rel="stylesheet" href="../../css/modal.css">
+
+    <style>
+        .other-btn {
+            width: 100px;
+            background-color: royalblue;
+            color: white;
+            padding: 10px;
+            border-radius: 0px;
+            border: 1px solid;
+        }
+
+        .padded-div {
+            padding: 10px;
+            margin: 5px;
+        }
+
+        :root {
+            --fc-small-font-size: .85em;
+            --fc-page-bg-color: #fff;
+            --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
+            --fc-neutral-text-color: #808080;
+            --fc-border-color: #ddd;
+
+            --fc-button-text-color: #fff;
+            --fc-button-bg-color: #2C3E50;
+            --fc-button-border-color: #2C3E50;
+            --fc-button-hover-bg-color: #1e2b37;
+            --fc-button-hover-border-color: #1a252f;
+            --fc-button-active-bg-color: #1a252f;
+            --fc-button-active-border-color: #151e27;
+
+            --fc-event-bg-color: #3788d8;
+            --fc-event-border-color: #3788d8;
+            --fc-event-text-color: #fff;
+            --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
+
+            --fc-more-link-bg-color: #d0d0d0;
+            --fc-more-link-text-color: inherit;
+
+            --fc-event-resizer-thickness: 8px;
+            --fc-event-resizer-dot-total-width: 8px;
+            --fc-event-resizer-dot-border-width: 1px;
+
+            --fc-non-business-color: rgba(215, 215, 215, 0.3);
+            --fc-bg-event-color: rgb(143, 223, 130);
+            --fc-bg-event-opacity: 0.3;
+            --fc-highlight-color: rgba(188, 232, 241, 0.3);
+            --fc-today-bg-color: rgba(255, 220, 40, 0.15);
+            --fc-now-indicator-color: red;
+        }
+
+        .fc .fc-col-header-cell-cushion {
+            /* needs to be same precedence */
+            padding-top: 5px;
+            /* an override! */
+            padding-bottom: 5px;
+            /* an override! */
+        }
+
+        #calendar a,
+        table,
+        tbody,
+        td {
+            background-color: transparent;
+            color: royalblue;
+            padding: 3px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <nav class="nav-bar flex-row align-end justify-space-between"
+        style="border: none; padding: 20px; background-color: rgb(231, 231, 231); position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
+        <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
+        <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
+            style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
+    </nav>
+
+    <!-- Drawer -->
+    <div class="drawer flex-column">
+        <div class="align-center justify-center flex-row" id="heading" style="margin-bottom: 10px;">
+            <p style="font-size: 16px; font-weight: 100;">PDM Parish Data Manager</p>
+        </div>
+
+        <hr width="100%">
+
+        <div class="flex-column" style="padding: 10px;">
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/person_white.png" alt="">
+                <a id="profile" href="pdm">profile</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/groups_white.png" alt="">
+                <a id="members" href="members">members</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/home_white.png" alt="">
+                <a href="outstations">outstations</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/edit_white.png" alt="">
+                <a id="registry" href="registry">registry</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/leaderboard_white.png" alt="">
+                <a id="office" href="office">office</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/groups_white.png" alt="">
+                <a id="groups" href="groups">groups</a>
+            </div>
+
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/help_white.png" alt="">
+                <a id="help">help</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Main Body -->
+    <div class="container" style="position: fixed; top: 30px;">
+        <!-- Calendar -->
+        <div class="flex-column full-width" style="padding: 10px;">
+            <div id="calendar"></div>
+        </div>
+
+
+        <h1 id="profile-details" style="font-weight: 100;"></h1>
+
+        <div class="flex-row align-center justify-end">
+            <div class="full-width flex-row justify-space-between align-center"
+                style="border: 1px solid; background-color: rgb(168, 220, 255); color: black;">
+
+                <div class="flex-column" style="border-right: solid 1px;">
+                    <div class="flex-row align-center justify-end">
+                        <img id="add-event" class="icon" src="../../resources/icons/add_icon.png"
+                            style="padding-top: 10px; padding-right: 10px;" title="add a new event" />
+                    </div>
+                    <div class="padded-div">
+                        <p>events</p>
+                        <h3 id="parish-events"></h3>
+                    </div>
+
+                </div>
+
+
+                <div class="flex-column align-center justify-start">
+                    <span>quick links</span>
+                    <div class="flex-column">
+                        <a id="register-member" style="background-color: transparent; color: white;">register a
+                            member</a>
+                        <a href="register a member" style="background-color: transparent; color: white;">create a
+                            notification</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="inner-main" class="full-width full-height flex-column align-start">
+
+            <div class="flex-column full-width"
+                style="border: 1px solid crimson;background-color: crimson;color: white; margin-top: 10px;">
+                <div class="flex-row align-center justify-start">
+                    <img id="add-reminder" class="icon" src="../../resources/icons/add_white.png"
+                        style="padding-top: 10px; padding: 20px;" title="add a new reminder" />
+                </div>
+
+                <div class="padded-div">
+                    <p>reminders</p>
+                    <h3 id="parish-reminders"></h3>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="flex-row full-width align-end justify-end"
+            style="margin: 20px; position: fixed; padding: 10px; bottom: 0px; right: 0px;">
+            <button id="events-btn" class="other-btn">events</button>
+            <button id="reminders-btn" class="other-btn">reminders</button>
+        </div>
+    </div>
+
+    <!-- Calendar -->
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.15/index.global.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+
+    <script type="module" src="../scripts/drawer.js"></script>
+    <script type="module" src="../scripts/help.js"></script>
+    <script type="module" src="../scripts/profile.js"></script>
+</body>
+
+</html>

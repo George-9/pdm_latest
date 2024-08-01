@@ -1,0 +1,121 @@
+.drawer {
+    background-color: royalblue;
+    height: 100%;
+
+    position: fixed;
+
+    padding: 8px;
+    color: white;
+
+    animation-duration: 800ms;
+    -o-transition-duration: 800ms;
+    transition-property: width;
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition-duration: 800ms;
+    z-index: 100000000;
+}
+
+a {
+    border: none;
+    padding: 3px;
+    cursor: pointer;
+}
+
+a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.container {
+    padding: 10px;
+    padding-top: 1px;
+
+    position: fixed;
+    background-color: white;
+}
+
+@media screen and (min-width: 1081px) {
+
+    .s-display {
+        display: none;
+    }
+
+
+    .drawer {
+        width: 14% !important;
+        top: 0px;
+        left: 0px;
+    }
+
+    .container {
+        width: 82%;
+        top: 0px;
+        right: 0px;
+        margin-left: 10px;
+    }
+}
+
+@media screen and (min-width: 700px) and (max-width: 1080px) {
+
+    .s-display {
+        display: none;
+    }
+
+
+    .drawer {
+        width: 18% !important;
+
+        top: 0px;
+        left: 0px;
+    }
+
+
+    .container {
+        right: 0px;
+        width: 78%;
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 700px) {
+
+    .s-display {
+        display: block;
+    }
+
+
+    .container {
+        width: 100%;
+        position: unset;
+    }
+
+    .drawer {
+        width: 0px;
+        top: 0px;
+        left: 0px;
+
+        display: none;
+        padding: 0px;
+        height: 100%;
+    }
+}
+
+
+@media screen and (max-width: 480px) {
+    .s-display {
+        display: block;
+    }
+
+    .container {
+        width: 100%;
+        position: unset;
+    }
+
+    .drawer {
+        left: 0px;
+        top: 0px;
+        width: 0px;
+        padding: 0px;
+        height: 100%;
+        display: none;
+    }
+}

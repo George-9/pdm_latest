@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pdm registered parishes</title>
+
+    <style>
+        html,
+        body,
+        #cont {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+        #view {
+            display: grid;
+            width: 80%;
+            padding: 20px;
+            height: 100%;
+            position: fixed;
+            overflow-y: scroll;
+            margin: 3%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Registered Parishes</h1>
+    <hr>
+
+    <div id="cont">
+        <div id="view"></div>
+    </div>
+
+    <script type="module" src="./scripts/registeredParishes.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pdm | members</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css">
+
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/drawer.css">
+    <link rel="stylesheet" href="../../css/modal.css">
+
+    <style>
+        button {
+            width: unset;
+            background-color: unset;
+            background: unset;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <nav class="nav-bar flex-row align-end justify-space-between"
+        style="border: none; background-color: rgb(248, 230, 230); padding: 2px;">
+        <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
+
+        <!-- <p style="color: black;">add member</p> -->
+
+        <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
+            style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
+    </nav>
+
+
+    <!-- Drawer -->
+    <div class="drawer flex-column">
+        <div class="align-center justify-center flex-row" id="heading" style="margin-bottom: 10px;">
+            <p style="font-size: 16px; font-weight: 100;">PDM Parish Data Manager</p>
+        </div>
+
+        <hr width="100%">
+
+        <div class="flex-column" style="padding: 10px;">
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/person_white.png" alt="">
+                <a id="profile" href="pdm">profile</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/groups_white.png" alt="">
+                <a id="members" href="members">members</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/home_white.png" alt="">
+                <a href="outstations">outstations</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/edit_white.png" alt="">
+                <a id="registry" href="registry">registry</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/leaderboard_white.png" alt="">
+                <a id="office" href="office">office</a>
+            </div>
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/groups_white.png" alt="">
+                <a id="groups" href="groups">groups</a>
+            </div>
+
+
+            <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/help_white.png" alt="">
+                <a id="help">help</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+
+        <div class="flex-row align-center justify-space-between"
+            style="background-color: rgb(250, 190, 190); color: white; padding: 3px;">
+            <h1 style="font-weight: 100; color: black;">Members</h1>
+
+            <div class="full-width flex-row align-center justify-end" style="flex: 2;">
+                <img id="add-member" class="icon" src="../../resources/icons/add_box.png" alt="add member"
+                    style="padding: 3px;">
+
+
+                <img id="export-excel" src="../../resources/icons/print.png" class="icon"
+                    style="width: 40px; height: 40px; padding: 10px;" title="export to excel" />
+
+                <img id="export-pdf" src="../../resources/icons/pdf.png" class="icon"
+                    style="width: 40px; height: 40px; padding: 10px;" title="export to pdf" />
+                <img id="member-help" class="icon" src="../../resources/icons/help.png" alt="member help"
+                    title="member help" style="padding: 3px;">
+            </div>
+        </div>
+        <!-- Your Data Grid container -->
+        <div id="myGrid" class="ag-theme-alpine full-width" style="height: 400px;"></div>
+
+
+        <script type="module" src="../scripts/drawer.js"></script>
+        <script type="module" src="../scripts/membersPage.js"></script>
+        <script type="module" src="../scripts/help.js"></script>
+</body>
+
+</html>
