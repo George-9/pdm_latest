@@ -29,6 +29,15 @@
         </div>
 
     </div>
+
+    <script>
+        if ((JSON.parse(localStorage.getItem('parish_details')))['id']) {
+            window.location.replace('page/pdm')
+        } else {
+            localStorage.clear()
+        }
+    </script>
+
 </body>
 
 </html>
