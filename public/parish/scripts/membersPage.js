@@ -238,7 +238,7 @@ NetTool.POST_CLIENT('/load/members',
 
 function createTable(obj) {
     const div = CREATE_ELEMENT('div');
-    div.style.height = '500px';
+    div.style.height = '400px';
     div.style.padding = '18px';
     div.classList.add('flex-column', 'full-height', 'full-width', 'align-center', 'justify-center', 'scroll-y')
 
