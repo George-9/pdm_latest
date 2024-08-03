@@ -24,10 +24,6 @@ async function uploadMembersCallback(req, resp) {
             ||
             !Object.keys(data).includes('GENDER')
         ) {
-            console.log('member -> ', member);
-            if (withoutCompleteDetails >= 100) {
-                break
-            }
             withoutCompleteDetails++;
             continue;
         }
