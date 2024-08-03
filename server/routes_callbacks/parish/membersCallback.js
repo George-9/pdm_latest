@@ -1,9 +1,16 @@
 const { DBConstants } = require("../../../db/dbConstants");
-const { DBUtils } = require("../../../db/dbUtils");
+const { DBUtils, ConnectedClient } = require("../../../db/dbUtils");
 
 const loadMembers = async (req, resp) => {
     const id = req.body.id;
-    const members = await DBUtils.DB_FIND_ALL(id, DBConstants.PARISH_MEMBERS_COLLECTION);
+
+    console.log('id -> ', id);
+
+    const members = await ConnectedClient
+        .db(id)
+        .collection(DBConstants.PARISH_MEMBERS_COLLECTION)
+        .find()
+        .toArray();
 
     return await resp.json(members)
 }

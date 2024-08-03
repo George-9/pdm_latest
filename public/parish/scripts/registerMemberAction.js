@@ -158,7 +158,7 @@ export function RegisterMember() {
             else if (IS_NULL_OR_EMPTY(inputEntry.value)) {
                 continue;
             } else {
-                memberDetails[inputEntry.id] = inputEntry.value;
+                memberDetails[inputEntry.id.toUpperCase().trim()] = inputEntry.value;
             }
         }
         const registrationResult = await (await NetTool.POST_CLIENT(
@@ -173,6 +173,8 @@ export function RegisterMember() {
         )).json();
 
         MessegePopup.ShowMessegePuppy(registrationResult['response']);
+        ModalExpertise.HideModal();
+        window.location.reload()
     }
 
     ModalExpertise.ShowModal('register member', registerDiv, {

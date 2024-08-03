@@ -1,5 +1,5 @@
 const { DBConstants } = require("../../../db/dbConstants");
-const { DBUtils } = require("../../../db/dbUtils");
+const { DBUtils, ConnectedClient } = require("../../../db/dbUtils");
 const { DebugUtils } = require("../../utils/debug_utils");
 
 const registerMember = async (req, resp) => {
@@ -8,23 +8,23 @@ const registerMember = async (req, resp) => {
 
     DebugUtils.PRINT('details -> ', details);
 
-    if (!details.name || !details.home_address) {
+    if (!details['NAME'] || details['home_address']) {
         return resp.json({ 'response': 'something went wrong' });
     }
 
     delete details['parish_id'];
+    DebugUtils.PRINT('details -> ', details);
 
-    const saveResult = await DBUtils.INSERT_TO_COLLECTION(
-        parishId,
-        DBConstants.PARISH_MEMBERS_COLLECTION,
-        details
-    );
+    const saveResult = await ConnectedClient
+        .db(parishId)
+        .collection(DBConstants.PARISH_MEMBERS_COLLECTION)
+        .insertOne(details);
 
     DebugUtils.PRINT('saved -> ', saveResult);
 
     resp.json({
         'response'
-            : saveResult
+            : saveResult.insertedId
                 ? 'success'
                 : 'something went wrong'
     });

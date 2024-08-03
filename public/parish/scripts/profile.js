@@ -209,8 +209,6 @@ async function DisplayEvents() {
     }
 }
 
-
-
 async function DisplayReminders() {
     if (!parishReminders || parishReminders.length < 1) {
         const notifyNoReminders = CREATE_ELEMENT('p');
@@ -243,7 +241,6 @@ async function DisplayReminders() {
         });
     }
 }
-
 
 
 async function DisplayProfileDetails() {
