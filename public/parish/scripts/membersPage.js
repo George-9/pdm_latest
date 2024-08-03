@@ -48,9 +48,15 @@ function exportSelectedRowsToPDF() {
     if (!selectedRows || selectedRows.length < 1) {
         return MessegePopup.ShowMessegePuppy('you need to select some data in order to export to pdf')
     }
+
+    for (let i = 0; i < selectedRows.length; i++) {
+        delete selectedRows[i]['_id'];
+    }
+
     const doc = new jsPDF();
     const columns = Object.keys(selectedRows[0]).map(key => ({ header: key, dataKey: key }));
     const rows = selectedRows.map(row => Object.values(row));
+
     doc.autoTable({
         head: [columns.map(col => col.header)],
         body: rows
@@ -246,7 +252,7 @@ function createTable(obj) {
     table.classList.add('full-width', 'full-height', 'scroll-y')
     table.style.borderCollapse = 'collapse';
     table.style.width = '50%';
-    table.style.margin = '20px 0';
+    table.style.margin = '10px 0';
 
     const heading = document.createElement('caption');
     heading.style.fontWeight = 'bold';
@@ -296,6 +302,10 @@ document.getElementById('export-excel').onclick = (ev) => {
 
 
     const selectedRows = gridOptions.api.getSelectedRows();
+    for (let i = 0; i < selectedRows.length; i++) {
+        delete selectedRows[i]['_id'];
+    }
+
     if (!selectedRows || selectedRows.length < 1) {
         return MessegePopup.ShowMessegePuppy('you need to select some data in order to export to spreadsheets')
     }
