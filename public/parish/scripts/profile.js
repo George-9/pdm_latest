@@ -247,7 +247,7 @@ async function DisplayReminders() {
 
 
 async function DisplayProfileDetails() {
-    GET_EL_BY_ID('profile-details').innerText = 'Logged in as ' + parishDetails['name'] + ' parish';
+    GET_EL_BY_ID('profile-details').innerText = 'Parish • ' + parishDetails['name'];
 
     const notifyEvents = CREATE_ELEMENT('span');
     if (!parishEvents || parishEvents.length < 1) {
