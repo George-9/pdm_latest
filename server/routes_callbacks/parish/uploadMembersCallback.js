@@ -16,13 +16,13 @@ async function uploadMembersCallback(req, resp) {
 
     for (let i = 0; i < data.length; i++) {
         const member = data[i];
-        if (!Object.keys(data).includes('NO')
+        if (!Object.keys(member).includes('NO')
             ||
-            !Object.keys(data).includes('NAME')
+            !Object.keys(member).includes('NAME')
             ||
-            !Object.keys(data).includes('DOB')
+            !Object.keys(member).includes('DOB')
             ||
-            !Object.keys(data).includes('GENDER')
+            !Object.keys(member).includes('GENDER')
         ) {
             withoutCompleteDetails++;
             continue;
