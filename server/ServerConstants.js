@@ -1,5 +1,5 @@
 class ServerConstants {
-    static PORT = 80;
+    static PORT = 8000;
 }
 
 module.exports = { ServerConstants }

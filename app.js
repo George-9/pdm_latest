@@ -26,6 +26,10 @@ const { registeredParishes } = require("./server/routes_callbacks/sys_admin/regi
 const { updateOutstation } = require("./server/routes_callbacks/parish/updateOutstation");
 const { homeCallback } = require("./server/routes_callbacks/parish/homeCallback");
 const { uploadMembersCallback } = require("./server/routes_callbacks/parish/uploadMembersCallback");
+const { getParishGroups } = require("./server/routes_callbacks/parish/getParishGroups");
+const { addGroupToParish } = require("./server/routes_callbacks/parish/addGroupToParish");
+const { addParishLeader } = require("./server/routes_callbacks/parish/addParishLeaderCallback");
+const { getParishLeaders } = require("./server/routes_callbacks/parish/getParishLeaders");
 
 try {
     app.get('/', homeCallback);
@@ -51,6 +55,10 @@ try {
     app.post('/get/outstation/sccs', getOustationSCCs);
     app.post('/registered/parishes', registeredParishes);
     app.post('/update/outstation', updateOutstation);
+    app.post('/add/parish/group', addGroupToParish);
+    app.post('/get/parish/groups', getParishGroups);
+    app.post('/add/parish/leader', addParishLeader);
+    app.post('/get/parish/leaders', getParishLeaders);
 } catch (error) {
     DebugUtils.PRINT(error);
 } finally {

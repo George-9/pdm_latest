@@ -2,98 +2,69 @@
 <html lang="en">
 
 <head>
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pdm | admin</title>
-
-    <!-- AgDataGrid -->
-    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+    <title>Leader Management</title>
 
     <link rel="stylesheet" href="../../css/index.css">
-    <link rel="stylesheet" href="../../css/drawer.css">
-    <link rel="stylesheet" href="../../css/modal.css">
 
     <style>
-        .other-btn {
-            width: 100px;
-            background-color: royalblue;
-            color: white;
-            padding: 10px;
-            border-radius: 0px;
-            border: 1px solid;
+        .navbar {
+            background-color: #dfdfdf;
+            overflow: hidden;
         }
 
-        .padded-div {
-            padding: 10px;
-            margin: 5px;
+        .navbar a {
+            float: left;
+            display: block;
+            color: gray;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            background-color: gainsboro;
         }
 
-        :root {
-            --fc-small-font-size: .85em;
-            --fc-page-bg-color: #fff;
-            --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
-            --fc-neutral-text-color: #808080;
-            --fc-border-color: #ddd;
-
-            --fc-button-text-color: #fff;
-            --fc-button-bg-color: #2C3E50;
-            --fc-button-border-color: #2C3E50;
-            --fc-button-hover-bg-color: #1e2b37;
-            --fc-button-hover-border-color: #1a252f;
-            --fc-button-active-bg-color: #1a252f;
-            --fc-button-active-border-color: #151e27;
-
-            --fc-event-bg-color: #3788d8;
-            --fc-event-border-color: #3788d8;
-            --fc-event-text-color: #fff;
-            --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
-
-            --fc-more-link-bg-color: #d0d0d0;
-            --fc-more-link-text-color: inherit;
-
-            --fc-event-resizer-thickness: 8px;
-            --fc-event-resizer-dot-total-width: 8px;
-            --fc-event-resizer-dot-border-width: 1px;
-
-            --fc-non-business-color: rgba(215, 215, 215, 0.3);
-            --fc-bg-event-color: rgb(143, 223, 130);
-            --fc-bg-event-opacity: 0.3;
-            --fc-highlight-color: rgba(188, 232, 241, 0.3);
-            --fc-today-bg-color: rgba(255, 220, 40, 0.15);
-            --fc-now-indicator-color: red;
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
         }
 
-        .fc .fc-col-header-cell-cushion {
-            /* needs to be same precedence */
-            padding-top: 5px;
-            /* an override! */
-            padding-bottom: 5px;
-            /* an override! */
+        .add-leader-card {
+            display: none;
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
 
-        #calendar a,
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
         table,
-        tbody,
+        th,
         td {
-            background-color: transparent;
-            color: royalblue;
-            padding: 3px;
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
         }
     </style>
-
 </head>
 
 <body>
-
     <nav class="nav-bar flex-row align-end justify-space-between"
         style="border: none; padding: 20px; background-color: rgb(231, 231, 231); position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
         <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
         <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
             style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
     </nav>
-
 
     <!-- Drawer -->
     <div class="drawer flex-column">
@@ -149,8 +120,51 @@
         </div>
     </div>
 
+
+    <div class="container">
+        <div class="navbar">
+            <a href="#" id="add-icon">Add Leader</a>
+        </div>
+
+        <div class="add-leader-card" id="add-leader-card">
+            <h3>Add Leader</h3>
+            <label for="leader-name">Leader Name:</label>
+            <input type="text" id="leader-name" name="leader-name"><br><br>
+            <label for="leader-position">Position:</label>
+            <select type="text" id="leader-position" name="leader-position">
+                <option value="Moderator">Moderator</option>
+                <option value="Vice Moderator">Vice Moderator</option>
+                <option value="Secretary">Secretary</option>
+                <option value="Vice Secretary">Vice Secretary</option>
+                <option value="Treasurer">Treasurer</option>
+            </select>
+
+            <br><br>
+            <button id="submit-leader">Submit</button>
+        </div>
+
+        <div id="main-div">
+            <table id="leaders-table">
+                <caption>Leaders</caption>
+                <thead>
+                    <tr>
+                        <th>Leader Name</th>
+                        <th>Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Leader rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/addParishLeader.js"></script>
+
     <script type="module" src="../scripts/drawer.js"></script>
     <script type="module" src="../scripts/help.js"></script>
+
+    <script type="module" src="../scripts/office.js"></script>
 </body>
 
 </html>
