@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
 
     <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/drawer.css">
 
     <style>
         .other-btn {
@@ -63,9 +64,9 @@
 
         .fc .fc-col-header-cell-cushion {
             /* needs to be same precedence */
-            padding-top: 5px;
+            padding-top: 1px;
             /* an override! */
-            padding-bottom: 5px;
+            padding-bottom: 1px;
             /* an override! */
         }
 
@@ -77,6 +78,46 @@
             color: royalblue;
             padding: 3px;
         }
+
+        .fc {
+            height: 500px;
+            width: 90%;
+            color: #1e2b37;
+        }
+
+
+        .fc .fc-button {
+            max-width: 80px;
+            margin: 3px;
+            margin-left: 10px;
+        }
+
+
+        .fc-event {
+            background-color: #151e27;
+            color: #1a252f;
+        }
+
+        /* 
+        .fc .fc-daygrid-day-frame {
+            padding: 10px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: row;
+        } */
+
+        .fc-day {
+            color: black;
+        }
+
+        .fc-daygrid-block-event .fc-event-time,
+        .fc-daygrid-block-event .fc-event-title {
+            color: gray;
+        }
     </style>
 
 </head>
@@ -84,7 +125,7 @@
 <body>
 
     <nav class="nav-bar flex-row align-end justify-space-between"
-        style="border: none; padding: 20px; background-color: rgb(231, 231, 231); position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
+        style="border: none; padding: 3px;  position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
         <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
         <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
             style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
@@ -92,11 +133,11 @@
 
     <!-- Drawer -->
     <div class="drawer flex-column">
-        <div class="full-width align-center justify-center flex-column" id="heading" style="margin-bottom: 10px;">
-            <p style="font-size: 16px; font-weight: 100; text-align: start;">
-                <span> PDM</span><br>
-                <span> Parish Data Manager</span>
-            </p>
+        <div class="full-width justify-center flex-column" id="heading" style="margin-bottom: 10px;">
+            <!-- <p style="font-size: 16px; font-weight: 100; text-align: start;"> -->
+            <!-- <span> PDM</span><br> -->
+            <!-- <span> Parish Data Manager</span> -->
+            <p id="profile-details" style="font-weight: 100;"></p>
         </div>
 
         <hr width="100%">
@@ -138,54 +179,48 @@
             </div>
 
             <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/finance_white.png" alt="">
+                <a href="finance.html">Finance</a>
+            </div>
+
+            <div class="flex-row align-center">
                 <img class="icon" src="../../resources/icons/help_white.png" alt="">
                 <a id="help">help</a>
             </div>
+
         </div>
     </div>
 
     <!-- Main Body -->
     <div class="container" style="position: fixed; top: 30px;">
-        <h1 id="profile-details" style="font-weight: 100;"></h1>
 
         <!-- Calendar -->
-        <div class="flex-column full-width" style="padding: 10px;">
-            <div id="calendar"></div>
+        <div class="full-width" style="display: flex; padding: 10px;">
+            <div class="flex-column" id="calendar"></div>
         </div>
 
-        <span>quick links</span>
 
+        <hr>
+        <span>quick links</span>
         <div class="flex-column align-start">
             <a id="register-member" style="background-color: transparent; color: grey;">register a
                 member</a>
             <a style="background-color: transparent; color: grey;">create a
                 notification</a>
         </div>
-        <hr>
 
         <div class="flex-row full-width align-center justify-space-between">
             <div class="padded-div">
                 <p>events</p>
                 <h3 id="parish-events"></h3>
             </div>
-
-            <div>
-                <img id="add-event" class="icon" src="../../resources/icons/add_icon.png"
-                    style="padding-top: 10px; padding-right: 10px;" title="add a new event" />
-            </div>
         </div>
-        <hr>
 
         <div class="flex-row full-width align-start justify-space-between">
             <div class="padded-div">
                 <div class="flex-row full-width align-start justify-space-between">
-                    <div>
-                        <p>reminders</p>
-                        <h3 id="parish-reminders"></h3>
-                    </div>
-
-                    <img id="add-reminder" class="icon" src="../../resources/icons/add_icon.png"
-                        style="padding-top: 10px; padding-right: 10px; z-index: 1000;" title="add a new event" />
+                    <p>reminders</p>
+                    <h3 id="parish-reminders"></h3>
                 </div>
             </div>
         </div>
@@ -199,7 +234,7 @@
     </div>
 
     <!-- Calendar -->
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.15/index.global.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.15/index.global.min.js"></script> -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
     <script type="module" src="../scripts/drawer.js"></script>

@@ -29,11 +29,11 @@
 
     <!-- Drawer -->
     <div class="drawer flex-column">
-        <div class="full-width align-center justify-center flex-column" id="heading" style="margin-bottom: 10px;">
-            <p style="font-size: 16px; font-weight: 100; text-align: start;">
-                <span> PDM</span><br>
-                <span> Parish Data Manager</span>
-            </p>
+        <div class="full-width justify-center flex-column" id="heading" style="margin-bottom: 10px;">
+            <!-- <p style="font-size: 16px; font-weight: 100; text-align: start;"> -->
+            <!-- <span> PDM</span><br> -->
+            <!-- <span> Parish Data Manager</span> -->
+            <p id="profile-details" style="font-weight: 100;"></p>
         </div>
 
         <hr width="100%">
@@ -75,9 +75,15 @@
             </div>
 
             <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/finance_white.png" alt="">
+                <a id="finance" href="finance.html">Finance</a>
+            </div>
+
+            <div class="flex-row align-center">
                 <img class="icon" src="../../resources/icons/help_white.png" alt="">
                 <a id="help">help</a>
             </div>
+
         </div>
     </div>
 
@@ -87,6 +93,7 @@
 
     <script type="module" src="../scripts/drawer.js"></script>
     <script type="module" src="../scripts/outstations.js"></script>
+    <script type="module" src="../scripts/titleSetting.js"></script>
     <script type="module" src="../scripts/help.js"></script>
 </body>
 

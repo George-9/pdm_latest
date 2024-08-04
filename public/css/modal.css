@@ -13,7 +13,7 @@
 .modal-child {
     background-color: white;
     width: 80%;
-    height: 88%;
+    height: 90%;
     border-radius: 4px;
 
     cursor: default;
@@ -23,7 +23,7 @@
 .modal-child input,
 .modal-child select {
     padding: 5px;
-    margin: 10px;
+    margin: 8px;
     min-width: 300px;
     padding: 8px;
 }
@@ -31,7 +31,6 @@
 
 .modal-child button {
     padding: 5px;
-    padding-left: 10px;
     padding-right: 10px;
     min-width: fit-content;
     min-height: 50px;

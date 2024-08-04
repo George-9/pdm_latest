@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pdm | members</title>
 
+
+    <!-- AG_DataGrid -->
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
 
+    <!-- JS PDF library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
 
@@ -17,6 +20,9 @@
     <link rel="stylesheet" href="../../css/index.css">
     <link rel="stylesheet" href="../../css/drawer.css">
     <link rel="stylesheet" href="../../css/modal.css">
+
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <script src="https://printjs-4de6.kxcdn.com/print.min.css"></script>
 
     <style>
         button {
@@ -48,11 +54,11 @@
 
     <!-- Drawer -->
     <div class="drawer flex-column">
-        <div class="full-width align-center justify-center flex-column" id="heading" style="margin-bottom: 10px;">
-            <p style="font-size: 16px; font-weight: 100; text-align: start;">
-                <span> PDM</span><br>
-                <span> Parish Data Manager</span>
-            </p>
+        <div class="full-width justify-center flex-column" id="heading" style="margin-bottom: 10px;">
+            <!-- <p style="font-size: 16px; font-weight: 100; text-align: start;"> -->
+            <!-- <span> PDM</span><br> -->
+            <!-- <span> Parish Data Manager</span> -->
+            <p id="profile-details" style="font-weight: 100;"></p>
         </div>
 
         <hr width="100%">
@@ -94,12 +100,17 @@
             </div>
 
             <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/finance_white.png" alt="">
+                <a id="finance" href="finance.html">Finance</a>
+            </div>
+
+            <div class="flex-row align-center">
                 <img class="icon" src="../../resources/icons/help_white.png" alt="">
                 <a id="help">help</a>
             </div>
+
         </div>
     </div>
-
 
     <div class="container">
 
@@ -126,6 +137,7 @@
 
         <script type="module" src="../scripts/drawer.js"></script>
         <script type="module" src="../scripts/membersPage.js"></script>
+        <script type="module" src="../scripts/titleSetting.js"></script>
         <script type="module" src="../scripts/help.js"></script>
 </body>
 

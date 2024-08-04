@@ -6,9 +6,9 @@ export class ModalExpertise {
 
     static onModalDismiss
 
-    static ShowModal(modalTitle, view, { modalChildStylesClassList, onDisMiss, onClickModalChild }) {
+    static ShowModal(modalTitle, view, { modalChildStylesClassList, onDisMiss, onClickModalChild, TopButton }) {
         if (!view) {
-            return alert('modal requested without view')
+            return alert('modal requested without view');
         }
 
         if (onDisMiss) {
@@ -31,7 +31,7 @@ export class ModalExpertise {
 
         const modalHeader = CREATE_ELEMENT('div');
         modalHeader.classList.add('full-width', 'flex-row', 'align-center', 'justify-space-between');
-        modalHeader.style.marginBottom = '10px';
+        modalHeader.style.marginBottom = '5px';
         modalHeader.style.backgroundColor = 'royalblue'
 
         /**

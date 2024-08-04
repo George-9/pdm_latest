@@ -244,15 +244,16 @@ NetTool.POST_CLIENT('/load/members',
 
 function createTable(obj) {
     const div = CREATE_ELEMENT('div');
-    div.style.height = '400px';
-    div.style.padding = '18px';
+    div.style.height = 'max-content';
+    div.style.paddingTop = '5px';
     div.classList.add('flex-column', 'full-height', 'full-width', 'align-center', 'justify-center', 'scroll-y')
 
     const table = document.createElement('table');
+    table.style.textAlign = 'center';
     table.classList.add('full-width', 'full-height', 'scroll-y')
     table.style.borderCollapse = 'collapse';
     table.style.width = '50%';
-    table.style.margin = '10px 0';
+    table.style.margin = '10px';
 
     const heading = document.createElement('caption');
     heading.style.fontWeight = 'bold';
@@ -289,7 +290,25 @@ function createTable(obj) {
     nameHeading.style.marginTop = '10px';
     nameHeading.style.fontWeight = '100';
 
-    div.append(table)
+    const toolsRow = CREATE_ELEMENT('div');
+    toolsRow.classList.add('full-width', 'flex-row', 'scroll-y', 'align-center', 'justify-end')
+    const printButton = CREATE_ELEMENT('button');
+    printButton.innerText = 'export card';
+
+    printButton.onclick = (ev) => {
+        ev.preventDefault();
+
+        prinJS({
+            printable: obj,
+            type: 'json',
+            properties: Object.keys(obj),
+            header: `<h3>${obj['NAME']}</h3>`
+        })
+    }
+
+    toolsRow.appendChild(printButton);
+
+    div.append(toolsRow, table)
     return div;
 }
 

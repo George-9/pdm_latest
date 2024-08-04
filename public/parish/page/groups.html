@@ -27,7 +27,7 @@
 <body>
 
     <nav class="nav-bar flex-row align-end justify-space-between"
-        style="border: none; padding: 20px; background-color: rgb(231, 231, 231); position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
+        style="border: none; padding: 3px;  position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
         <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
         <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
             style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
@@ -35,11 +35,11 @@
 
     <!-- Drawer -->
     <div class="drawer flex-column">
-        <div class="full-width align-center justify-center flex-column" id="heading" style="margin-bottom: 10px;">
-            <p style="font-size: 16px; font-weight: 100; text-align: start;">
-                <span> PDM</span><br>
-                <span> Parish Data Manager</span>
-            </p>
+        <div class="full-width justify-center flex-column" id="heading" style="margin-bottom: 10px;">
+            <!-- <p style="font-size: 16px; font-weight: 100; text-align: start;"> -->
+            <!-- <span> PDM</span><br> -->
+            <!-- <span> Parish Data Manager</span> -->
+            <p id="profile-details" style="font-weight: 100;"></p>
         </div>
 
         <hr width="100%">
@@ -81,9 +81,15 @@
             </div>
 
             <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/finance_white.png" alt="">
+                <a href="finance.html">Finance</a>
+            </div>
+
+            <div class="flex-row align-center">
                 <img class="icon" src="../../resources/icons/help_white.png" alt="">
                 <a id="help">help</a>
             </div>
+
         </div>
     </div>
 
@@ -110,6 +116,7 @@
 
     <script type="module" src="../scripts/groups.js"></script>
     <script type="module" src="../scripts/drawer.js"></script>
+    <script type="module" src="../scripts/titleSetting.js"></script>
     <script type="module" src="../scripts/help.js"></script>
 </body>
 

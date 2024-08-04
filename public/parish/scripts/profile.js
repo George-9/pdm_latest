@@ -7,28 +7,33 @@ import { IS_NULL_OR_EMPTY } from "../../tools/stringUtils.js";
 import { RegisterMember } from "./registerMemberAction.js";
 
 const parishDetails = LocalStorageContract.STORED_PARISH_CREDENTIALS();
-let parishEvents, parishReminders;
+let parishEvents, parishReminders, calendar;
 
 document.addEventListener('DOMContentLoaded', (ev) => {
     ev.preventDefault();
-    Main();
 
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        themeSystem: 'bootstrap5', // important!
-        initialView: 'dayGridMonth'
+    Main().then(() => {
+        var calendarEl = document.getElementById('calendar');
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            dateClick: function (info) {
+                if (new Date(info.dateStr) < new Date(Date.UTC()) + 1) {
+                    return;
+                }
+
+                InvokeAddEvent(info.dateStr);
+            }
+        });
+        calendar.render();
     });
-
-    calendar.render();
 });
 
 
 const parishEventsDiv = GET_EL_BY_ID('parish-events');
 const parishRemindersDiv = GET_EL_BY_ID('parish-reminders');
 
-function Main() {
-    LoadData().then(DisplayProfileDetails);
+async function Main() {
+    LoadData().then(async () => await DisplayProfileDetails());
 
     GET_EL_BY_ID('events-btn').onclick = async (ev) => {
         ev.preventDefault();
@@ -39,13 +44,11 @@ function Main() {
         ev.preventDefault();
         await DisplayReminders()
     }
-    GET_EL_BY_ID('add-event').onclick = InvokeAddEvent
-    GET_EL_BY_ID('add-reminder').onclick = InvokeAddReminder;
     GET_EL_BY_ID('register-member').onclick = RegisterMember
 }
 
 
-const InvokeAddEvent = (ev) => {
+const InvokeAddEvent = (date) => {
     const addEventsDiv = CREATE_ELEMENT('div');
     addEventsDiv.classList.add('flex-column', 'align-center');
     addEventsDiv.style.fontSize = '28px';
@@ -57,9 +60,6 @@ const InvokeAddEvent = (ev) => {
     const eventDetails = CREATE_ELEMENT('input');
     eventDetails.placeholder = 'details';
 
-    const eventDate = CREATE_ELEMENT('input');
-    eventDate.setAttribute('type', 'date');
-
     const registerButton = CREATE_ELEMENT('button');
     registerButton.innerText = 'save';
 
@@ -67,7 +67,7 @@ const InvokeAddEvent = (ev) => {
         ev.preventDefault();
         const eventData = {
             'parish_id': parishDetails['id'],
-            'date': eventDate.value,
+            'date': date,
             'event_name': eventTitle.value,
             'event_details': eventDetails.value
         }
@@ -89,69 +89,69 @@ const InvokeAddEvent = (ev) => {
 
         const msg = (await result.json())['response'];
         if (msg === 'success') {
-            RESET_INPUTS(eventDate, eventTitle, eventDetails);
+            RESET_INPUTS(date, eventTitle, eventDetails);
         }
 
         MessegePopup.ShowMessegePuppy(msg);
     }
 
-    addEventsDiv.append(eventTitle, eventDetails, eventDate, registerButton);
-    ModalExpertise.ShowModal('create event', addEventsDiv, {
+    addEventsDiv.append(eventTitle, eventDetails, registerButton);
+    ModalExpertise.ShowModal('create event on ' + new Date(date).toDateString(), addEventsDiv, {
         modalChildStylesClassList: []
     });
 }
 
-const InvokeAddReminder = (ev) => {
-    const addRemindersDiv = CREATE_ELEMENT('div');
-    addRemindersDiv.classList.add('flex-column', 'align-center');
-    addRemindersDiv.style.fontSize = '28px';
-    addRemindersDiv.style.fontWeight = '300';
+// const InvokeAddReminder = (ev) => {
+//     const addRemindersDiv = CREATE_ELEMENT('div');
+//     addRemindersDiv.classList.add('flex-column', 'align-center');
+//     addRemindersDiv.style.fontSize = '28px';
+//     addRemindersDiv.style.fontWeight = '300';
 
-    const reminderTitle = CREATE_ELEMENT('input');
-    reminderTitle.placeholder = 'title';
+//     const reminderTitle = CREATE_ELEMENT('input');
+//     reminderTitle.placeholder = 'title';
 
-    const reminderDetails = CREATE_ELEMENT('input');
-    reminderDetails.placeholder = 'details';
+//     const reminderDetails = CREATE_ELEMENT('input');
+//     reminderDetails.placeholder = 'details';
 
-    const saveButton = CREATE_ELEMENT('button');
-    saveButton.innerText = 'save';
+//     const saveButton = CREATE_ELEMENT('button');
+//     saveButton.innerText = 'save';
 
-    saveButton.onclick = async (ev) => {
-        ev.preventDefault();
-        const eventData = {
-            'parish_id': parishDetails['id'],
-            'reminder_title': reminderTitle.value,
-            'reminder_detail': reminderDetails.value
-        }
+//     saveButton.onclick = async (ev) => {
+//         ev.preventDefault();
+//         const eventData = {
+//             'parish_id': parishDetails['id'],
+//             'reminder_title': reminderTitle.value,
+//             'reminder_detail': reminderDetails.value
+//         }
 
-        for (const key in eventData) {
-            if (Object.hasOwnProperty.call(eventData, key)) {
-                if (IS_NULL_OR_EMPTY(eventData[key])) {
-                    return MessegePopup.ShowMessegePuppy(`all feilds are required, missing: ${key.split('_').join(' ')}`)
-                }
-            }
-        }
+//         for (const key in eventData) {
+//             if (Object.hasOwnProperty.call(eventData, key)) {
+//                 if (IS_NULL_OR_EMPTY(eventData[key])) {
+//                     return MessegePopup.ShowMessegePuppy(`all feilds are required, missing: ${key.split('_').join(' ')}`)
+//                 }
+//             }
+//         }
 
 
-        var result = await NetTool.POST_CLIENT(
-            '/add/reminder',
-            NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
-            JSON.stringify(eventData)
-        );
+//         var result = await NetTool.POST_CLIENT(
+//             '/add/reminder',
+//             NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
+//             JSON.stringify(eventData)
+//         );
 
-        const msg = (await result.json())['response'];
+//         const msg = (await result.json())['response'];
 
-        if (msg === 'success') {
-            RESET_INPUTS(reminderTitle, reminderDetails);
-        }
-        MessegePopup.ShowMessegePuppy(msg);
-    }
+//         if (msg === 'success') {
+//             RESET_INPUTS(reminderTitle, reminderDetails);
+//         }
+//         MessegePopup.ShowMessegePuppy(msg);
+//     }
 
-    addRemindersDiv.append(reminderTitle, reminderDetails, saveButton);
-    ModalExpertise.ShowModal('create event', addRemindersDiv, {
-        modalChildStylesClassList: []
-    });
-}
+//     addRemindersDiv.append(reminderTitle, reminderDetails, saveButton);
+//     ModalExpertise.ShowModal('create event', addRemindersDiv, {
+//         modalChildStylesClassList: []
+//     });
+// }
 
 
 async function LoadData() {
@@ -161,6 +161,16 @@ async function LoadData() {
         NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
         JSON.stringify(body))
     ).json()
+
+    var events = parishEvents.map(function (event) {
+        return {
+            'title': event['event_name'],
+            'start': event['date']
+        }
+    });
+
+    console.log(events);
+    calendar.addEventSource(events);
 
     parishReminders = await (await NetTool.POST_CLIENT('/get/reminders',
         NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,

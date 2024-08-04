@@ -6,61 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leader Management</title>
 
+
     <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/drawer.css">
 
-    <style>
-        .navbar {
-            background-color: #dfdfdf;
-            overflow: hidden;
-        }
-
-        .navbar a {
-            float: left;
-            display: block;
-            color: gray;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            background-color: gainsboro;
-        }
-
-        .navbar a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-
-        .add-leader-card {
-            display: none;
-            margin: 20px 0;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid black;
-        }
-
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
 </head>
 
 <body>
     <nav class="nav-bar flex-row align-end justify-space-between"
-        style="border: none; padding: 20px; background-color: rgb(231, 231, 231); position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
+        style="border: none; padding: 3px;  position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
         <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
         <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
             style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
@@ -68,11 +22,11 @@
 
     <!-- Drawer -->
     <div class="drawer flex-column">
-        <div class="full-width align-center justify-center flex-column" id="heading" style="margin-bottom: 10px;">
-            <p style="font-size: 16px; font-weight: 100; text-align: start;">
-                <span> PDM</span><br>
-                <span> Parish Data Manager</span>
-            </p>
+        <div class="full-width justify-center flex-column" id="heading" style="margin-bottom: 10px;">
+            <!-- <p style="font-size: 16px; font-weight: 100; text-align: start;"> -->
+            <!-- <span> PDM</span><br> -->
+            <!-- <span> Parish Data Manager</span> -->
+            <p id="profile-details" style="font-weight: 100;"></p>
         </div>
 
         <hr width="100%">
@@ -114,12 +68,17 @@
             </div>
 
             <div class="flex-row align-center">
+                <img class="icon" src="../../resources/icons/finance_white.png" alt="">
+                <a id="finance" href="finance.html">Finance</a>
+            </div>
+
+            <div class="flex-row align-center">
                 <img class="icon" src="../../resources/icons/help_white.png" alt="">
                 <a id="help">help</a>
             </div>
+
         </div>
     </div>
-
 
     <div class="container">
         <div class="navbar">
@@ -163,7 +122,7 @@
 
     <script type="module" src="../scripts/drawer.js"></script>
     <script type="module" src="../scripts/help.js"></script>
-
+    <script type="module" src="../scripts/titleSetting.js"></script>
     <script type="module" src="../scripts/office.js"></script>
 </body>
 

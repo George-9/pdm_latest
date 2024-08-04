@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pdm | registry</title>
+
+
+    <link rel="stylesheet" href="../../../css/index.css">
+    <link rel="stylesheet" href="../../../css/drawer.css">
+    <link rel="stylesheet" href="../../../css/modal.css">
+
+    <style>
+        button {
+            background-color: gainsboro;
+            color: gray;
+            width: fit-content;
+        }
+
+        .container {
+            background-color: rgb(243, 243, 243);
+        }
+
+        .container a {
+            background-color: white;
+            color: gray;
+            border: solid 1px gainsboro;
+            padding: 3px;
+            border-radius: 1px;
+            width: 250px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav-bar flex-row align-end justify-space-between"
+        style="border: none; padding: 3px;  position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
+        <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
+        <img id="drawer-toggle" class="s-display icon" src="../../../resources/icons/menu_black.png"
+            style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
+    </nav>
+
+    <!-- Drawer -->
+    <div class="drawer flex-column">
+        <div class="full-width justify-center flex-column" id="heading" style="margin-bottom: 10px;">
+            <p id="profile-details" style="font-weight: 100;"></p>
+        </div>
+
+        <hr width="100%">
+
+        <div class="flex-row align-center">
+            <img class="icon" src="../../../resources/icons/arrow_back_ios_white.png" alt="">
+            <a id="back" href="../registry">back</a>
+        </div>
+
+        <div class="flex-row align-center">
+            <img class="icon" src="../../../resources/icons/person_white.png" alt="">
+            <a id="register-member" href="member">Member</a>
+        </div>
+
+        <div class="flex-row align-center">
+            <img class="icon" src="../../../resources/icons/home_white.png" alt="">
+            <a id="register-outstation" href="pdm registry/register outstation">outstation</a>
+        </div>
+
+        <div class="flex-row align-center">
+            <img class="icon" src="../../../resources/icons/help_white.png" alt="">
+            <a id="help">help</a>
+        </div>
+    </div>
+
+    <div class="container flex-column align-center">
+
+        <div class="flex-row full-width align-center justify-end">
+            <img id="add-scc" src="../../../resources/icons/add_icon.png" class="icon"
+                title="add another Small Christian Community (SCC)" />
+            <button id="save-button">register</button>
+        </div>
+
+        <div class="flex-column align-center justify-center" style="padding: 20px; max-width: 80%;">
+
+            <div class="full-width flex-column align-start">
+
+                <h1 style="font-weight: 100; color:  black;">
+                    add outstations to your parish
+                </h1>
+
+                <div class="full-width flex-row justify-start">
+                    <input id="outstation-name" type="text" placeholder="outstation name">
+                </div>
+
+                <br>
+
+                <span>Hint:</span>
+                <span>remember you can add more SCC(s)</span>
+                <div class="flex-column" id="sccs-entry">
+                    <input type="text" placeholder="SCC name">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../nested/drawer.js"></script>
+    <script type="module" src="../../scripts/help.js"></script>
+    <script type="module" src="../../scripts/titleSetting.js"></script>
+    <script type="module" src="../../scripts/registerOutstation.js"></script>
+</body>
+
+</html>

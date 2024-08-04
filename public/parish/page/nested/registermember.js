@@ -1,19 +1,26 @@
-import { CREATE_ELEMENT } from "../../tools/dom.js";
-import { MessegePopup } from "../../tools/messegePopup.js";
-import { ModalExpertise } from "../../tools/modal.js";
-import { NetTool } from "../../tools/netTool.js";
-import { LocalStorageContract } from "../../tools/storage.js";
-import { IS_NULL_OR_EMPTY } from "../../tools/stringUtils.js";
+import { CREATE_ELEMENT, GET_EL_BY_ID } from "../../../tools/dom.js";
+import { MessegePopup } from "../../../tools/messegePopup.js";
+import { ModalExpertise } from "../../../tools/modal.js";
+import { NetTool } from "../../../tools/netTool.js";
+import { LocalStorageContract } from "../../../tools/storage.js";
+import { IS_NULL_OR_EMPTY } from "../../../tools/stringUtils.js";
 
-export function RegisterMember() {
+
+document.addEventListener('DOMContentLoaded', (ev) => {
+    ev.preventDefault();
+
+    PrepareDocumentForRegisterMember()
+})
+
+function PrepareDocumentForRegisterMember() {
     let selectedOutstation, selectedSCC;
 
     const registerDiv = CREATE_ELEMENT('div');
     registerDiv.style.height = '400px';
-    registerDiv.classList.add('full-width', 'flex-column', 'align-center', 'scroll-y');
+    registerDiv.classList.add('full-width', 'flex-column', 'align-center');
 
     const entryDiv = CREATE_ELEMENT('div');
-    entryDiv.classList.add('full-width', 'flex-column', 'align-center', 'scroll-y');
+    entryDiv.classList.add('full-width', 'flex-column', 'align-center');
 
     const progress = CREATE_ELEMENT('progress');
 
@@ -153,7 +160,6 @@ export function RegisterMember() {
                 ||
                 IS_NULL_OR_EMPTY(inputEntry.value) && inputEntry.id === 'home_address'
             ) {
-                console.log('empty field -> ', inputEntry.id);
                 return MessegePopup.ShowMessegePuppy('all basic fields must be filled, name to home address');
             }
             else if (IS_NULL_OR_EMPTY(inputEntry.value)) {
@@ -178,9 +184,7 @@ export function RegisterMember() {
         window.location.reload()
     }
 
-    ModalExpertise.ShowModal('register member', registerDiv, {
-        modalChildStylesClassList: []
-    })
+    GET_EL_BY_ID('main-div').appendChild(registerDiv)
 
     getAndSetOutstations().then(() => {
         registerDiv.removeChild(progress);

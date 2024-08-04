@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pdm | admin</title>
+
+    <!-- AgDataGrid -->
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/drawer.css">
+
+    <style>
+        .other-btn {
+            width: 100px;
+            background-color: royalblue;
+            color: white;
+            padding: 10px;
+            border-radius: 0px;
+            border: 1px solid;
+        }
+
+        .padded-div {
+            padding: 10px;
+            margin: 5px;
+        }
+
+        :root {
+            --fc-small-font-size: .85em;
+            --fc-page-bg-color: #fff;
+            --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
+            --fc-neutral-text-color: #808080;
+            --fc-border-color: #ddd;
+
+            --fc-button-text-color: #fff;
+            --fc-button-bg-color: #2C3E50;
+            --fc-button-border-color: #2C3E50;
+            --fc-button-hover-bg-color: #1e2b37;
+            --fc-button-hover-border-color: #1a252f;
+            --fc-button-active-bg-color: #1a252f;
+            --fc-button-active-border-color: #151e27;
+
+            --fc-event-bg-color: #3788d8;
+            --fc-event-border-color: #3788d8;
+            --fc-event-text-color: #fff;
+            --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
+
+            --fc-more-link-bg-color: #d0d0d0;
+            --fc-more-link-text-color: inherit;
+
+            --fc-event-resizer-thickness: 8px;
+            --fc-event-resizer-dot-total-width: 8px;
+            --fc-event-resizer-dot-border-width: 1px;
+
+            --fc-non-business-color: rgba(215, 215, 215, 0.3);
+            --fc-bg-event-color: rgb(143, 223, 130);
+            --fc-bg-event-opacity: 0.3;
+            --fc-highlight-color: rgba(188, 232, 241, 0.3);
+            --fc-today-bg-color: rgba(255, 220, 40, 0.15);
+            --fc-now-indicator-color: red;
+        }
+
+        .fc .fc-col-header-cell-cushion {
+            /* needs to be same precedence */
+            padding-top: 1px;
+            /* an override! */
+            padding-bottom: 1px;
+            /* an override! */
+        }
+
+        #calendar a,
+        table,
+        tbody,
+        td {
+            background-color: transparent;
+            color: royalblue;
+            padding: 3px;
+        }
+
+        .fc {
+            background-color: rgb(162, 226, 255);
+            height: 500px;
+            width: 90%;
+            color: #1e2b37;
+        }
+
+        .fc-event {
+            background-color: #151e27;
+            color: #1a252f;
+        }
+
+        .fc .fc-button {
+            max-width: 80px;
+            margin: 3px;
+            margin-left: 10px;
+        }
+
+        /* 
+        .fc .fc-daygrid-day-frame {
+            padding: 10px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: row;
+        } */
+    </style>
+
+</head>
+
+<body>
+
+    <nav class="nav-bar flex-row align-end justify-space-between"
+        style="border: none; padding: 3px;  position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
+        <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
+        <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
+            style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
+    </nav>
+
+    <!-- Drawer -->
+    <div class="drawer flex-column align-end full-width">
+        <div class="flex-row align-center justify-start full-width">
+            <img src="../../resources/icons/arrow_back_ios_white.png" alt="back" class="icon">
+            <a href="pdm">back</a>
+        </div>
+
+        <div class="flex-row align-center justify-start full-width">
+            <img src="../../resources/icons/offering_white.png" alt="back" class="icon">
+            <a href="pdm finance/offering">Offering</a>
+        </div>
+
+        <div class="flex-row align-center justify-start full-width">
+            <img src="../../resources/icons/tithe_cion_white.png" alt="back" class="icon">
+            <a href="pdm finance/tithe">Tithe</a>
+        </div>
+    </div>
+
+    <!-- Main Body -->
+    <div class="container" style="position: fixed; top: 30px;"></div>
+
+    <script type="module" src="../scripts/drawer.js"></script>
+</body>
+
+</html>
