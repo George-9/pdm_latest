@@ -342,7 +342,7 @@ function createEditableTable(obj) {
     // Create the table element
     const table = document.createElement('table');
     table.style.borderCollapse = 'collapse';
-    table.style.width = '40%';
+    table.style.width = '80%';
     table.style.margin = '20px 0';
 
     // Create the table heading

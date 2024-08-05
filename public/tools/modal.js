@@ -23,7 +23,6 @@ export class ModalExpertise {
             ModalExpertise.onModalDismiss = onDisMiss;
         }
 
-        view.style.paddingLeft = '5px';
         view.classList.add('flex-col', 'scroll-y', 'full-width', 'full-height')
 
         const modal = CREATE_ELEMENT('div');
@@ -36,11 +35,15 @@ export class ModalExpertise {
             }
         }
 
-
         const modalHeader = CREATE_ELEMENT('div');
         modalHeader.classList.add('full-width', 'flex-row', 'align-center', 'justify-space-between');
         modalHeader.style.marginBottom = '5px';
+        modalHeader.style.paddingRight = '15px';
         modalHeader.style.backgroundColor = headingColor ?? 'royalblue';
+
+        const actionsDiv = CREATE_ELEMENT('div');
+        actionsDiv.style.flex = '2'
+        actionsDiv.classList.add('flex-row', 'align-center', 'justify-space-around');
 
         /**
          * Title for main action invoked for modal
@@ -48,9 +51,10 @@ export class ModalExpertise {
          * ```js
          * ModalExpert.ShowModal('OpenCamera', ...)
          * ```
-         */
+        */
         const modalTitleView = CREATE_ELEMENT('h1');
         modalTitleView.style.fontWeight = '300';
+        modalTitleView.style.flex = '13'
         modalTitleView.style.paddingLeft = '10px';
         modalTitleView.style.paddingRight = '10px';
         modalTitleView.style.color = titleColor ?? 'white';
@@ -58,31 +62,34 @@ export class ModalExpertise {
 
         /**
          * make resusable
-         */
+        */
         const closeElement = CREATE_ELEMENT('h3');
         closeElement.innerText = 'X';
-        closeElement.classList.add('s-display');
+        closeElement.title = 'close';
         closeElement.style.cursor = 'pointer';
-        closeElement.style.color = 'white';
+        closeElement.style.color = 'black';
         closeElement.style.padding = '5px';
         closeElement.style.fontSize = '20px';
-
-        /**
-         * fill modal top view (header)
-         */
-        modalHeader.append(modalTitleView, closeElement);
-        if (topButton) {
-            if (topButtonToolip) {
-                topButton.title = topButtonToolip;
-            }
-            modalHeader.insertBefore(topButton, closeElement);
-        }
-
 
         closeElement.onclick = (ev) => {
             ev.preventDefault();
             ModalExpertise.HideModal();
         }
+
+
+
+        /**
+         * fill modal top view (header)
+         */
+        actionsDiv.appendChild(closeElement);
+        modalHeader.append(modalTitleView, actionsDiv);
+        if (topButton) {
+            if (topButtonToolip) {
+                topButton.title = topButtonToolip;
+            }
+            actionsDiv.insertBefore(topButton, closeElement);
+        }
+
 
         const modalChild = CREATE_ELEMENT('div');
         modalChild.classList.add('modal-child');

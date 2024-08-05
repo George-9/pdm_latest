@@ -7,7 +7,7 @@ import { IS_NULL_OR_EMPTY } from "../../tools/stringUtils.js";
 import { RegisterMember } from "./registerMemberAction.js";
 
 const parishDetails = LocalStorageContract.STORED_PARISH_CREDENTIALS();
-let parishEvents, parishReminders, calendar;
+let parishEvents, calendar;
 
 document.addEventListener('DOMContentLoaded', (ev) => {
     ev.preventDefault();
@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', (ev) => {
 
 
 const parishEventsDiv = GET_EL_BY_ID('parish-events');
-const parishRemindersDiv = GET_EL_BY_ID('parish-reminders');
 
 async function Main() {
     LoadData().then(async () => await DisplayProfileDetails());
@@ -40,10 +39,10 @@ async function Main() {
         await DisplayEvents()
     }
 
-    GET_EL_BY_ID('reminders-btn').onclick = async (ev) => {
-        ev.preventDefault();
-        await DisplayReminders()
-    }
+    // GET_EL_BY_ID('reminders-btn').onclick = async (ev) => {
+    //     ev.preventDefault();
+    //     await DisplayReminders()
+    // }
     GET_EL_BY_ID('register-member').onclick = RegisterMember
 }
 
@@ -169,13 +168,13 @@ async function LoadData() {
         }
     });
 
-    console.log(events);
+    // console.log(events);
     calendar.addEventSource(events);
 
-    parishReminders = await (await NetTool.POST_CLIENT('/get/reminders',
-        NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
-        JSON.stringify(body))
-    ).json()
+    // parishReminders = await (await NetTool.POST_CLIENT('/get/reminders',
+    //     NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
+    //     JSON.stringify(body))
+    // ).json()
 }
 
 
@@ -219,38 +218,38 @@ async function DisplayEvents() {
     }
 }
 
-async function DisplayReminders() {
-    if (!parishReminders || parishReminders.length < 1) {
-        const notifyNoReminders = CREATE_ELEMENT('p');
-        notifyNoReminders.innerText = 'no saved events'
+// async function DisplayReminders() {
+//     if (!parishReminders || parishReminders.length < 1) {
+//         const notifyNoReminders = CREATE_ELEMENT('p');
+//         notifyNoReminders.innerText = 'no saved events'
 
-        parishRemindersDiv.appendChild(notifyNoReminders)
-    } else {
-        const parishRemindersListDiv = CREATE_ELEMENT('div');
+//         parishRemindersDiv.appendChild(notifyNoReminders)
+//     } else {
+//         const parishRemindersListDiv = CREATE_ELEMENT('div');
 
-        for await (const parishReminder of parishReminders) {
-            const reminderCont = CREATE_ELEMENT('div');
-            reminderCont.style.borderBottom = '1px solid grey';
-            reminderCont.style.padding = '3px';
-            reminderCont.style.margin = '3px';
-            reminderCont.style.width = '100%';
+//         for await (const parishReminder of parishReminders) {
+//             const reminderCont = CREATE_ELEMENT('div');
+//             reminderCont.style.borderBottom = '1px solid grey';
+//             reminderCont.style.padding = '3px';
+//             reminderCont.style.margin = '3px';
+//             reminderCont.style.width = '100%';
 
-            const nameV = CREATE_ELEMENT('p');
-            const detailV = CREATE_ELEMENT('p');
+//             const nameV = CREATE_ELEMENT('p');
+//             const detailV = CREATE_ELEMENT('p');
 
-            nameV.innerText = parishReminder['reminder_title']
-            detailV.innerText = parishReminder['reminder_detail']
+//             nameV.innerText = parishReminder['reminder_title']
+//             detailV.innerText = parishReminder['reminder_detail']
 
-            reminderCont.append(nameV, detailV)
+//             reminderCont.append(nameV, detailV)
 
-            parishRemindersListDiv.appendChild(reminderCont);
-        }
+//             parishRemindersListDiv.appendChild(reminderCont);
+//         }
 
-        ModalExpertise.ShowModal('reminders', parishRemindersListDiv, {
-            modalChildStylesClassList: ['flex-column', 'align-center']
-        });
-    }
-}
+//         ModalExpertise.ShowModal('reminders', parishRemindersListDiv, {
+//             modalChildStylesClassList: ['flex-column', 'align-center']
+//         });
+//     }
+// }
 
 
 async function DisplayProfileDetails() {

@@ -150,8 +150,8 @@ NetTool.POST_CLIENT('/load/members',
                     'editable': true,
                 },
                 {
-                    'field': "HOME ADDRESS",
-                    'headerCheckboxSelection': true,
+                    'field': "HOME_ADDRESS",
+                    headerName: "HOME ADDRESS",
                     'editable': true,
                 },
                 {
@@ -180,6 +180,7 @@ NetTool.POST_CLIENT('/load/members',
             defaultColDef: {
                 filter: "agTextColumnFilter",
             },
+
             rowSelection: "multiple",
             suppressRowClickSelection: true,
             pagination: true,
@@ -199,15 +200,13 @@ NetTool.POST_CLIENT('/load/members',
                 pdfPrintButton.src = '../../resources/icons/pdf.png';
                 pdfPrintButton.style.paddingRight = '10px';
 
-
                 pdfPrintButton.onclick = (ev) => {
                     ev.preventDefault();
 
-                    console.log(Object.keys(memberDetails));
                     printJS({
                         printable: 'member-card',
                         type: 'html',
-                        header: `<h3>${memberDetails['NAME'].toUpperCase()}</h3>`,
+                        header: `<h3>${LocalStorageContract.STORED_PARISH_ID().toUpperCase()} PARISH</h3>`,
                         gridStyle: 'padding: 10px; width: 100%;'
                     })
                 }
@@ -222,15 +221,14 @@ NetTool.POST_CLIENT('/load/members',
 
                         const row = CREATE_ELEMENT('div')
                         row.classList.add('flex-row', 'align-center');
-                        row.style.padding = '5px'
-                        row.style.maxHeight = '50px'
-                        row.style.border = '1px solid grey'
-                        row.classList.add('flex-row')
+                        row.style.maxHeight = '50px';
+                        row.style.border = '1px solid grey';
+                        row.classList.add('flex-row');
 
                         const kView = CREATE_ELEMENT('h4');
-                        kView.style.fontWeight = '300'
+                        kView.style.fontWeight = '300';
                         const valueView = CREATE_ELEMENT('h4');
-                        valueView.style.fontWeight = '100'
+                        valueView.style.fontWeight = '100';
 
                         kView.innerText = key.split('_').join(' ');
                         valueView.innerText = ": " + value;
@@ -278,15 +276,15 @@ NetTool.POST_CLIENT('/load/members',
 function createTable(obj) {
     const div = CREATE_ELEMENT('div');
     div.id = 'member-card';
-    div.style.height = 'max-content';
-    div.style.paddingTop = '5px';
+    div.style.height = '500px';
+    div.style.paddingTop = '15px';
     div.classList.add('flex-column', 'full-height', 'full-width', 'align-center', 'justify-center', 'scroll-y')
 
     const table = document.createElement('table');
     table.style.textAlign = 'center';
     table.classList.add('full-width', 'full-height', 'scroll-y')
     table.style.borderCollapse = 'collapse';
-    table.style.width = '50%';
+    table.style.width = '70%';
     table.style.margin = '10px';
 
     const heading = document.createElement('caption');

@@ -82,9 +82,11 @@ export function RegisterMember() {
     genderPicker.id = 'gender';
     genderPicker.style.width = '200px';
     genderPicker.style.padding = '10px';
+
     const male = CREATE_ELEMENT('option');
     male.value = 'male';
     male.innerText = 'male';
+
     const female = CREATE_ELEMENT('option');
     female.innerText = 'female';
     female.value = 'female';
@@ -94,8 +96,11 @@ export function RegisterMember() {
     entryDiv.append(nameI, dob, genderPicker, homeAddressI)
     registerDiv.appendChild(progress);
 
+    addNewFieldButton.classList.add('reg-button');
+    submitButton.classList.add('reg-button');
     headerDiv.append(addNewFieldButton, submitButton);
     const memberDetails = {};
+
 
     let outstationsResult
     const getAndSetOutstations = async () => {
@@ -111,7 +116,7 @@ export function RegisterMember() {
 
             select.value = outstationData['name'];
             select.innerText = outstationData['name'];
-            outstationsPicker.appendChild(select)
+            outstationsPicker.appendChild(select);
         }
 
         // new HTMLSelectElement().onchange = (ev) => {
