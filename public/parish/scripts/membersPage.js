@@ -129,23 +129,6 @@ NetTool.POST_CLIENT('/load/members',
                     'cellEditor': 'datePicker'
                 },
                 { 'field': 'GENDER', cellEditor: "agSelectCellEditor" },
-                { 'field': 'FATHER', 'editable': true },
-                { 'field': 'MOTHER', 'editable': true },
-                {
-                    'field': 'GOD PARENT',
-                    'headerName': 'God Parent',
-                    'editable': true
-                },
-                { 'field': "home_address", 'editable': true },
-                { 'field': "TELEPHONE NUMBER", 'editable': true },
-                {
-                    'headerName': 'outstation',
-                    'editable': true,
-                    'field': "outstation",
-                    'editable': true,
-                    'filter': 'agSetColumnFilter'
-                },
-                { 'field': "scc", 'editable': true },
                 {
                     headerName: 'Actions',
                     field: 'actions',
@@ -167,23 +150,32 @@ NetTool.POST_CLIENT('/load/members',
             rowData: data,
 
             onRowDoubleClicked: (ev) => {
+                const memberDetails = ev.data;
+                const memberViewTable = createTable(memberDetails)
                 const div = CREATE_ELEMENT('div')
                 div.style.padding = '20px';
                 div.classList.add('flex-column', 'full-width', 'full-height')
 
-                const optionsDiv = CREATE_ELEMENT('div')
-                optionsDiv.classList.add('flex-row', 'align-center', 'justify-end');
-                optionsDiv.style.padding = '5px';
-
                 const pdfPrintButton = CREATE_ELEMENT('img');
                 pdfPrintButton.classList.add('icon')
                 pdfPrintButton.src = '../../resources/icons/pdf.png';
-                pdfPrintButton.style.padding = '10px';
+                pdfPrintButton.style.paddingRight = '10px';
 
-                optionsDiv.appendChild(pdfPrintButton);
 
-                for (const key in ev.data) {
-                    if (Object.hasOwnProperty.call(ev.data, key)) {
+                pdfPrintButton.onclick = (ev) => {
+                    ev.preventDefault();
+
+                    console.log(Object.keys(memberDetails));
+                    printJS({
+                        printable: 'member-card',
+                        type: 'html',
+                        header: `<h3>${memberDetails['NAME'].toUpperCase()}</h3>`,
+                        gridStyle: 'padding: 10px; width: 100%;'
+                    })
+                }
+
+                for (const key in memberDetails) {
+                    if (Object.hasOwnProperty.call(memberDetails, key)) {
                         if (key === '_id') {
                             continue
                         }
@@ -210,12 +202,11 @@ NetTool.POST_CLIENT('/load/members',
                     }
                 }
 
-                // div.appendChild(optionsDiv)
-                ModalExpertise.ShowModal((ev.data['NAME']).toUpperCase(), createTable(ev.data), {
+                ModalExpertise.ShowModal((memberDetails['NAME']).toUpperCase(), memberViewTable, {
                     'modalChildStylesClassList': [],
                     titleColor: 'black',
                     headingColor: '#efc9c9',
-                    TopButton: optionsDiv,
+                    TopButton: pdfPrintButton,
                     topButtonToolip: 'Print Member Card'
                 })
             },
@@ -248,6 +239,7 @@ NetTool.POST_CLIENT('/load/members',
 
 function createTable(obj) {
     const div = CREATE_ELEMENT('div');
+    div.id = 'member-card';
     div.style.height = 'max-content';
     div.style.paddingTop = '5px';
     div.classList.add('flex-column', 'full-height', 'full-width', 'align-center', 'justify-center', 'scroll-y')
@@ -272,16 +264,18 @@ function createTable(obj) {
         const row = document.createElement('tr');
 
         const keyCell = document.createElement('td');
-        keyCell.textContent = key;
+        keyCell.textContent = key.toUpperCase();
         keyCell.style.border = '1px solid black';
         keyCell.style.padding = '8px';
+        keyCell.style.textAlign = 'start';
         keyCell.style.fontWeight = 'bold';
         row.appendChild(keyCell);
 
         // Create the value cell
         const valueCell = document.createElement('td');
-        valueCell.textContent = value;
+        valueCell.textContent = value.toString().toUpperCase();
         valueCell.style.border = '1px solid black';
+        valueCell.style.textAlign = 'end';
         valueCell.style.padding = '8px';
         row.appendChild(valueCell);
 
@@ -289,30 +283,12 @@ function createTable(obj) {
         table.appendChild(row);
     }
     const nameHeading = CREATE_ELEMENT('h3');
-    nameHeading.innerText = obj['NAME'];
+    nameHeading.innerText = obj['NAME'].toUpperCase();
     nameHeading.style.padding = '10px';
     nameHeading.style.marginTop = '10px';
     nameHeading.style.fontWeight = '100';
 
-    const toolsRow = CREATE_ELEMENT('div');
-    toolsRow.classList.add('full-width', 'flex-row', 'scroll-y', 'align-center', 'justify-end')
-    const printButton = CREATE_ELEMENT('button');
-    printButton.innerText = 'export card';
-
-    printButton.onclick = (ev) => {
-        ev.preventDefault();
-
-        prinJS({
-            printable: obj,
-            type: 'json',
-            properties: Object.keys(obj),
-            header: `<h3>${obj['NAME']}</h3>`
-        })
-    }
-
-    // toolsRow.appendChild(printButton);
-
-    div.append(toolsRow, table)
+    div.append(table)
     return div;
 }
 
