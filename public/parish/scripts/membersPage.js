@@ -5,7 +5,7 @@ import { NetTool } from "../../tools/netTool.js";
 import { LocalStorageContract } from "../../tools/storage.js";
 import { RegisterMember } from "./registerMemberAction.js";
 
-var data, agGridApi, gridOptions;
+var membersList, agGridApi, gridOptions;
 
 function getDatePicker() {
     class Datepicker {
@@ -43,7 +43,17 @@ GET_EL_BY_ID('export-pdf').onclick = exportSelectedRowsToPDF;
 
 
 function exportSelectedRowsToPDF() {
-    const selectedRows = gridOptions.api.getSelectedRows();
+    const selectedRows = gridOptions.api.getSelectedRows().map(function (row) {
+        return row["NO"];
+    });
+
+    const actualPrintData = [];
+
+    for (let i = 0; i < membersList.length; i++) {
+        if (membersList.some(m => m['NO'] === selectedRows[i])) {
+            actualPrintData.push(membersList);
+        }
+    }
 
     if (!selectedRows || selectedRows.length < 1) {
         return MessegePopup.ShowMessegePuppy('you need to select some data in order to export to pdf')
@@ -54,8 +64,8 @@ function exportSelectedRowsToPDF() {
     }
 
     const doc = new jsPDF();
-    const columns = Object.keys(selectedRows[0]).map(key => ({ header: key, dataKey: key }));
-    const rows = selectedRows.map(row => Object.values(row));
+    const columns = Object.keys(actualPrintData[0]).map(key => ({ header: key, dataKey: key }));
+    const rows = actualPrintData.map(row => Object.values(row));
 
     doc.autoTable({
         head: [columns.map(col => col.header)],
@@ -111,14 +121,17 @@ NetTool.POST_CLIENT('/load/members',
     })
 ).then(response => response.json())
     .then(membersData => {
-        data = membersData;
+        membersList = membersData;
 
         gridOptions = {
             columnDefs: [
                 {
-                    'field': "NAME",
+                    'field': "NO",
                     'headerCheckboxSelection': true,
                     'checkboxSelection': true,
+                },
+                {
+                    'field': "NAME",
                     'editable': true,
                 },
                 {
@@ -127,6 +140,31 @@ NetTool.POST_CLIENT('/load/members',
                     'filter': 'agDateColumnFilter',
                     'editable': true,
                     'cellEditor': 'datePicker'
+                },
+                {
+                    'field': "FATHER",
+                    'editable': true,
+                },
+                {
+                    'field': "MOTHER",
+                    'editable': true,
+                },
+                {
+                    'field': "HOME ADDRESS",
+                    'headerCheckboxSelection': true,
+                    'editable': true,
+                },
+                {
+                    'field': "OUTSTATION",
+                    'headerCheckboxSelection': true,
+                    'checkboxSelection': true,
+                    'editable': true,
+                },
+                {
+                    'field': "SCC",
+                    'headerCheckboxSelection': true,
+                    'checkboxSelection': true,
+                    'editable': true,
                 },
                 { 'field': 'GENDER', cellEditor: "agSelectCellEditor" },
                 {
@@ -147,7 +185,7 @@ NetTool.POST_CLIENT('/load/members',
             pagination: true,
             paginationPageSize: 100,
             paginationPageSizeSelector: [10, 50, 100],
-            rowData: data,
+            rowData: membersList,
 
             onRowDoubleClicked: (ev) => {
                 const memberDetails = ev.data;
