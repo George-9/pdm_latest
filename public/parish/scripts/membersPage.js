@@ -172,8 +172,8 @@ NetTool.POST_CLIENT('/load/members',
                 div.classList.add('flex-column', 'full-width', 'full-height')
 
                 const optionsDiv = CREATE_ELEMENT('div')
-                optionsDiv.classList.add('flex-row', 'full-width', 'align-center', 'justify-end');
-                optionsDiv.style.padding = '10px';
+                optionsDiv.classList.add('flex-row', 'align-center', 'justify-end');
+                optionsDiv.style.padding = '5px';
 
                 const pdfPrintButton = CREATE_ELEMENT('img');
                 pdfPrintButton.classList.add('icon')
@@ -210,9 +210,13 @@ NetTool.POST_CLIENT('/load/members',
                     }
                 }
 
-                div.appendChild(optionsDiv)
-                ModalExpertise.ShowModal(ev.data['NAME'], createTable(ev.data), {
-                    'modalChildStylesClassList': []
+                // div.appendChild(optionsDiv)
+                ModalExpertise.ShowModal((ev.data['NAME']).toUpperCase(), createTable(ev.data), {
+                    'modalChildStylesClassList': [],
+                    titleColor: 'black',
+                    headingColor: '#efc9c9',
+                    TopButton: optionsDiv,
+                    topButtonToolip: 'Print Member Card'
                 })
             },
             onRowEditingStarted: (params) => {
@@ -306,7 +310,7 @@ function createTable(obj) {
         })
     }
 
-    toolsRow.appendChild(printButton);
+    // toolsRow.appendChild(printButton);
 
     div.append(toolsRow, table)
     return div;

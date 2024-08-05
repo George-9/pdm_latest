@@ -337,17 +337,18 @@ document.addEventListener('DOMContentLoaded', (ev) => {
 function createEditableTable(obj) {
     // Create the parent div
     const parentDiv = document.createElement('div');
-    parentDiv.style.backgroundColor = 'gainsboro'
+    // parentDiv.style.backgroundColor = 'gainsboro'
 
     // Create the table element
     const table = document.createElement('table');
     table.style.borderCollapse = 'collapse';
-    table.style.width = '100%';
+    table.style.width = '40%';
     table.style.margin = '20px 0';
 
     // Create the table heading
     const heading = document.createElement('caption');
     heading.textContent = `${obj['name']}`;
+    heading.style.padding = '10px';
     heading.style.fontWeight = 'bold';
     heading.style.marginBottom = '10px';
     table.appendChild(heading);

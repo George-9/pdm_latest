@@ -6,7 +6,15 @@ export class ModalExpertise {
 
     static onModalDismiss
 
-    static ShowModal(modalTitle, view, { modalChildStylesClassList, onDisMiss, onClickModalChild, TopButton }) {
+    static ShowModal(modalTitle, view, {
+        modalChildStylesClassList,
+        onDisMiss,
+        onClickModalChild,
+        titleColor,
+        headingColor,
+        TopButton: topButton,
+        topButtonToolip,
+    }) {
         if (!view) {
             return alert('modal requested without view');
         }
@@ -32,7 +40,7 @@ export class ModalExpertise {
         const modalHeader = CREATE_ELEMENT('div');
         modalHeader.classList.add('full-width', 'flex-row', 'align-center', 'justify-space-between');
         modalHeader.style.marginBottom = '5px';
-        modalHeader.style.backgroundColor = 'royalblue'
+        modalHeader.style.backgroundColor = headingColor ?? 'royalblue';
 
         /**
          * Title for main action invoked for modal
@@ -45,7 +53,7 @@ export class ModalExpertise {
         modalTitleView.style.fontWeight = '300';
         modalTitleView.style.paddingLeft = '10px';
         modalTitleView.style.paddingRight = '10px';
-        modalTitleView.style.color = 'white';
+        modalTitleView.style.color = titleColor ?? 'white';
         modalTitleView.innerText = modalTitle;
 
         /**
@@ -63,6 +71,12 @@ export class ModalExpertise {
          * fill modal top view (header)
          */
         modalHeader.append(modalTitleView, closeElement);
+        if (topButton) {
+            if (topButtonToolip) {
+                topButton.title = topButtonToolip;
+            }
+            modalHeader.insertBefore(topButton, closeElement);
+        }
 
 
         closeElement.onclick = (ev) => {
