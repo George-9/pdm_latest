@@ -264,32 +264,28 @@ async function DisplayProfileDetails() {
         notifyEvents.innerText = (parishEvents.length + ' coming up event' + (() => parishEvents.length > 1 ? ' s' : '')());
         parishEventsDiv.appendChild(notifyEvents);
     }
-
-    await LoadAndShowRemindersCount()
 }
 
 
 
-async function LoadAndShowRemindersCount() {
-    const parishRemindersDiv = GET_EL_BY_ID('parish-reminders');
-    const body = { 'parish_id': parishDetails['id'] };
+// async function LoadAndShowRemindersCount() {
+//     const body = { 'parish_id': parishDetails['id'] };
 
-    const parishReminders = await (await NetTool.POST_CLIENT('/get/reminders',
-        NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
-        JSON.stringify(body))
-    ).json()
+//     const parishReminders = await (await NetTool.POST_CLIENT('/get/reminders',
+//         NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
+//         JSON.stringify(body))
+//     ).json()
 
 
-    const notifyReminders = CREATE_ELEMENT('span');
-    if (!parishReminders || parishReminders.length < 1) {
-        notifyReminders.innerText = 'no saved reminders'
+//     const notifyReminders = CREATE_ELEMENT('span');
+//     if (!parishReminders || parishReminders.length < 1) {
+//         notifyReminders.innerText = 'no saved reminders'
 
-        parishRemindersDiv.appendChild(notifyReminders);
-    } else {
-        notifyReminders.innerText = (parishReminders.length + ' reminder' + (() => parishReminders.length > 1 ? ' s' : '')());
-        parishRemindersDiv.appendChild(notifyReminders);
-    }
-}
+//         parishRemindersDiv.appendChild(notifyReminders);
+//     } else {
+//         notifyReminders.innerText = (parishReminders.length + ' reminder' + (() => parishReminders.length > 1 ? ' s' : '')());
+//     }
+// }
 
 
 // async function DisplayMembers() {

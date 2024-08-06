@@ -1,3 +1,4 @@
+import { GET_EL_BY_ID } from "../../tools/dom.js";
 import { MessegePopup } from "../../tools/messegePopup.js";
 import { NetTool } from "../../tools/netTool.js";
 import { LocalStorageContract } from "../../tools/storage.js";
@@ -7,9 +8,11 @@ document.getElementById('add-icon').addEventListener('click', function () {
     if (addLeaderCard.style.display === 'none' || addLeaderCard.style.display === '') {
         addLeaderCard.style.display = 'block';
         document.getElementById('add-icon').innerText = 'Close'
+        GET_EL_BY_ID('main-div').style.display = 'none'
     } else {
         addLeaderCard.style.display = 'none';
         document.getElementById('add-icon').innerText = 'Add Leader'
+        GET_EL_BY_ID('main-div').style.display = 'block'
     }
 });
 

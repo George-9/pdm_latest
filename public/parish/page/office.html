@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="../../css/index.css">
     <link rel="stylesheet" href="../../css/drawer.css">
+    <!-- <link rel="stylesheet" href="../../css/modal.css"> -->
 
 </head>
 
@@ -81,25 +82,32 @@
     </div>
 
     <div class="container">
-        <div class="navbar">
-            <a href="#" id="add-icon">Add Leader</a>
+        <div class="flex-row full-width align-center justify-end">
+            <a href="#" id="add-icon">Add Leader </a>
         </div>
 
-        <div class="add-leader-card" id="add-leader-card">
-            <h3>Add Leader</h3>
-            <label for="leader-name">Leader Name:</label>
-            <input type="text" id="leader-name" name="leader-name"><br><br>
-            <label for="leader-position">Position:</label>
-            <select type="text" id="leader-position" name="leader-position">
-                <option value="Moderator">Moderator</option>
-                <option value="Vice Moderator">Vice Moderator</option>
-                <option value="Secretary">Secretary</option>
-                <option value="Vice Secretary">Vice Secretary</option>
-                <option value="Treasurer">Treasurer</option>
-            </select>
+        <div id="add-leader-card"
+            style="display: none; box-shadow: 1px 1px 1px 2px gray; padding: 3px; border-radius: 3px; padding: 15px;">
 
-            <br><br>
-            <button id="submit-leader">Submit</button>
+            <h3>Add Leader</h3>
+            <hr>
+
+            <label for="leader-name">Name:</label>
+            <input type="text" id="leader-name" name="leader-name"><br><br>
+            <div class="flex-row">
+                <label for="leader-position">Position:</label>
+
+                <select type="text" id="leader-position" name="leader-position" style="width: 200px;">
+                    <option value="Moderator">Moderator</option>
+                    <option value="Vice Moderator">Vice Moderator</option>
+                    <option value="Secretary">Secretary</option>
+                    <option value="Vice Secretary">Vice Secretary</option>
+                    <option value="Treasurer">Treasurer</option>
+                </select>
+            </div>
+            <div class="flex-column" style="padding: 15px; margin-top: 10px;">
+                <button id="submit-leader" style="border-radius: 2px; padding: 10px;">Submit</button>
+            </div>
         </div>
 
         <div id="main-div">
