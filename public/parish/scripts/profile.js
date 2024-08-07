@@ -186,10 +186,32 @@ async function DisplayEvents() {
         parishEventsDiv.appendChild(notifyNoEvents)
     } else {
         const parishEventsListDiv = CREATE_ELEMENT('div');
+        parishEventsDiv.style.borderBottom = '1px solid grey';
+        parishEventsDiv.style.padding = '3px';
 
         for await (const parishEvent of parishEvents) {
+            const deleteButton = CREATE_ELEMENT('button');
+            deleteButton.innerText = 'delete';
+            deleteButton.classList.add('reg-btn');
+
+            deleteButton.onclick = async (ev) => {
+                ev.preventDefault();
+                const deleted = await (await NetTool.POST_CLIENT('/delete/event',
+                    NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
+                    JSON.stringify({
+                        'parish_id': LocalStorageContract.STORED_PARISH_ID(),
+                        '_id': parishEvent['_id']
+                    }))).json()
+
+                MessegePopup.ShowMessegePuppy(deleted['response']);
+                if (deleted['response'] === 'success') {
+                    window.location.reload()
+                }
+                parishEventsDiv.remove(GET_EL_BY_ID(parishEvent['_id']));
+            }
+
             const eventCont = CREATE_ELEMENT('div');
-            eventCont.style.borderBottom = '1px solid grey';
+            eventCont.id = parishEvent['_id'];
             eventCont.style.padding = '3px';
             eventCont.style.margin = '3px';
             eventCont.style.width = '100%';
@@ -209,11 +231,13 @@ async function DisplayEvents() {
 
             eventCont.append(dateV, nameV, detailV)
 
-            parishEventsListDiv.appendChild(eventCont);
+            parishEventsListDiv.append(eventCont, deleteButton);
         }
 
         ModalExpertise.ShowModal('events', parishEventsListDiv, {
-            modalChildStylesClassList: ['flex-column', 'align-center']
+            modalChildStylesClassList: ['flex-column', 'align-center'],
+            'headingColor': '#a1a1a3',
+            'titleColor': darkBlue
         });
     }
 }

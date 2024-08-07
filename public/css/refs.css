@@ -106,9 +106,14 @@
     background-color: transparent;
 }
 
-.reg-button {
+.reg-btn {
     color: white;
     background-color: #2f1e4b;
+    width: 120px;
+    padding: 12px;
+    background: royalblue;
+    color: white;
     min-width: 200px;
     width: 200px;
+    border: none;
 }

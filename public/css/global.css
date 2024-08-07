@@ -20,6 +20,12 @@ nav a {
 }
 
 
+
+select {
+    margin: 5px;
+}
+
+
 input {
     margin: 5px;
     min-width: '200px';
@@ -68,4 +74,11 @@ button {
 
 button:hover {
     opacity: .8;
+}
+
+table,
+th,
+thead tbody,
+tr {
+    border: 1px solid grey;
 }

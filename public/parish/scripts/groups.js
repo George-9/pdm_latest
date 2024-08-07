@@ -102,22 +102,59 @@ document.addEventListener('DOMContentLoaded', (ev) => {
 //     return div;
 // }
 
-function createAgeTable(obj) {
+function createAgeTable(groupDetails) {
     // Create the parent div
     const parentDiv = document.createElement('div');
-    parentDiv.classList.add('flex-row', 'full-width', 'align-center', 'justify-center')
+    parentDiv.classList.add('flex-column', 'align-center', 'justify-center')
+    // parentDiv.style.border = 'solid 1px grey';
+    parentDiv.style.padding = '5px';
+    // parentDiv.style.backgroundColor = '';
+    parentDiv.style.margin = '5px';
+
+    const actionsRow = CREATE_ELEMENT('div');
+    actionsRow.classList.add('flex-row', 'align-center', 'justify-end')
+
+    const viewLeadersButton = CREATE_ELEMENT('button');
+    viewLeadersButton.innerText = 'Leaders';
+    viewLeadersButton.classList.add('reg-btn');
+
+    const viewMembersButton = CREATE_ELEMENT('button');
+    viewMembersButton.innerText = 'Members';
+    viewMembersButton.classList.add('reg-btn');
+
+    viewMembersButton.onclick = async (ev) => {
+        ev.preventDefault();
+        console.log(groupDetails);
+
+        if (!groupDetails['min_age'] || !groupDetails['max_age']) {
+            return;
+        }
+
+        const membersRange = await (await NetTool.POST_CLIENT('/parish/search/group/members/by/age',
+            NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
+            JSON.stringify({
+                'parish_id': LocalStorageContract.STORED_PARISH_ID(),
+                'min_age': groupDetails['min_age'],
+                'max_age': groupDetails['max_age']
+            })
+        )).json()
+
+        console.log(membersRange);
+    }
+
+    actionsRow.append(viewLeadersButton, viewMembersButton);
 
     // Create the table element
     const table = document.createElement('table');
     table.style.borderCollapse = 'collapse';
-    table.style.color = 'white';
-    table.style.backgroundColor = '#b1a896';
+    table.style.color = '#5b5b5b';
+    table.style.backgroundColor = 'rgb(255 188 182)';
     table.style.width = '50%';
     table.style.margin = '20px 0';
 
     // Create the table heading
     const heading = document.createElement('caption');
-    heading.textContent = `${obj.name}`;
+    heading.textContent = `${groupDetails.name}`;
     heading.style.fontSize = '20px';
     heading.style.color = 'grey';
     heading.style.textAlign = 'start';
@@ -146,11 +183,11 @@ function createAgeTable(obj) {
     }
 
     // Add rows for min_age and max_age
-    addRow('min age', obj.min_age);
-    addRow('max age', obj.max_age);
+    addRow('min age', groupDetails.min_age);
+    addRow('max age', groupDetails.max_age);
 
     // Append the table to the parent div
-    parentDiv.appendChild(table);
+    parentDiv.append(table, actionsRow);
 
     // Return the parent div
     return parentDiv;

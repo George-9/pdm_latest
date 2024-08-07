@@ -96,8 +96,8 @@ export function RegisterMember() {
     entryDiv.append(nameI, dob, genderPicker, homeAddressI)
     registerDiv.appendChild(progress);
 
-    addNewFieldButton.classList.add('reg-button');
-    submitButton.classList.add('reg-button');
+    addNewFieldButton.classList.add('reg-btn');
+    submitButton.classList.add('reg-btn');
     headerDiv.append(addNewFieldButton, submitButton);
     const memberDetails = {};
 
@@ -185,7 +185,7 @@ export function RegisterMember() {
 
     ModalExpertise.ShowModal('register member', registerDiv, {
         modalChildStylesClassList: []
-    })
+    });
 
     getAndSetOutstations().then(() => {
         registerDiv.removeChild(progress);

@@ -16,14 +16,12 @@ function PrepareDocumentForRegisterMember() {
     let selectedOutstation, selectedSCC;
 
     const registerDiv = CREATE_ELEMENT('div');
-    registerDiv.style.height = '400px';
     registerDiv.classList.add('full-width', 'flex-column', 'align-center');
 
     const entryDiv = CREATE_ELEMENT('div');
     entryDiv.classList.add('full-width', 'flex-column', 'align-center');
 
     const progress = CREATE_ELEMENT('progress');
-
 
     const sccsSelect = CREATE_ELEMENT('select');
     sccsSelect.id = 'scc';
@@ -36,7 +34,7 @@ function PrepareDocumentForRegisterMember() {
     }
 
     const headerDiv = CREATE_ELEMENT('div');
-    headerDiv.classList.add('flex-row', 'full-width', 'align-end', 'justify-end');
+    headerDiv.classList.add('flex-row', 'align-end', 'justify-center');
 
     const addNewFieldButton = CREATE_ELEMENT('button');
     addNewFieldButton.classList.add('btn-normal')
@@ -58,8 +56,6 @@ function PrepareDocumentForRegisterMember() {
 
         entryDiv.appendChild(newEntry);
     }
-
-
 
     const submitButton = CREATE_ELEMENT('button');
     submitButton.classList.add('btn-normal')
@@ -124,6 +120,8 @@ function PrepareDocumentForRegisterMember() {
         // new HTMLSelectElement().onchange = (ev) => {
 
         // }
+        addNewFieldButton.classList.add('reg-btn');
+        submitButton.classList.add('reg-btn');
         outstationsPicker.onchange = async (ev) => {
             sccsSelect.replaceChildren([]);
 
@@ -184,7 +182,10 @@ function PrepareDocumentForRegisterMember() {
         window.location.reload()
     }
 
-    GET_EL_BY_ID('main-div').appendChild(registerDiv)
+    registerDiv.style.backgroundColor = '#b79b9b';
+    registerDiv.style.padding = '10px';
+    registerDiv.style.borderRadius = '5px';
+    GET_EL_BY_ID('main-div').appendChild(registerDiv);
 
     getAndSetOutstations().then(() => {
         registerDiv.removeChild(progress);
