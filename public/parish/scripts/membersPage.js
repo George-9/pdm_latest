@@ -43,39 +43,55 @@ GET_EL_BY_ID('export-pdf').onclick = exportSelectedRowsToPDF;
 
 
 function exportSelectedRowsToPDF() {
-    const selectedRows = gridOptions.api.getSelectedRows().map(function (row) {
-        return row["NO"];
-    });
+    const data = gridOptions.api.getSelectedRows();
 
-    const actualPrintData = [];
-
-    for (let i = 0; i < membersList.length; i++) {
-        if (membersList.some(m => m['NO'] === selectedRows[i])) {
-            actualPrintData.push(membersList);
-        }
-    }
-
-    if (!selectedRows || selectedRows.length < 1) {
+    if (!data || data.length < 1) {
         return MessegePopup.ShowMessegePuppy('you need to select some data in order to export to pdf')
     }
 
-    for (let i = 0; i < selectedRows.length; i++) {
-        delete selectedRows[i]['_id'];
+    for (let i = 0; i < data.length; i++) {
+        delete data[i]['_id'];
     }
 
-    const doc = new jsPDF();
-    const columns = Object.keys(actualPrintData[0]).map(key => ({ header: key, dataKey: key }));
-    const rows = actualPrintData.map(row => Object.values(row));
+    // const doc = new jsPDF();
+    // const columns = Object.keys(selectedRows[0]).map(key => ({ header: key, dataKey: key }));
+    // const rows = selectedRows.map(row => Object.values(row));
 
-    doc.autoTable({
-        head: [columns.map(col => col.header)],
-        body: rows
+    // doc.autoTable({
+    //     head: [columns.map(col => col.header)],
+    //     body: rows
+    // });
+
+    // const getFileName = prompt('enter a name for the file under which to save and download the data');
+    // var fileName = !getFileName ? 'data.pdf' : getFileName + '.pdf'
+
+    // doc.save(fileName);
+    let table = '<table border="1"><tr>';
+    // Get all unique keys
+    const keys = [...new Set(data.flatMap(Object.keys))];
+    // Create table headers
+    keys.forEach(key => {
+        table += `<th>${key}</th>`;
     });
+    table += '</tr>';
 
-    const getFileName = prompt('enter a name for the file under which to save and download the data');
-    var fileName = !getFileName ? 'data.pdf' : getFileName + '.pdf'
+    // Create table rows
+    data.forEach(item => {
+        table += '<tr>';
+        keys.forEach(key => {
+            table += `<td>${item[key] || ''}</td>`;
+        });
+        table += '</tr>';
+    });
+    table += '</table>';
 
-    doc.save(fileName);
+    const printWindow = window.open('', '', 'height=400,width=600');
+    printWindow.document.write('<html><head><title>Print Data</title>');
+    printWindow.document.write('</head><body >');
+    printWindow.document.write(table);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
 }
 
 

@@ -43,7 +43,6 @@ async function Main() {
     //     ev.preventDefault();
     //     await DisplayReminders()
     // }
-    GET_EL_BY_ID('register-member').onclick = RegisterMember
 }
 
 
@@ -78,7 +77,6 @@ const InvokeAddEvent = (date) => {
                 }
             }
         }
-
 
         var result = await NetTool.POST_CLIENT(
             '/add/event',
@@ -237,7 +235,7 @@ async function DisplayEvents() {
         ModalExpertise.ShowModal('events', parishEventsListDiv, {
             modalChildStylesClassList: ['flex-column', 'align-center'],
             'headingColor': '#a1a1a3',
-            'titleColor': darkBlue
+            'titleColor': 'white'
         });
     }
 }

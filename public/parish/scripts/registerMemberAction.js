@@ -70,11 +70,6 @@ export function RegisterMember() {
     dob.id = 'dob'
     dob.setAttribute('type', 'date');
 
-    const outstationsPicker = CREATE_ELEMENT('select');
-    outstationsPicker.id = 'outstation'
-    outstationsPicker.style.width = '250px'
-    outstationsPicker.style.padding = '10px'
-
     const genderPicker = CREATE_ELEMENT('select');
     genderPicker.style.width = '250px'
     genderPicker.style.padding = '10px'
@@ -110,36 +105,9 @@ export function RegisterMember() {
                 'parish_id': LocalStorageContract.STORED_PARISH_CREDENTIALS()['id']
             })
         )).json();
-
-        for await (const outstationData of outstationsResult) {
-            const select = CREATE_ELEMENT('option');
-
-            select.value = outstationData['name'];
-            select.innerText = outstationData['name'];
-            outstationsPicker.appendChild(select);
-        }
-
         // new HTMLSelectElement().onchange = (ev) => {
 
         // }
-        outstationsPicker.onchange = async (ev) => {
-            sccsSelect.replaceChildren([]);
-
-            const matchOutstation = outstationsResult.filter((outstation) => {
-                selectedOutstation = outstation['name'];
-                return outstation.name === ev.target.value;
-            })[0];
-
-            const sccs = matchOutstation.smallchristiancommunities
-
-            for await (const scc of sccs) {
-                const sccOpt = CREATE_ELEMENT('option')
-                sccOpt.value = scc;
-                sccOpt.innerHTML = scc;
-
-                sccsSelect.appendChild(sccOpt);
-            }
-        }
     }
 
     submitButton.onclick = async (ev) => {
@@ -191,9 +159,47 @@ export function RegisterMember() {
         registerDiv.removeChild(progress);
 
         registerDiv.append(headerDiv, entryDiv);
-        registerDiv.appendChild(outstationsPicker)
+        registerDiv.appendChild(OutstationPicker(outstationsResult))
 
-        entryDiv.appendChild(outstationsPicker)
+        entryDiv.appendChild(OutstationPicker(outstationsResult))
         entryDiv.appendChild(sccsSelect)
     });
+}
+
+export function OutstationPicker(outstations) {
+    const outstationsPicker = CREATE_ELEMENT('select');
+    outstationsPicker.id = 'outstation'
+    outstationsPicker.style.width = '250px'
+    outstationsPicker.style.padding = '10px'
+
+    for (let i = 0; i < outstations.length; i++) {
+        let outstationData = outstations[i]
+        const select = CREATE_ELEMENT('option');
+
+        select.value = outstationData['name'];
+        select.innerText = outstationData['name'];
+        outstationsPicker.appendChild(select);
+    }
+
+    outstationsPicker.onchange = async (ev) => {
+        sccsSelect.replaceChildren([]);
+
+        const matchOutstation = outstationsResult.filter((outstation) => {
+            selectedOutstation = outstation['name'];
+            return outstation.name === ev.target.value;
+        })[0];
+
+        const sccs = matchOutstation.smallchristiancommunities
+
+        for (const j = 0; j < sccs.length; j++) {
+            let scc = sccs[j];
+            const sccOpt = CREATE_ELEMENT('option')
+            sccOpt.value = scc;
+            sccOpt.innerHTML = scc;
+
+            sccsSelect.appendChild(sccOpt);
+        }
+    }
+
+    return outstationsPicker;
 }

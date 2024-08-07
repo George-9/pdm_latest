@@ -102,7 +102,6 @@ window.onload = () => {
     }
 }
 
-
 async function addInputElement() {
     const outstationName = GEL_INPUT_EL_VALUE_BY_ID('outstation-name');
     if (IS_NULL_OR_EMPTY(outstationName)) {
