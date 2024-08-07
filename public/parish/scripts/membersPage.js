@@ -362,7 +362,7 @@ document.getElementById('export-excel').onclick = (ev) => {
     }
 
     const getFileName = prompt('enter a name for the file under which to save and download the data');
-    var fileName = !getFileName ? 'data.xlsx' : getFileName + '.xlsx'
+    var fileName = !getFileName ? 'data.csv' : getFileName + '.csv';
 
     const params = {
         fileName: fileName,
