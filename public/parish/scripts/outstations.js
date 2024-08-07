@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', (ev) => {
 
                 row.appendChild(msgPar)
                 mainDiv.appendChild(row)
+                mainDiv.appendChild(regi)
                 return;
             }
 
@@ -31,7 +32,6 @@ document.addEventListener('DOMContentLoaded', (ev) => {
                 const outstationView = createEditableTable(outstationData);
                 mainDiv.appendChild(outstationView);
             }
-            console.log('done');
         })
 })
 

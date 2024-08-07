@@ -115,7 +115,7 @@
 <body>
 
     <nav class="nav-bar flex-row align-end justify-space-between"
-        style="border: none; padding: 3px;  position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
+        style="border: none; padding: 3px;  position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box; background-color: gainsboro;">
         <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
         <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
             style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
@@ -139,8 +139,14 @@
         </div>
     </div>
 
-    <!-- Main Body -->
-    <div class="container" style="position: fixed; top: 30px;"></div>
+    <div class="container" style="position: fixed; top: 50px;">
+        <div class="flex-row align-center justify-end"
+            style="margin-top: 20px; padding: 10px; background-color: gainsboro; border-radius: 3px;">
+            <img src="../../../resources/icons/add_box.png" id="" title="add record" class="icon" alt="">
+        </div>
+
+        <div id="main-div"></div>
+    </div>
 
     <script type="module" src="../scripts/drawer.js"></script>
 </body>

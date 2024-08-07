@@ -126,4 +126,5 @@ async function addInputElement() {
     entry.value = newFieldName
 
     sccEntryTree.appendChild(entry)
+    return entry;
 }
