@@ -9,7 +9,7 @@ const updateOutstation = async (req, resp) => {
     console.log('details::', details);
 
     const parishId = details.parish_id;
-    const outstationId = details.id;
+    const outstationId = details.outstation_id;
 
     const updated = await ConnectedClient
         .db(parishId)
@@ -24,8 +24,6 @@ const updateOutstation = async (req, resp) => {
             },
         );
 
-
-    console.log(updated);
 
     let savedChanges = (updated.modifiedCount > 0 || updated.upsertedCount > 0)
 

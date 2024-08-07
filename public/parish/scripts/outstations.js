@@ -1,4 +1,5 @@
 import { CREATE_ELEMENT, GET_EL_BY_ID } from "../../tools/dom.js";
+import { MessegePopup } from "../../tools/messegePopup.js";
 import { NetTool } from "../../tools/netTool.js";
 import { LocalStorageContract } from "../../tools/storage.js";
 
@@ -423,9 +424,17 @@ function createEditableTable(obj) {
     // Create the save changes button
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Save Changes';
-    saveButton.onclick = () => {
+    saveButton.onclick = async () => {
         obj.smallchristiancommunities = Array.from(table.querySelectorAll('input')).map(input => input.value);
-        console.log('Updated smallchristiancommunities:', obj.smallchristiancommunities);
+        const response = await (await NetTool.POST_CLIENT('/update/outstation/',
+            NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
+            JSON.stringify({
+                parish_id: LocalStorageContract.STORED_PARISH_ID(),
+                outstation_id: obj['_id'],
+                sccs: obj.smallchristiancommunities
+            }))).json();
+
+        MessegePopup.ShowMessegePuppy(response['response']);
     };
 
     // Append the buttons to the buttons row

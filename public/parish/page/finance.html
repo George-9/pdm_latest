@@ -137,18 +137,27 @@
             <img src="../../resources/icons/tithe_cion_white.png" alt="back" class="icon">
             <a href="pdm finance/tithe">Tithe</a>
         </div>
+
+        <div class="flex-row align-center justify-start full-width">
+            <img src="../../resources/icons/tithe_cion_white.png" alt="back" class="icon">
+            <a href="#">Projects</a>
+        </div>
     </div>
 
     <div class="container" style="position: fixed; top: 50px;">
         <div class="flex-row align-center justify-end"
             style="margin-top: 20px; padding: 10px; background-color: gainsboro; border-radius: 3px;">
-            <img src="../../../resources/icons/add_box.png" id="" title="add record" class="icon" alt="">
+            <div class="flex-row align-center justify-space-between" id="add-offering-record" style="cursor: pointer;">
+                <img src="../../../resources/icons/add_box.png" title="add record" class="icon" alt="add record"
+                    style="padding-right: 5px;"> add record
+            </div>
         </div>
 
         <div id="main-div"></div>
     </div>
 
     <script type="module" src="../scripts/drawer.js"></script>
+    <script type="module" src="nested/addOfferingRecord.js"></script>
 </body>
 
 </html>
