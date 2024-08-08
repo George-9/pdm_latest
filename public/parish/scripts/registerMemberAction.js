@@ -166,7 +166,7 @@ export function RegisterMember() {
     });
 }
 
-export function OutstationPicker(outstations) {
+export function OutstationPicker(outstations, sccsSelect) {
     const outstationsPicker = CREATE_ELEMENT('select');
     outstationsPicker.id = 'outstation'
     outstationsPicker.style.width = '250px'
@@ -181,23 +181,26 @@ export function OutstationPicker(outstations) {
         outstationsPicker.appendChild(select);
     }
 
-    outstationsPicker.onchange = async (ev) => {
-        sccsSelect.replaceChildren([]);
+    if (sccsSelect) {
+        outstationsPicker.onchange = async (ev) => {
 
-        const matchOutstation = outstationsResult.filter((outstation) => {
-            selectedOutstation = outstation['name'];
-            return outstation.name === ev.target.value;
-        })[0];
+            sccsSelect.replaceChildren([]);
 
-        const sccs = matchOutstation.smallchristiancommunities
+            const matchOutstation = outstationsResult.filter((outstation) => {
+                selectedOutstation = outstation['name'];
+                return outstation.name === ev.target.value;
+            })[0];
 
-        for (const j = 0; j < sccs.length; j++) {
-            let scc = sccs[j];
-            const sccOpt = CREATE_ELEMENT('option')
-            sccOpt.value = scc;
-            sccOpt.innerHTML = scc;
+            const sccs = matchOutstation.smallchristiancommunities
 
-            sccsSelect.appendChild(sccOpt);
+            for (const j = 0; j < sccs.length; j++) {
+                let scc = sccs[j];
+                const sccOpt = CREATE_ELEMENT('option')
+                sccOpt.value = scc;
+                sccOpt.innerHTML = scc;
+
+                sccsSelect.appendChild(sccOpt);
+            }
         }
     }
 

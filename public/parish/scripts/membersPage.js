@@ -153,8 +153,8 @@ NetTool.POST_CLIENT('/load/members',
                 {
                     'field': "DOB",
                     'headerName': 'Date of Birth',
-                    'filter': 'agDateColumnFilter',
                     'editable': true,
+                    'filter': 'agDateColumnFilter',
                     'cellEditor': 'datePicker'
                 },
                 {
@@ -167,7 +167,7 @@ NetTool.POST_CLIENT('/load/members',
                 },
                 {
                     'field': "HOME_ADDRESS",
-                    headerName: "HOME ADDRESS",
+                    'headerName': "HOME ADDRESS",
                     'editable': true,
                 },
                 {
@@ -182,14 +182,17 @@ NetTool.POST_CLIENT('/load/members',
                     'checkboxSelection': true,
                     'editable': true,
                 },
-                { 'field': 'GENDER', cellEditor: "agSelectCellEditor" },
                 {
-                    headerName: 'Actions',
-                    field: 'actions',
-                    cellRenderer: actionCellRenderer,
-                    editable: false,
-                    sortable: false,
-                    filter: false
+                    'field': 'GENDER',
+                    'cellEditor': "agSelectCellEditor"
+                },
+                {
+                    'headerName': 'Actions',
+                    'field': 'actions',
+                    'cellRenderer': actionCellRenderer,
+                    'editable': false,
+                    'sortable': false,
+                    'filter': false
                 }
             ],
 

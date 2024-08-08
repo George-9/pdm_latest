@@ -9,6 +9,10 @@
     <!-- AgDataGrid -->
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css">
+
+    <!-- _________ -->
     <link rel="stylesheet" href="../../../css/index.css">
     <link rel="stylesheet" href="../../../css/drawer.css">
 
@@ -117,30 +121,55 @@
     <nav class="nav-bar flex-row align-end justify-space-between"
         style="border: none; padding: 3px;  position: fixed; top: 0px; margin-bottom: 20px; box-sizing: border-box;">
         <h3 class="s-display" style="color: royalblue; font-weight: 800;">PDM</h3>
-        <img id="drawer-toggle" class="s-display icon" src="../../resources/icons/menu_black.png"
+        <img id="drawer-toggle" class="s-display icon" src="../../../resources/icons/menu_black.png"
             style="margin-right: 20px; position: fixed; right: 1px;" alt="" />
     </nav>
 
     <!-- Drawer -->
-    <div class="drawer flex-column align-end full-width justify-space-between">
+    <div class="drawer flex-column align-end full-width">
         <div class="flex-row align-center justify-start full-width">
             <img src="../../../resources/icons/arrow_back_ios_white.png" alt="back" class="icon">
             <a href="../finance">back</a>
         </div>
 
-        <div>
+        <div class="flex-row align-center justify-start full-width">
+            <img src="../../../resources/icons/offering_white.png" alt="back" class="icon">
+            <a href="offering">offering</a>
+        </div>
+
+        <div class="flex-row align-center justify-start full-width">
+            <img src="../../../resources/icons/offering_white.png" alt="back" class="icon">
+            <a href="projects">projects</a>
+        </div>
+
+
+        <!-- <div>
             <p>Search year</p>
             <div class="flex-row align-center justify-start full-width" style="margin-bottom: 10px;">
                 <input type="date" style="width: 100px; padding: 8px;">
                 <img class="icon" src="../../../resources/icons/edit_white.png" alt="">
             </div>
-        </div>
+        </div> -->
     </div>
 
     <!-- Main Body -->
-    <div class="container" style="position: fixed; top: 30px;"></div>
+    <div class="container" style="position: fixed; top: 30px;">
+        <div class="flex-row align-center justify-end"
+            style="margin-top: 20px; padding: 10px; background-color: gainsboro; border-radius: 3px;">
+            <div class="flex-row align-center justify-space-between" id="add-tithe-record" style="cursor: pointer;">
+                <img src="../../../resources/icons/add_box.png" title="add record" class="icon" alt="add record"
+                    style="padding-right: 5px;">
+                add record
+            </div>
+        </div>
+
+        <div id="main-div">
+            <div id="myGrid" class="ag-theme-alpine" style="min-width: 360px; height: 500px;"></div>
+        </div>
+    </div>
 
     <script type="module" src="../../scripts/drawer.js"></script>
+    <script type="module" src="../nested/tithe.js"></script>
 </body>
 
 </html>

@@ -31,6 +31,12 @@ const { addGroupToParish } = require("./server/routes_callbacks/parish/addGroupT
 const { addParishLeader } = require("./server/routes_callbacks/parish/addParishLeaderCallback");
 const { getParishLeaders } = require("./server/routes_callbacks/parish/getParishLeaders");
 const { searchGroupMembersByAge } = require("./server/routes_callbacks/parish/searchGroupMembersByAge");
+const { addOfferingRecord } = require("./server/routes_callbacks/parish/addOfferingRecord");
+const { getAllOfferingRecords } = require("./server/routes_callbacks/parish/getAllOfferingRecords");
+const { getAllProjectsRecords } = require("./server/routes_callbacks/parish/getAllProjectsRecords");
+const { getAllTitheRecords } = require("./server/routes_callbacks/parish/getAllTitheRecords");
+const { searchMember } = require("./server/routes_callbacks/parish/searchMember");
+const { addTitheRecord } = require("./server/routes_callbacks/parish/addTitheRecord");
 
 try {
     app.get('/', homeCallback);
@@ -61,6 +67,12 @@ try {
     app.post('/add/parish/leader', addParishLeader);
     app.post('/get/parish/leaders', getParishLeaders);
     app.post('/parish/search/group/members/by/age', searchGroupMembersByAge);
+    app.post('/parish/add/offering/record', addOfferingRecord);
+    app.post('/parish/add/tithe/record', addTitheRecord);
+    app.post('/parish/offering/all/records', getAllOfferingRecords);
+    app.post('/parish/tithe/all/records', getAllTitheRecords);
+    app.post('/parish/projects/all/records', getAllProjectsRecords);
+    app.post('/parish/search/member', searchMember);
 } catch (error) {
     DebugUtils.PRINT(error);
 } finally {

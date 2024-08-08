@@ -118,3 +118,8 @@
     width: 200px;
     border: none;
 }
+
+#main-div {
+    padding: 20px;
+    overflow-y: scroll;
+}

@@ -6,11 +6,20 @@ class DBConstants {
     static SYS_ADMIN_DB_NAME = 'sys_admin'
     static SYS_ADMIN_COLLECTION = 'admins'
 
-    static REGISTERED_PARISHES_DB_NAME = 'registered_parishes'
-    static REGISTERED_PARISHES_COLLECTION = 'parishes'
+    static REGISTERED_PARISHES_DB_NAME = 'registered_parishes';
+    static REGISTERED_PARISHES_COLLECTION = 'parishes';
 
+    /**
+     * @deprecated
+     * @TODO remove
+    */
     static REMINDERS_COLLECTION = 'reminders';
+
     static EVENTS_COLLECTION = 'events';
+
+    static OFFERING_COLLECTION = 'offering';
+    static TITHE_COLLECTION = 'tithe';
+    static PROJECTS_COLLECTION = 'projects';
 
     /**
      * For storing basic parish details

@@ -4,7 +4,6 @@ import { ModalExpertise } from "../../tools/modal.js";
 import { NetTool } from "../../tools/netTool.js";
 import { LocalStorageContract } from "../../tools/storage.js";
 import { IS_NULL_OR_EMPTY } from "../../tools/stringUtils.js";
-import { RegisterMember } from "./registerMemberAction.js";
 
 const parishDetails = LocalStorageContract.STORED_PARISH_CREDENTIALS();
 let parishEvents, calendar;
@@ -178,10 +177,7 @@ async function LoadData() {
 
 async function DisplayEvents() {
     if (!parishEvents || parishEvents.length < 1) {
-        const notifyNoEvents = CREATE_ELEMENT('p');
-        notifyNoEvents.innerText = 'no saved events'
-
-        parishEventsDiv.appendChild(notifyNoEvents)
+        MessegePopup.ShowMessegePuppy('you don\'t have any saved events, yet')
     } else {
         const parishEventsListDiv = CREATE_ELEMENT('div');
         parishEventsDiv.style.borderBottom = '1px solid grey';
@@ -275,13 +271,10 @@ async function DisplayEvents() {
 
 
 async function DisplayProfileDetails() {
-    GET_EL_BY_ID('profile-details').innerText = 'Parish • ' + parishDetails['name'];
+    GET_EL_BY_ID('profile-details').innerText = parishDetails['name'];
 
-    const notifyEvents = CREATE_ELEMENT('span');
     if (!parishEvents || parishEvents.length < 1) {
-        notifyEvents.innerText = 'no saved events'
-
-        parishEventsDiv.appendChild(notifyEvents);
+        MessegePopup.ShowMessegePuppy('you don\'t have any saved events, yet')
     } else {
         notifyEvents.innerText = (parishEvents.length + ' coming up event' + (() => parishEvents.length > 1 ? ' s' : '')());
         parishEventsDiv.appendChild(notifyEvents);

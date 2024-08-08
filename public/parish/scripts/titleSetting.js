@@ -4,5 +4,5 @@ import { LocalStorageContract } from "../../tools/storage.js";
 document.addEventListener('DOMContentLoaded', DisplayProfileDetails)
 
 async function DisplayProfileDetails() {
-    GET_EL_BY_ID('profile-details').innerText = 'Parish • ' + LocalStorageContract.STORED_PARISH_CREDENTIALS()['name'];
+    GET_EL_BY_ID('profile-details').innerText = LocalStorageContract.STORED_PARISH_CREDENTIALS()['name'];
 }
