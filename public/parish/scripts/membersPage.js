@@ -209,7 +209,7 @@ NetTool.POST_CLIENT('/load/members',
 
             onRowDoubleClicked: (ev) => {
                 const memberDetails = ev.data;
-                const memberViewTable = createTable(memberDetails)
+                const memberViewTable = createMemberViewTable(memberDetails);
                 const div = CREATE_ELEMENT('div')
                 div.style.padding = '20px';
                 div.classList.add('flex-column', 'full-width', 'full-height')
@@ -256,13 +256,16 @@ NetTool.POST_CLIENT('/load/members',
                         div.appendChild(row);
                     }
                 }
+                const topRow = CREATE_ELEMENT('div');
+                topRow.classList.add('flex-row', 'align-center', 'justify-space-between');
+                topRow.append(pdfPrintButton, memberViewTable.button);
 
-                ModalExpertise.ShowModal((memberDetails['NAME']).toUpperCase(), memberViewTable, {
-                    'modalChildStylesClassList': [],
+                ModalExpertise.ShowModal((memberDetails['NAME']).toUpperCase(), memberViewTable.container, {
+                    'fullScreen': true,
+                    'modalChildStylesClassList': ['flex-column', 'scroll-y'],
                     titleColor: 'black',
                     headingColor: '#efc9c9',
-                    TopButton: pdfPrintButton,
-                    topButtonToolip: 'Print Member Card'
+                    TopButton: topRow
                 })
             },
             onRowEditingStarted: (params) => {
@@ -292,68 +295,201 @@ NetTool.POST_CLIENT('/load/members',
         // agGridApi.setGridOption('domLayout', 'print');
     });
 
-function createTable(obj) {
-    const div = CREATE_ELEMENT('div');
-    div.id = 'member-card';
-    div.style.height = '500px';
-    div.style.paddingTop = '15px';
-    div.classList.add('flex-column', 'full-height', 'full-width', 'align-center', 'justify-center', 'scroll-y')
+// function createTable(obj) {
+//     const div = CREATE_ELEMENT('div');
+//     div.id = 'member-card';
+//     div.style.height = '500px';
+//     div.style.paddingTop = '15px';
+//     div.classList.add('flex-column', 'full-height', 'full-width', 'align-center', 'justify-center', 'scroll-y')
+
+//     const table = document.createElement('table');
+//     table.style.textAlign = 'center';
+//     table.classList.add('full-width', 'full-height', 'scroll-y')
+//     table.style.borderCollapse = 'collapse';
+//     table.style.width = '70%';
+//     table.style.margin = '10px';
+
+//     const heading = document.createElement('caption');
+//     heading.style.fontWeight = 'bold';
+//     heading.style.marginBottom = '10px';
+//     table.appendChild(heading);
+
+//     for (const [key, value] of Object.entries(obj)) {
+//         if (key === '_id') {
+//             continue;
+//         }
+
+//         const row = document.createElement('tr');
+
+//         const keyCell = document.createElement('td');
+//         keyCell.textContent = key.toUpperCase();
+//         keyCell.style.border = '1px solid black';
+//         keyCell.style.padding = '8px';
+//         keyCell.style.textAlign = 'start';
+//         keyCell.style.fontWeight = 'bold';
+//         row.appendChild(keyCell);
+
+//         // Create the value cell
+//         const valueCell = document.createElement('td');
+//         valueCell.textContent = value.toString().toUpperCase();
+//         valueCell.style.border = '1px solid black';
+//         valueCell.style.textAlign = 'end';
+//         valueCell.style.padding = '8px';
+//         row.appendChild(valueCell);
+
+//         // Append the row to the table
+//         table.appendChild(row);
+//     }
+//     const nameHeading = CREATE_ELEMENT('h3');
+//     nameHeading.innerText = obj['NAME'].toUpperCase();
+//     nameHeading.style.padding = '10px';
+//     nameHeading.style.marginTop = '10px';
+//     nameHeading.style.fontWeight = '100';
+
+//     div.append(table)
+//     return div;
+// }
+
+
+
+// function createMemberViewTable(obj) {
+//     const container = document.createElement('div');
+//     container.classList.add('flex-column', 'full-width', 'jusify-center', 'align-center');
+//     container.style.height = '600px';
+//     const table = document.createElement('table');
+//     const tbody = document.createElement('tbody');
+
+//     for (const key in obj) {
+//         if (obj.hasOwnProperty(key)) {
+//             const row = document.createElement('tr');
+
+//             const keyCell = document.createElement('td');
+//             keyCell.textContent = key;
+//             row.appendChild(keyCell);
+
+//             const valueCell = document.createElement('td');
+//             const input = document.createElement('input');
+//             input.type = 'text';
+//             input.value = obj[key];
+//             input.name = key;
+//             valueCell.appendChild(input);
+//             row.appendChild(valueCell);
+
+//             tbody.appendChild(row);
+//         }
+//     }
+
+//     table.appendChild(tbody);
+//     container.appendChild(table);
+
+//     const button = document.createElement('button');
+//     button.textContent = 'Get Values';
+//     button.addEventListener('click', () => {
+//         const result = {};
+//         const inputs = container.querySelectorAll('input');
+//         inputs.forEach(input => {
+//             result[input.name] = input.value;
+//         });
+//         console.log(result);
+//     });
+
+//     container.appendChild(button);
+
+//     return container;
+// }
+
+
+function createMemberViewTable(obj) {
+    const container = document.createElement('div');
+    container.id = 'member-card'
+    container.style.backgroundColor = '#653039';
+    container.classList.add('full-width', 'flex-column', 'align-center', 'justify-center');
+    container.style.flexGrow = '1';
+    container.style.height = '900px';
+
 
     const table = document.createElement('table');
-    table.style.textAlign = 'center';
-    table.classList.add('full-width', 'full-height', 'scroll-y')
-    table.style.borderCollapse = 'collapse';
-    table.style.width = '70%';
-    table.style.margin = '10px';
+    table.style.marginTop = '200px';
+    table.style.borderColor = 'white';
+    const tbody = document.createElement('tbody');
 
-    const heading = document.createElement('caption');
-    heading.style.fontWeight = 'bold';
-    heading.style.marginBottom = '10px';
-    table.appendChild(heading);
-
-    for (const [key, value] of Object.entries(obj)) {
+    for (const key in obj) {
         if (key === '_id') {
             continue;
         }
 
-        const row = document.createElement('tr');
+        if (obj.hasOwnProperty(key)) {
+            const row = document.createElement('tr');
 
-        const keyCell = document.createElement('td');
-        keyCell.textContent = key.toUpperCase();
-        keyCell.style.border = '1px solid black';
-        keyCell.style.padding = '8px';
-        keyCell.style.textAlign = 'start';
-        keyCell.style.fontWeight = 'bold';
-        row.appendChild(keyCell);
+            const keyCell = document.createElement('td');
+            const keyInput = document.createElement('input');
+            keyInput.style.borderColor = '#ff859a';
+            keyInput.type = 'text';
+            keyInput.value = key;
+            keyInput.name = `key-${key}`;
+            keyInput.style.color = 'white';
+            keyInput.style.background = 'transparent';
 
-        // Create the value cell
-        const valueCell = document.createElement('td');
-        valueCell.textContent = value.toString().toUpperCase();
-        valueCell.style.border = '1px solid black';
-        valueCell.style.textAlign = 'end';
-        valueCell.style.padding = '8px';
-        row.appendChild(valueCell);
+            keyCell.appendChild(keyInput);
+            row.appendChild(keyCell);
 
-        // Append the row to the table
-        table.appendChild(row);
+            const valueCell = document.createElement('td');
+            const valueInput = document.createElement('input');
+            valueInput.style.borderColor = '#ff859a';
+            valueInput.style.background = 'transparent';
+            valueInput.style.color = 'white';
+
+            valueInput.type = 'text';
+            valueInput.value = obj[key];
+            valueInput.name = key;
+            valueCell.appendChild(valueInput);
+            row.appendChild(valueCell);
+
+            tbody.appendChild(row);
+        }
     }
-    const nameHeading = CREATE_ELEMENT('h3');
-    nameHeading.innerText = obj['NAME'].toUpperCase();
-    nameHeading.style.padding = '10px';
-    nameHeading.style.marginTop = '10px';
-    nameHeading.style.fontWeight = '100';
 
-    div.append(table)
-    return div;
+    table.appendChild(tbody);
+    container.appendChild(table);
+
+    const button = document.createElement('button');
+    button.style.backgroundColor = 'transparent';
+    button.style.color = 'grey';
+    button.style.padding = '1px';
+    button.style.minWidth = '100px';
+    button.style.maxHeight = '35px';
+    button.style.height = '35px';
+    button.style.borderRadius = '3px';
+
+    button.textContent = 'update';
+    button.addEventListener('click', async () => {
+        const result = {};
+        const rows = container.querySelectorAll('tr');
+        rows.forEach(row => {
+            const keyInput = row.querySelector('input[name^="key-"]');
+            const valueInput = row.querySelector('input:not([name^="key-"])');
+            if (keyInput && valueInput) {
+                result[keyInput.value] = valueInput.value;
+            }
+        });
+        result.parish_id = LocalStorageContract.STORED_PARISH_ID();
+        const updateResult = await NetTool.POST_CLIENT(
+            '/parish/update/member',
+            NetTool.CMMN_HEADERS.JSON_CONTENT_TYPE,
+            JSON.stringify(result)
+        );
+        const saveResult = (await updateResult.json())['response'];
+        MessegePopup.ShowMessegePuppy(saveResult)
+    });
+
+    return { container, button };
 }
-
 
 
 document.getElementById('export-excel').onclick = (ev) => {
     ev.preventDefault();
     // let selectedMembers = agGrid.selectedRows;
     // console.log(selectedMembers);
-
 
     const selectedRows = gridOptions.api.getSelectedRows();
     for (let i = 0; i < selectedRows.length; i++) {

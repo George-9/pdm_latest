@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', (ev) => {
     PrepareDocumentForRegisterMember()
 })
 
-function PrepareDocumentForRegisterMember() {
+export function PrepareDocumentForRegisterMember() {
     let selectedOutstation, selectedSCC;
 
     const registerDiv = CREATE_ELEMENT('div');
@@ -193,7 +193,7 @@ function PrepareDocumentForRegisterMember() {
         registerDiv.append(headerDiv, entryDiv);
         registerDiv.appendChild(outstationsPicker)
 
-        entryDiv.appendChild(outstationsPicker)
+        // entryDiv.appendChild(outstationsPicker)
         entryDiv.appendChild(sccsSelect)
     });
 }

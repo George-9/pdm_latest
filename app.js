@@ -49,7 +49,7 @@ try {
     app.post('/upload/members', uploadMembersCallback);
     app.post('/load/members', loadMembers);
     app.post('/register/member', registerMember);
-    app.post('/update/member', updateMember);
+    app.post('/parish/update/member', updateMember);
     app.post('/get/outstations', getOutstations);
     app.post('/add/outstation', addOutstation);
     app.post('/count/parish/outstation/', parishOutstationsCount);

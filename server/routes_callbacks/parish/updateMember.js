@@ -7,39 +7,33 @@ const updateMember = async (req, resp) => {
     DebugUtils.PRINT('details -> ', req.body);
     try {
         const details = req.body;
-        const id = details['_id'];
+        const _id = details['_id'];
         const parishId = details['parish_id'];
 
         DebugUtils.PRINT('parish id -> ', parishId);
-        DebugUtils.PRINT('member id -> ', id);
-
-        delete details["_id"];
         delete details["parish_id"];
-
         DebugUtils.PRINT('details then -> ', details);
 
+        const filter = {
+            NO: details['NO']
+        };
+        const update = { '$set': details };
+        const options = { '$upsert': true };
 
-        DebugUtils.PRINT('type of id -> ', typeof (id));
-
-        const saveResult = DBUtils
+        const saveResult = await DBUtils
             .CONNECTED_DB_CLI(parishId)
             .collection(DBConstants.PARISH_MEMBERS_COLLECTION)
-            .updateOne(
-                { _id: ObjectId.createFromTime(id) },
-                { '$set': { ...details } }
-            );
+            .updateOne(filter, update, options);
 
         //  await DBUtils
-
         resp.json({
-            'response': (saveResult.upsertedCount < 1
+            'response': (saveResult.matchedCount < 1
                 &&
-                saveResult.modifiedCount < 1)
+                saveResult.upsertedCount < 1)
                 ? 'could not save updates'
                 : 'success'
         });
     } catch (error) {
-        DebugUtils.PRINT(error)
         resp.json({ 'response': 'something went wrong..' })
     }
 }

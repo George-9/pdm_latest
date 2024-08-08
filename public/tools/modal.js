@@ -7,6 +7,7 @@ export class ModalExpertise {
     static onModalDismiss
 
     static ShowModal(modalTitle, view, {
+        fullScreen = false,
         modalChildStylesClassList,
         onDisMiss,
         onClickModalChild,
@@ -39,6 +40,7 @@ export class ModalExpertise {
         modalHeader.classList.add('full-width', 'flex-row', 'align-center', 'justify-space-between');
         modalHeader.style.marginBottom = '5px';
         modalHeader.style.paddingRight = '15px';
+        modalHeader.style.flexShrink = '0';
         modalHeader.style.backgroundColor = headingColor ?? 'royalblue';
 
         const actionsDiv = CREATE_ELEMENT('div');
@@ -62,7 +64,7 @@ export class ModalExpertise {
 
         /**
          * make resusable
-        */
+         */
         const closeElement = CREATE_ELEMENT('h3');
         closeElement.innerText = 'X';
         closeElement.title = 'close';
@@ -80,7 +82,7 @@ export class ModalExpertise {
 
         /**
          * fill modal top view (header)
-         */
+        */
         actionsDiv.appendChild(closeElement);
         modalHeader.append(modalTitleView, actionsDiv);
         if (topButton) {
@@ -92,10 +94,20 @@ export class ModalExpertise {
 
 
         const modalChild = CREATE_ELEMENT('div');
+        modalChild.style.paddingBottom = '10px';
         modalChild.classList.add('modal-child');
+
+        if (fullScreen) {
+            modalChild.classList.add('full-width', 'full-height');
+        } else {
+            modalChild.style.width = '80%';
+            modalChild.style.height = '90%';
+        }
+
         if (modalChildStylesClassList) {
             modalChild.classList.add(...modalChildStylesClassList);
         }
+
         modalChild.append(modalHeader, view);
         if (typeof (onClickModalChild) === 'function') {
             modalChild.onclick = onClickModalChild

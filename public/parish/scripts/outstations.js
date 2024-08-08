@@ -336,18 +336,24 @@ document.addEventListener('DOMContentLoaded', (ev) => {
 function createEditableTable(obj) {
     // Create the parent div
     const parentDiv = document.createElement('div');
-    // parentDiv.style.backgroundColor = 'gainsboro'
+    parentDiv.classList.add('full-width')
+    parentDiv.style.backgroundColor = '#acb8db';
+    parentDiv.style.padding = '3px';
+    parentDiv.style.borderRadius = '10px';
+    parentDiv.style.margin = '15px';
 
     // Create the table element
     const table = document.createElement('table');
+    table.style.width = '100%';
+    // table.style.backgroundColor = 'cornflowerblue';
     table.style.borderCollapse = 'collapse';
-    table.style.width = '80%';
-    table.style.margin = '20px 0';
 
     // Create the table heading
     const heading = document.createElement('caption');
     heading.textContent = `${obj['name']}`;
     heading.style.padding = '10px';
+    heading.style.color = 'cornsilk';
+    heading.style.fontSize = '20px';
     heading.style.fontWeight = 'bold';
     heading.style.marginBottom = '10px';
     table.appendChild(heading);
@@ -416,9 +422,9 @@ function createEditableTable(obj) {
     addButton.textContent = 'Add SCC';
     addButton.style.marginRight = '10px';
     addButton.onclick = () => {
-        const newFriend = `Friend${obj.smallchristiancommunities.length + 1}`;
-        obj.smallchristiancommunities.push(newFriend);
-        addFriendRow(newFriend, obj.smallchristiancommunities.length - 1);
+        const newSCCInput = `SCC ${obj.smallchristiancommunities.length + 1}`;
+        obj.smallchristiancommunities.push(newSCCInput);
+        addFriendRow(newSCCInput, obj.smallchristiancommunities.length - 1);
     };
 
     // Create the save changes button

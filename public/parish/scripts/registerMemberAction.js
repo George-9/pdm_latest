@@ -10,19 +10,14 @@ export function RegisterMember() {
 
     const registerDiv = CREATE_ELEMENT('div');
     registerDiv.style.height = '400px';
-    registerDiv.classList.add('full-width', 'flex-column', 'align-center', 'scroll-y');
+    registerDiv.classList.add('flex-column', 'align-center', 'scroll-y');
 
     const entryDiv = CREATE_ELEMENT('div');
     entryDiv.classList.add('full-width', 'flex-column', 'align-center', 'scroll-y');
 
     const progress = CREATE_ELEMENT('progress');
-
-
     const sccsSelect = CREATE_ELEMENT('select');
     sccsSelect.id = 'scc';
-    sccsSelect.style.width = '250px'
-    sccsSelect.style.padding = '10px'
-
 
     sccsSelect.onchange = (ev) => {
         selectedSCC = ev.currentTarget.value;
@@ -32,8 +27,11 @@ export function RegisterMember() {
     headerDiv.classList.add('flex-row', 'full-width', 'align-end', 'justify-end');
 
     const addNewFieldButton = CREATE_ELEMENT('button');
-    addNewFieldButton.classList.add('btn-normal')
-    addNewFieldButton.innerText = 'add field';
+    addNewFieldButton.style.backgroundColor = 'white';
+    addNewFieldButton.style.color = 'grey';
+    addNewFieldButton.classList.add('btn-normal');
+    addNewFieldButton.innerText = '+';
+    addNewFieldButton.title = 'add custom field';
     addNewFieldButton.onclick = (ev) => {
         if (IS_NULL_OR_EMPTY((entryDiv.children[entryDiv.children.length - 1]).value)) {
             return;
@@ -55,8 +53,10 @@ export function RegisterMember() {
 
 
     const submitButton = CREATE_ELEMENT('button');
+    submitButton.style.backgroundColor = 'white';
+    submitButton.style.color = 'grey';
     submitButton.classList.add('btn-normal')
-    submitButton.innerText = 'complete registry';
+    submitButton.innerText = 'complete';
 
     const nameI = CREATE_ELEMENT('input');
     nameI.id = 'name';
@@ -152,19 +152,26 @@ export function RegisterMember() {
     }
 
     ModalExpertise.ShowModal('register member', registerDiv, {
-        modalChildStylesClassList: []
+        modalChildStylesClassList: [
+            'flex-column',
+            'align-center',
+            // 'justify-center'
+        ],
+        'TopButton': headerDiv
     });
 
     getAndSetOutstations().then(() => {
         registerDiv.removeChild(progress);
 
-        registerDiv.append(headerDiv, entryDiv);
-        registerDiv.appendChild(OutstationPicker(outstationsResult))
+        registerDiv.append(entryDiv);
 
-        entryDiv.appendChild(OutstationPicker(outstationsResult))
+        // entryDiv.appendChild(OutstationPicker(outstationsResult))
+        registerDiv.appendChild(OutstationPicker(outstationsResult, sccsSelect))
         entryDiv.appendChild(sccsSelect)
     });
 }
+
+let selectedOutstation;
 
 export function OutstationPicker(outstations, sccsSelect) {
     const outstationsPicker = CREATE_ELEMENT('select');
@@ -186,14 +193,14 @@ export function OutstationPicker(outstations, sccsSelect) {
 
             sccsSelect.replaceChildren([]);
 
-            const matchOutstation = outstationsResult.filter((outstation) => {
+            const matchOutstation = outstations.filter((outstation) => {
                 selectedOutstation = outstation['name'];
                 return outstation.name === ev.target.value;
             })[0];
 
             const sccs = matchOutstation.smallchristiancommunities
 
-            for (const j = 0; j < sccs.length; j++) {
+            for (let j = 0; j < sccs.length; j++) {
                 let scc = sccs[j];
                 const sccOpt = CREATE_ELEMENT('option')
                 sccOpt.value = scc;

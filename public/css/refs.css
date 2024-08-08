@@ -90,12 +90,12 @@
 }
 
 .btn-normal {
-    background-color: gainsboro;
+    background-color: white;
     max-width: 100px;
-    color: gray;
+    color: grey;
     border: 1px solid;
     border-radius: 3px;
-    padding: 5px;
+    padding: 3px;
 }
 
 
@@ -111,10 +111,10 @@
     color: white;
     background-color: #2f1e4b;
     width: 120px;
-    padding: 12px;
+    padding: 10px;
     background: royalblue;
     color: white;
-    min-width: 200px;
+    min-width: fit-content;
     width: 200px;
     border: none;
 }
