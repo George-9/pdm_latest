@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parish Data Manager</title>
+
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <style>
+        :root {
+            --fc-small-font-size: .85em;
+            --fc-page-bg-color: #fff;
+            --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
+            --fc-neutral-text-color: #808080;
+            --fc-border-color: #ddd;
+
+            --fc-button-text-color: #fff;
+            --fc-button-bg-color: #2C3E50;
+            --fc-button-border-color: #2C3E50;
+            --fc-button-hover-bg-color: #1e2b37;
+            --fc-button-hover-border-color: #1a252f;
+            --fc-button-active-bg-color: #1a252f;
+            --fc-button-active-border-color: #151e27;
+
+            --fc-event-bg-color: #3788d8;
+            --fc-event-border-color: #3788d8;
+            --fc-event-text-color: #fff;
+            --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
+
+            --fc-more-link-bg-color: #d0d0d0;
+            --fc-more-link-text-color: inherit;
+
+            --fc-event-resizer-thickness: 8px;
+            --fc-event-resizer-dot-total-width: 8px;
+            --fc-event-resizer-dot-border-width: 1px;
+
+            --fc-non-business-color: rgba(215, 215, 215, 0.3);
+            --fc-bg-event-color: rgb(143, 223, 130);
+            --fc-bg-event-opacity: 0.3;
+            --fc-highlight-color: rgba(188, 232, 241, 0.3);
+            --fc-today-bg-color: rgba(255, 220, 40, 0.15);
+            --fc-now-indicator-color: red;
+        }
+
+        .fc .fc-col-header-cell-cushion {
+            /* needs to be same precedence */
+            padding-top: 1px;
+            /* an override! */
+            padding-bottom: 1px;
+            /* an override! */
+        }
+
+        .fc {
+            height: 500px;
+            width: 90%;
+            color: #1e2b37;
+        }
+
+
+        .fc .fc-button {
+            max-width: 80px;
+            margin: 3px;
+            margin-left: 10px;
+        }
+
+
+        .fc-event {
+            background-color: #151e27;
+            color: #1a252f;
+        }
+
+        .fc-day {
+            color: black;
+        }
+
+        .fc-daygrid-block-event .fc-event-time,
+        .fc-daygrid-block-event .fc-event-title {
+            color: green;
+        }
+
+        #calendar a {
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="fx-row f-w space-between">
+        <h3 class="title">PDM</h3>
+
+        <div class="fx-row f-w f-h just-end txt-c">
+            <!-- menu icon -->
+            <p class="s-d drawer-toggle"><i class="bi bi-justify"></i></p>
+
+            <p class="w-d">
+                <a href=""><i class="bi bi-file-earmark-text"></i>reports</a>
+            </p>
+
+            <p class="w-d">
+                <a href=""><i class="bi bi-feather"></i> registry</a>
+            </p>
+
+            <p class="w-d">
+                <a href=""><i class="bi bi-person"></i>profile</a>
+            </p>
+        </div>
+    </nav>
+
+    <div class="container fx-row">
+
+        <div class="drawer">
+            <!-- CLOSE ELEMENT -->
+            <p class="s-d fx-row just-end f-w txt-e drawer-toggle" style="padding-right: 70px;">
+                <i class="bi bi-x-lg"></i>
+            </p>
+
+            <div class="fx-col f-h hide-scroll-x" style="width: 100%;">
+                <div class="txt-s">
+                    <h3 class="heading">Miscellenious</h3>
+                    <p class="txt-e just-start fx-row">
+                        <a href=""><i class="bi bi-people"></i><span>members</span></a>
+                    </p>
+
+                    <p class="txt-c just-start fx-row a-c">
+                        <a href=""><i class="bi bi-opencollective"></i><span>Groups</span></a>
+                    </p>
+
+                    <p class="txt-c j-start fx-row a-c">
+                        <a href=""><span class="material-symbols-outlined">
+                                <span>church</span>
+                            </span>outstations</a>
+                    </p>
+                </div>
+
+                <div class="txt-s">
+                    <h3 class="heading">Finance</h3>
+                    <p class="txt-e just-start fx-row a-c">
+                        <a href=""> <span class="material-symbols-outlined">payments</span> Offering</a>
+                    </p>
+                    <p class="txt-e just-start fx-row a-c">
+                        <a href=""><span class="material-symbols-outlined">redeem</span> Tithe</a>
+                    </p>
+                    <p class="txt-e just-start fx-row a-c">
+                        <a href=""><span class="material-symbols-outlined"> foundation</span> Projects</a>
+                    </p>
+                </div>
+
+                <div class="txt-s s-d">
+                    <h3 class="heading">Registry</h3>
+                    <p class="txt-e f-w just-start fx-row a-c">
+                        <a href=""><span class="material-symbols-outlined"> group_add</span>members</a>
+                    </p>
+                </div>
+
+                <div class="txt-s s-d">
+                    <h3 class="heading">Reports</h3>
+                    <p class="txt-e just-start fx-row a-c">
+                        <a href=""><i class="bi bi-file-earmark-text"></i>all reports</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content fx-col">
+            <!-- Calendar -->
+            <div class="full-width" style="display: flex; padding: 10px;">
+                <div class="flex-column" id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/components/drawer.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="../scripts/parish_profile.js"></script>
+</body>
+
+</html>

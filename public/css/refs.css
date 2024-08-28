@@ -1,0 +1,94 @@
+/*
+* containers and other measure elements
+*/
+.fx-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.fx-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.f-w {
+    width: 100%;
+}
+
+.f-h {
+    height: 100%;
+}
+
+.space-around {
+    justify-content: space-around;
+}
+
+.just-center {
+    justify-content: center;
+}
+
+.just-end {
+    justify-content: end;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.a-s {
+    align-items: start;
+}
+
+.a-c {
+    align-items: center;
+}
+
+a.e {
+    align-items: end;
+}
+
+.txt-s {
+    text-align: start;
+}
+
+.txt-c {
+    text-align: center;
+}
+
+.txt-e {
+    text-align: end;
+}
+
+.scroll-y {
+    overflow-y: scroll;
+}
+
+.scroll-x {
+    overflow-x: scroll;
+}
+
+/* 
+ * special/marked elements 
+ */
+.content {
+    background-color: white;
+}
+
+
+.hide-scroll-x {
+    overflow-x: hidden;
+}
+
+.hide-scroll-y {
+    overflow-y: hidden;
+}
+
+.title {
+    font-weight: 900;
+    color: royalblue;
+}
+
+
+.c-p {
+    cursor: pointer;
+}

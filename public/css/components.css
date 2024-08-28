@@ -1,0 +1,63 @@
+.container {
+    height: 100%;
+}
+
+.drawer,
+.content {
+    scrollbar-color: red;
+    height: 100%;
+    padding: 2px;
+}
+
+.content {
+    overflow-y: scroll;
+}
+
+.drawer {
+    height: 100%;
+
+    flex-direction: column !important;
+
+    transition-property: height opacity;
+    transition-duration: 800ms;
+    transition-delay: 120ms;
+
+    text-align: center;
+    align-items: center;
+
+    background-color: blue;
+    color: white;
+
+    overflow-y: scroll;
+}
+
+.drawer:first-of-type(div) {
+    text-align: center;
+    align-items: center;
+}
+
+
+.drawer a {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+
+    color: white;
+}
+
+.drawer.heading {
+    width: 200px;
+    text-align: start;
+}
+
+.drawer i,
+.drawer span {
+    color: white;
+    padding: 2px;
+}
+
+
+.content {
+    margin: 0px;
+}
