@@ -1,5 +1,11 @@
 * {
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: azure;
+}
+
+:root::-webkit-scrollbar {
+    color: green;
 }
 
 html,
@@ -73,20 +79,18 @@ p i {
     font-size: 30px;
 }
 
-/* For browsers that support `scrollbar-*` properties */
 @supports (scrollbar-color: auto) {
-    .scrollbox {
-        scrollbar-color: aquamarine cornflowerblue;
+    * {
+        scrollbar-color: grey gainsboro;
     }
 }
 
-/* Otherwise, use `::-webkit-scrollbar-*` pseudo-elements */
 @supports selector(::-webkit-scrollbar) {
-    .scrollbox::-webkit-scrollbar {
-        background: aquamarine;
+    *::-webkit-scrollbar {
+        background: grey;
     }
 
-    .scrollbox::-webkit-scrollbar-thumb {
-        background: cornflowerblue;
+    *::-webkit-scrollbar-thumb {
+        background: gainsboro;
     }
 }

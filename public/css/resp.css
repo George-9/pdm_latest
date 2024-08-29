@@ -6,6 +6,8 @@
     .drawer {
         display: none;
 
+        justify-content: center;
+
         height: 0%;
         width: 100%;
         max-width: 100% !important;
@@ -35,7 +37,7 @@
     }
 
     .drawer a {
-        padding: 10px;
+        padding: 3px;
         outline: auto;
     }
 

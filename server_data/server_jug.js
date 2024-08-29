@@ -1,5 +1,5 @@
 
 export class ServerDetails {
     constructor() { }
-    static PORT = 8000;
+    static PORT = 9000;
 }

@@ -58,6 +58,28 @@
 }
 
 
+.button {
+    background-color: royalblue;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.button:hover {
+    opacity: .7;
+}
+
+
+.a p {
+    cursor: pointer;
+}
+
+/* moderate padding for all elements */
+.m-pad {
+    padding: 10px;
+}
+
+
 .content {
     margin: 0px;
 }

@@ -1,5 +1,5 @@
-import { domQuery, domQueryAll } from "../dom/query.js";
-import { work } from "../dom/worker.js";
+import { domQuery, domQueryAll } from "../../dom/query.js";
+import { work } from "../../dom/worker.js";
 
 let drawerIsShowing = false, drawerToggleElements, drawer;
 
@@ -15,7 +15,6 @@ function Main() {
     }
 
 }
-
 
 const bgColor = 'gainsboro';
 function setUpDrawerAnchor(anchor) {
@@ -37,7 +36,6 @@ function setUpDrawerAnchor(anchor) {
     }
 }
 
-
 function toggleDrawer(ev) {
     drawer = domQuery('.drawer');
 
@@ -57,7 +55,6 @@ function toggleDrawer(ev) {
         drawerIsShowing = false;
     } else {
         drawer.style.display = 'grid';
-        // drawer.classList.add('fx-col');
         drawer.style.opacity = '1';
         drawer.style.height = '100%';
         drawer.style.padding = '10px';

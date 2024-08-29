@@ -4,8 +4,8 @@
 
     padding: 0px;
 
-    background-color: #24262bc7;
-
+    background-color: #0e0e0ebd;
+    /* #000000b0 */
     display: flex;
     flex-direction: column;
 
@@ -15,6 +15,8 @@
 
     overflow: hidden;
     z-index: 20;
+
+    cursor: pointer;
 }
 
 .modal-child {
@@ -22,9 +24,12 @@
     padding: 1px;
 
     overflow: hidden;
+
+    cursor: default;
 }
 
+
 .not-full-screen-modal-child {
-    width: 80%;
-    height: 80%;
+    width: 88%;
+    height: 88%;
 }

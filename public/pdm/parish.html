@@ -115,74 +115,27 @@
     <div class="container fx-row">
         <div class="drawer">
             <!-- CLOSE ELEMENT -->
-            <p class="s-d fx-row just-end f-w txt-e drawer-toggle" style="padding-right: 70px;">
+            <p class="s-d fx-row just-end f-w drawer-toggle" style="position: fixed; top: 0px; padding-right: 20px;">
                 <i class="bi bi-x-lg"></i>
             </p>
 
-            <div class="fx-col f-h hide-scroll-x" style="width: 100%;">
-                <div class="txt-s">
-                    <h3 class="heading">Miscellenious</h3>
-                    <p class="txt-e just-start fx-row">
-                        <a href=""><i class="bi bi-people"></i><span>members</span></a>
-                    </p>
-
-                    <p class="txt-c just-start fx-row a-c">
-                        <a href=""><i class="bi bi-opencollective"></i><span>Groups</span></a>
-                    </p>
-
-                    <p class="txt-c j-start fx-row a-c">
-                        <a href=""><span class="material-symbols-outlined">
-                                <span>church</span>
-                            </span>outstations</a>
-                    </p>
-                </div>
-
-                <div class="txt-s">
-                    <h3 class="heading">Finance</h3>
-                    <p class="txt-e just-start fx-row a-c">
-                        <a href=""> <span class="material-symbols-outlined">payments</span> Offering</a>
-                    </p>
-                    <p class="txt-e just-start fx-row a-c">
-                        <a href=""><span class="material-symbols-outlined">redeem</span> Tithe</a>
-                    </p>
-                    <p class="txt-e just-start fx-row a-c">
-                        <a href=""><span class="material-symbols-outlined"> foundation</span> Projects</a>
-                    </p>
-                </div>
-
-                <div class="txt-s s-d">
-                    <h3 class="heading">Registry</h3>
-                    <p class="txt-e f-w just-start fx-row a-c">
-                        <a href=""><span class="material-symbols-outlined"> group_add</span>members</a>
-                    </p>
-                </div>
-
-                <div class="txt-s s-d">
-                    <h3 class="heading">Reports</h3>
-                    <p class="txt-e just-start fx-row a-c">
-                        <a href=""><i class="bi bi-file-earmark-text"></i>all reports</a>
-                    </p>
-                </div>
-            </div>
+            <div class="drawer-container f-w f-h just-start fx-col scroll-y hide-scroll-x"></div>
         </div>
 
-        <div class="content fx-col">
-            <div class="fx-row f-w space-between">
-                <h3 class="noti-circle circle-outlined">Parish</h3>
+        <div class="content fx-col a-c f-w">
+            <div class="full-width" style="padding: 5px; min-width: 80%">
+                <h3 style="color: royalblue; font-weight: 900;">Parish Name</h3>
 
-                <div class="fx-row">
-                    <h3 class="noti-circle circle-outlined">5 events</h3>
-                    <h3 class="noti-circle circle-outlined">5 events</h3>
+                <div class="fx-row just-start">
+                    <h3 class="circle-outlined">5 events</h3>
                 </div>
-            </div>
-            <!-- Calendar -->
-            <div class="full-width" style="display: flex; padding: 10px;">
+                <!-- Calendar -->
                 <div class="flex-column" id="calendar"></div>
             </div>
         </div>
     </div>
 
-    <script type="module" src="../scripts/components/drawer.js"></script>
+    <script type="module" src="../scripts/components/actions/drawer.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script type="module" src="../scripts/parish_profile.js"></script>
 </body>
