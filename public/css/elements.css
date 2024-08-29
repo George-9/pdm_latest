@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 html,
 body {
     width: 100%;
@@ -28,6 +32,12 @@ nav {
 nav div p {
     padding-right: 30px;
 }
+
+
+h3 {
+    margin: 10px;
+}
+
 
 nav a,
 nav a:visited {

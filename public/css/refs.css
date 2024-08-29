@@ -74,6 +74,19 @@ a.e {
     background-color: white;
 }
 
+.outlined {
+    width: fit-content;
+    padding: 5px;
+    outline: 1px solid grey;
+}
+
+.circle-outlined {
+    width: fit-content;
+    padding: 5px;
+    outline: 1px solid grey;
+    border-radius: 50px;
+}
+
 
 .hide-scroll-x {
     overflow-x: hidden;

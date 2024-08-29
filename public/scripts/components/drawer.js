@@ -56,8 +56,8 @@ function toggleDrawer(ev) {
 
         drawerIsShowing = false;
     } else {
-        drawer.style.display = 'flex';
-        drawer.classList.add('fx-col');
+        drawer.style.display = 'grid';
+        // drawer.classList.add('fx-col');
         drawer.style.opacity = '1';
         drawer.style.height = '100%';
         drawer.style.padding = '10px';
