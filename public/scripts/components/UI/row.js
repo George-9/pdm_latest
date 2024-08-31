@@ -1,3 +1,4 @@
+import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate } from "../../dom/query.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 
@@ -12,10 +13,7 @@ export function Row({ classlist = [], styles = {}, children = [], }) {
 
     addClasslist(div, classlist)
     StyleView(div, styles);
-
-    if (children) {
-        div.append(...children);
-    }
+    addChildrenToView(div, children);
 
     return div;
 }

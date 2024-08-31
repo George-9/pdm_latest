@@ -1,14 +1,15 @@
+import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate, domQueryById } from "../../dom/query.js";
 import { Column } from "../UI/column.js";
-import { MondoText } from "../UI/mondo_text.js";
+import { MondoBigH3Text, MondoText } from "../UI/mondo_text.js";
 import { Row } from "../UI/row.js";
+import { addClasslist, StyleView } from "../utils/stylus.js";
 
 export class ModalExpertise {
     static modalIsShowing = false;
     static modalElId = 'modal-component';
-    dismisible = true;
 
-    constructor() { this.dismisible = true; }
+    constructor() { }
 
     static async showModal({
         actionHeading = '',
@@ -16,26 +17,48 @@ export class ModalExpertise {
         children = [],
         fullScreen = false,
         modalChildStyles = [],
-        dismisible = true
+        dismisible = true,
+        modalHeadingStyles = [],
     }) {
-
-        this.dismisible = dismisible;
-
         let modalCloseEl = domCreate('i');
-        modalCloseEl.classList.add('bi', 'bi-x', 'fx-col', 'a-c', 'just-center');
+        modalCloseEl.classList.add('bi', 'fx-col', 'a-c', 'just-center');
+        if (fullScreen && fullScreen === true) {
+            addClasslist(modalCloseEl, ['bi-backspace-reverse'])
+        } else {
+            addClasslist(modalCloseEl, ['bi-x'])
+        }
+
         modalCloseEl.title = 'close';
         modalCloseEl.style.color = 'black';
         modalCloseEl.onclick = ModalExpertise.#hideModal;
 
         var modalChildHeading = MondoText({
             text: actionHeading || '',
-            styles: [{ 'fontSize': '32px', 'font-weight': '900' }]
+            styles: [{
+                'fontSize': '32px',
+                'font-weight': '900'
+            }]
         });
 
+        console.log('dismisible::', dismisible);
+
         const modalHeaderTopRow = Row({
-            children: [modalChildHeading, modalCloseEl],
-            'classlist': ['f-w', 'space-between', 'a-e', 'm-pad', 'border-bottom']
+            children: [modalChildHeading],
+            'classlist': ['f-w',
+                dismisible
+                    ? 'space-between'
+                    : 'just-center',
+                'a-e',
+                'm-pad',
+                'border-bottom'
+            ]
         });
+
+        StyleView(modalHeaderTopRow, modalHeadingStyles)
+
+        if ((dismisible && dismisible === true) || (fullScreen && fullScreen === true)) {
+            addChildrenToView(modalHeaderTopRow, [modalCloseEl]);
+        }
 
         const userActionsRow = Row({
             'children': topRowUserActions,
@@ -46,7 +69,9 @@ export class ModalExpertise {
             'classlist': ['f-w', 'space-between'],
             'children': [
                 modalHeaderTopRow,
-                (topRowUserActions && topRowUserActions.length && topRowUserActions.length > 0)
+                (topRowUserActions
+                    && topRowUserActions.length
+                    && topRowUserActions.length > 0)
                     ? userActionsRow
                     : ''
             ]
@@ -65,18 +90,7 @@ export class ModalExpertise {
             ]
         });
 
-        if (modalChildStyles && modalChildStyles.length && modalChildStyles.length > 0) {
-            for (let i = 0; i < modalChildStyles.length; i++) {
-                const style = modalChildStyles[i];
-                const styleProperty = Object.keys(style)[0];
-
-                if ((fullScreen && fullScreen === true) && (styleProperty.match('width') || styleProperty.match('height'))) {
-                    continue;
-                }
-
-                modalChild.style[styleProperty] = style[styleProperty];
-            }
-        }
+        StyleView(modalChild, modalChildStyles);
 
         var modal = Column({
             'classlist': [
@@ -92,7 +106,7 @@ export class ModalExpertise {
         modal.onclick = function (ev) {
             ev.preventDefault();
 
-            if (this.dismisible === true) {
+            if (dismisible === true) {
                 if (ev.target && ev.target === modal) {
                     ModalExpertise.#hideModal()
                 }
@@ -109,23 +123,28 @@ export class ModalExpertise {
 
         if (ModalExpertise.modalIsShowing) {
             ModalExpertise.#hideModal()
-        } else {
-            document.body.appendChild(modal)
-            ModalExpertise.modalIsShowing = true;
-
-            window.addEventListener('keydown', function (ev) {
-                switch (ev.key) {
-                    case 'Escape':
-                        if (dismisible && dismisible === true) {
-                            ModalExpertise.#hideModal();
-                            console.log('Escape');
-                        }
-                        break;
-
-                    default:
-                        break;
+            if (modal) {
+                if (document.body.appendChild(modal)) {
+                    ModalExpertise.modalIsShowing = false;
                 }
-            });
+            }
+        } else {
+            if (document.body.appendChild(modal)) {
+                ModalExpertise.modalIsShowing = true;
+                window.addEventListener('keydown', function (ev) {
+                    switch (ev.key) {
+                        case 'Escape':
+                            if (dismisible && dismisible === true) {
+                                ModalExpertise.#hideModal();
+                                console.log('Escape');
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                });
+            }
         }
     }
 

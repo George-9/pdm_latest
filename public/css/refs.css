@@ -123,7 +123,15 @@ a.e {
     cursor: pointer;
 }
 
+.highlightable:hover {
+    background-color: gainsboro;
+}
+
 
 .m-margin-top {
     margin-top: 10px;
+}
+
+.bi-pad {
+    padding: 7px;
 }

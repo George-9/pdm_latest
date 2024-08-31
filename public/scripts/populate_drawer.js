@@ -1,13 +1,10 @@
 import { Column } from "./components/UI/column.js";
 import { MondoBigH3Text, MondoText } from "./components/UI/mondo_text.js";
 import { Row } from "./components/UI/row.js";
-import { addClasslist } from "./components/utils/stylus.js";
-import { domCreate, domQuery, domQueryById } from "./dom/query.js";
-import { work } from "./dom/worker.js";
+import { addClasslist, StyleView } from "./components/utils/stylus.js";
+import { domCreate } from "./dom/query.js";
 
-export default { 'populateDrawer': work(Main) }
-
-class DrawerMenu {
+export class DrawerMenu {
     heading = '';
     subMenus = [];
 
@@ -23,7 +20,7 @@ class DrawerMenu {
     }
 }
 
-class Menu {
+export class Menu {
     text;
     icon;
     /**
@@ -54,26 +51,13 @@ class Menu {
     }
 }
 
-function Main() {
-    const drawer = domQuery('.drawer-container');
-    const drawerMenus = [
-        new DrawerMenu('miscellenious', [
-            new Menu('members', 'bi-people', () => alert('...')),
-            new Menu('groups', 'bi-opencollective'),
-        ])
-    ]
-
-    populateDrawer(drawer, drawerMenus);
-}
-
-
 /**
  * populates the drawer with views
  * 
  * @param {HTMLElement | Node} drawer the drawer to populate
  * @param {DrawerMenu[]} drawerMenus array to populate the drawer
  */
-function populateDrawer(drawer, drawerMenus) {
+export function populateDrawer(drawer, drawerMenus) {
     for (let i = 0; i < drawerMenus.length; i++) {
         const drawerMainMenu = drawerMenus[i];
         const menusCategoryTitle = MondoBigH3Text({
@@ -86,6 +70,19 @@ function populateDrawer(drawer, drawerMenus) {
             const subMenu = drawerMainMenu.subMenus[j];
             column.appendChild(subMenu.getView());
         }
+
+        let logOut = MondoText({ 'text': 'Log Out' });
+        StyleView(logOut, [{ 'position': 'fixed' }, { 'bottom': '0px' }, { 'padding': '10px' }])
+
+        logOut.onclick = LogOut;
+
+        column.appendChild(logOut);
         drawer.appendChild(column);
     }
+}
+
+
+function LogOut() {
+    localStorage.clear();
+    window.location.reload()
 }

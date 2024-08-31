@@ -23,6 +23,22 @@ body {
     background-color: gainsboro;
 }
 
+table,
+tr,
+td {
+    border: 1px solid grey;
+    border-collapse: collapse;
+}
+
+thead {
+    font-weight: 800;
+    width: max-content;
+}
+
+td {
+    padding: 5px;
+}
+
 nav {
     margin: 0px;
     padding: 3px;

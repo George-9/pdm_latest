@@ -31,6 +31,10 @@
     overflow-y: scroll;
 }
 
+.drawer p {
+    cursor: pointer;
+}
+
 .drawer:first-of-type(div) {
     text-align: center;
     align-items: center;
@@ -69,7 +73,6 @@
     opacity: .7;
 }
 
-
 .a p {
     cursor: pointer;
 }
@@ -79,7 +82,11 @@
     padding: 10px;
 }
 
-
 .content {
     margin: 0px;
+}
+
+.bi-pad {
+    box-sizing: border-box;
+    padding-right: 10px;
 }

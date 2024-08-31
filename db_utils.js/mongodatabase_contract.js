@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-
+import { DBDetails } from "./db_parish_details.js";
 
 export class MongoDBContract {
 
@@ -31,7 +31,7 @@ export class MongoDBContract {
             .toArray();
     }
 
-    static async deleteOneByFilterFromCollection(dbName, collectionName, filter) {
+    static async deletedOneByFilterFromCollection(dbName, collectionName, filter) {
         if (!filter) {
             return false;
         }
@@ -40,7 +40,7 @@ export class MongoDBContract {
             .collectionInstance(dbName, collectionName)
             .deleteOne(filter);
 
-        return result.deletedCount;
+        return result.deletedCount > 0;
     }
 
     static async deleteManyByFilterFromCollection(dbName, collectionName, filter) {
@@ -73,7 +73,7 @@ export class MongoDBContract {
             .collectionInstance(dbName, collectionName)
             .insertOne(object)
 
-        return result.insertedId
+        return (result !== null && result.insertedId !== null && result.insertedId.id !== null);
     }
 
     static async insertManyIntoCollection(objects = [], dbName, collectionName) {
@@ -92,11 +92,36 @@ export class MongoDBContract {
         return (result.modifiedCount + result.upsertedCount) > 0;
     }
 
-    static async updateManyFromCollection(filter, new_values = {}) {
+    static async updateFromCollection(filter, new_values = {}) {
         let result = await MongoDBContract
             .collectionInstance(dbName, collectionName)
             .updateMany(filter, { '$set': { ...new_values } });
 
         return (result.modifiedCount + result.upsertedCount) > 0;
+    }
+
+    /**
+     * ADMIN ACTIONS
+     * 
+     * @todo move to separate file
+     */
+    static async PDM_ADMIN_EXISTS(adminCode, adminPassword) {
+        if (!adminCode || !adminPassword) {
+            return false;
+        }
+
+        let found = await MongoDBContract
+            .collectionInstance(
+                DBDetails.adminDB,
+                DBDetails.adminCollection).findOne({
+                    $expr: {
+                        $and: [
+                            { $eq: [{ $toString: '$admin_code' }, adminCode], },
+                            { $eq: [{ $toString: '$password' }, adminPassword] }
+                        ]
+                    }
+                });
+
+        return (found && found._id && found._id.id);
     }
 }

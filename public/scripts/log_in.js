@@ -1,4 +1,4 @@
-import { Post } from "./net_tools";
+import { Post } from "./net_tools.js";
 
 /**
  * Logs in the Parish
@@ -6,6 +6,11 @@ import { Post } from "./net_tools";
  * @param {string} detail either email or parish-code
  * @param {string} password parish password
  */
-export function ParishLogIn({ email, password, onloadstart, onload, onerror, onloadEnd }) {
-    return Post('/log/in', { email: email, password: password }, onloadstart, onload, onerror, onloadEnd);
+export function ParishLogIn(email, password) {
+    return Post('/parish/log/in', {
+        email: email,
+        password: password
+    },
+        { 'requiresParishDetails': false }
+    );
 }

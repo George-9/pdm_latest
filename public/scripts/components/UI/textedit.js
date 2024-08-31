@@ -9,26 +9,33 @@ import { StyleView } from "../utils/stylus.js";
  */
 export function TextEdit({
     placeholder = '',
-    type = '',
-    width = '200px',
+    width,
     styles = [],
     onType = new Function(),
-    onSubmit = new Function()
+    onSubmit = new Function(),
+    type = ''
 }) {
     const input = domCreate('input');
 
     input.setAttribute('type', type ?? 'text');
     input.placeholder = placeholder ?? '';
-    input.style.width = width ?? '200px';
+    input.style.width = width ?? '300px';
     input.style.padding = '10px';
     input.style.margin = '5px';
+
+    if (type) {
+        input.setAttribute('type', `${type}`);
+    }
 
     /**
      * null better than undefined, rule of the thumb
      */
-    input.addEventListener('input', onType ?? null);
-    input.addEventListener('submit', onSubmit ?? null);
+    input.addEventListener('input', function (ev) {
+        ev.preventDefault();
+        onType(ev);
+    });
 
+    input.addEventListener('submit', onSubmit ?? null);
     StyleView(input, styles);
     return input;
 }

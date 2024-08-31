@@ -1,27 +1,27 @@
-import { LocalStorageContract } from "./storage/LocalStorageContract";
+import { LocalStorageContract } from "./storage/LocalStorageContract.js";
 
 export async function Post(
     url,
     data = {},
-    onloadStart,
-    onload,
-    onError,
-    onloadEnd
+    { requiresParishDetails = false }
 ) {
-    let body = JSON.stringify({
-        ...data,
-        'id': LocalStorageContract.parishId(),
-        'password': LocalStorageContract.parishPassword()
-    });
+    let body = { ...data };
 
-    let cli = new XMLHttpRequest();
+    if (requiresParishDetails) {
+        if ((requiresParishDetails && requiresParishDetails === true)) {
+            body['parish_code'] = LocalStorageContract.parishId();
+            body['parish_password'] = LocalStorageContract.parishPassword();
+        }
+    }
 
-    cli.addEventListener('load', onload ?? null);
-    cli.addEventListener('loadstart', onloadStart ?? null);
-    cli.addEventListener('loadend', onloadEnd ?? null);
-    cli.addEventListener('error', onError ?? null);
+    let cli = await fetch(
+        url,
+        {
+            'method': 'POST',
+            'headers': { 'content-type': 'application/json', },
+            'body': JSON.stringify(body)
+        }
+    );
 
-    cli.open('POST', url);
-    cli.setRequestHeader('content-type', 'application/json');
-    cli.send(body)
+    return await cli.json() || await cli.text()
 }

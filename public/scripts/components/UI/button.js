@@ -9,12 +9,14 @@ import { MondoText } from "./mondo_text.js";
  * @author George Muigai Njau
  * @version 1.0.0
  */
-export function Button({ styles = [], classlist = {}, text = '', onclick = new Function() }) {
+export function Button({ styles = [], classlist = {}, text = '', width, onclick = new Function() }) {
     const button = domCreate('div');
     const textView = MondoText({ 'text': text });
 
-    button.style.width = '200px';
-    addClasslist(button, ['fx-row', 'just-center', 'txt-c', 'a-e', 'button', ...classlist]);
+    button.classList.add('fx-row', 'just-center', 'txt-c', 'a-e', 'button')
+
+    button.style.width = width ?? '300px';
+    addClasslist(button, classlist);
     StyleView(button, styles);
 
     button.appendChild(textView);
