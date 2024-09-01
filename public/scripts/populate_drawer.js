@@ -53,7 +53,7 @@ export class Menu {
         anchor.appendChild(row);
         anchor.onclick = this.action;
 
-        anchor.classList.add(this.groupClass);
+        addClasslist(anchor, [this.groupClass, 'disp-none']);
         return anchor;
     }
 }
@@ -67,9 +67,13 @@ export class Menu {
 export function populateDrawer(drawer, drawerMenus) {
     for (let i = 0; i < drawerMenus.length; i++) {
         const drawerMainMenu = drawerMenus[i];
+        const indicatorIcon = domCreate('i');
+        let closedClass = 'bi-chevron-up', openClassClass = 'bi-chevron-down';
+        addClasslist(indicatorIcon, ['bi', closedClass]);
         const menusCategoryTitle = Row({
             'classlist': ['m-pad'],
             'children': [
+                indicatorIcon,
                 MondoBigH3Text({
                     'text': drawerMainMenu.heading,
                     'styles': [{ 'color': 'white', 'font-weight': '900' }],
@@ -87,9 +91,13 @@ export function populateDrawer(drawer, drawerMenus) {
 
             if (drawerMainMenu.isShowingMenus) {
                 subMenus.forEach(function (m) { m.classList.add('disp-none'); });
+                indicatorIcon.classList.remove(openClassClass);
+                indicatorIcon.classList.add(closedClass);
                 drawerMainMenu.isShowingMenus = false;
             } else {
                 subMenus.forEach(function (m) { m.classList.remove('disp-none'); });
+                indicatorIcon.classList.remove(closedClass);
+                indicatorIcon.classList.add(openClassClass);
                 drawerMainMenu.isShowingMenus = true;
             }
         };

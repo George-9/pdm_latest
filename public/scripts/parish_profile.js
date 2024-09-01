@@ -134,6 +134,29 @@ async function Main() {
 
         const drawerMenus = [
             new DrawerMenu(
+                'Reports',
+                reportsClass,
+                [
+                    new Menu('members', 'bi-people',
+                        reportsClass,
+                        function () {
+                            ModalExpertise.showModal({
+                                'actionHeading': 'members report',
+                                'modalHeadingStyles': [{
+                                    'background-color': '#bebeff',
+                                }],
+                                'children': [
+                                    MembersReportsView()
+                                ]
+                            })
+                        }),
+                    new Menu('tithe', 'bi-cash-coin', reportsClass),
+                    new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
+                    new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
+                ],
+                false
+            ),
+            new DrawerMenu(
                 'Registry',
                 registryClass,
                 [
@@ -141,19 +164,8 @@ async function Main() {
                     new Menu('Outstation', 'bi-collection', registryClass, promptAddOutstationView),
                     new Menu('SCC', 'bi-people', registryClass, promptAddSCCView),
                     new Menu('Offering', 'bi-cash', registryClass, promptAddOffering),
-                    new Menu('Tithe', 'bi-gift', registryClass, promptAddOffering),
+                    new Menu('Tithe', 'bi-gift', registryClass, promptAddTitheView),
                 ]
-            ),
-            new DrawerMenu(
-                'Reports',
-                reportsClass,
-                [
-                    new Menu('members', 'bi-people', reportsClass, showMembersReportsPage),
-                    new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
-                    new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
-                    new Menu('members', 'bi-people', reportsClass, showMembersReportsPage),
-                ],
-                false
             ),
         ]
 
