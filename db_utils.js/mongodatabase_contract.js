@@ -3,7 +3,7 @@ import { DBDetails } from "./db_parish_details.js";
 
 export class MongoDBContract {
 
-    static connectedClient() { return new MongoClient('mongodb://localhost:27017') }
+    static connectedClient() { return new MongoClient('mongodb://127.0.0.1:27017') }
     static adminDB() { return MongoDBContract.connectedClient().db('admin') }
     static dbInstance(dbName) { return MongoDBContract.connectedClient().db(dbName) }
 
