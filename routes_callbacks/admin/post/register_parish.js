@@ -38,9 +38,9 @@ export async function RegisterParish(req, resp) {
             DBDetails.registeredParishesCollection
         );
 
-        if (saved) {
-            return resp.json({ 'response': 'success' });
-        }
+        if (saved) { return resp.json({ 'response': 'success' }); }
+
+        return resp.json({ 'response': 'something went wrong' });
     } else {
         return resp.json({ 'response': 'unauthorised access' });
     }

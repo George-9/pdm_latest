@@ -1,7 +1,7 @@
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate, domQueryById } from "../../dom/query.js";
 import { Column } from "../UI/column.js";
-import { MondoBigH3Text, MondoText } from "../UI/mondo_text.js";
+import { MondoText } from "../UI/mondo_text.js";
 import { Row } from "../UI/row.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 
@@ -34,13 +34,8 @@ export class ModalExpertise {
 
         var modalChildHeading = MondoText({
             text: actionHeading || '',
-            styles: [{
-                'fontSize': '32px',
-                'font-weight': '900'
-            }]
+            styles: [{ 'fontSize': '24px' }]
         });
-
-        console.log('dismisible::', dismisible);
 
         const modalHeaderTopRow = Row({
             children: [modalChildHeading],

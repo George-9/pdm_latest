@@ -987,7 +987,7 @@ function viewOutstationsPage() {
         'classlist': ['f-w', 'a-c', 'just-center'],
         'children': parishOutstations.map(function (outstation) {
             let outstationMembersCount = parishMembers.filter(function (m) {
-                return m['outstation_id'] = outstation['_id']
+                return m['outstation_id'] === outstation['_id']
             }).length;
 
             return Row({
@@ -1020,7 +1020,7 @@ function viewSCCsPage() {
             });
 
             let members = parishMembers.filter(function (m) {
-                return m['outstation_id'] === scc['_id']
+                return m['scc_id'] === scc['_id']
             }).length;
 
             return Row({
@@ -1041,7 +1041,7 @@ function viewSCCsPage() {
 
     ModalExpertise.showModal({
         'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
-        'actionHeading': `parish outstations (${parishOutstations.length})`,
+        'actionHeading': `small Christian Communities (${parishSCCs.length})`,
         'children': [column],
         'modalChildStyles': [{ 'width': '400px' }],
         'fullScreen': false,
