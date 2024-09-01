@@ -135,3 +135,7 @@ a.e {
 .bi-pad {
     padding: 7px;
 }
+
+.disp-none {
+    display: none !important;
+}

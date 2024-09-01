@@ -18,6 +18,7 @@ import { getMembersFiltered } from './routes_callbacks/parish/post/get_members_f
 import { addTitheRecord } from './routes_callbacks/parish/post/record_tithe.js';
 import { addOfferingRecord } from './routes_callbacks/parish/post/addOffering.js';
 import { updateMemberDetails } from './routes_callbacks/parish/post/update_member.js';
+import { loadAllOfferingRecords } from './routes_callbacks/parish/post/get_all_offering_records.js';
 
 // __________________ADMIN
 
@@ -69,6 +70,7 @@ server.post('/parish/record/tithe', addTitheRecord);
 
 // OFFERING
 server.post('/parish/record/offering', addOfferingRecord);
+server.post('/parish/load/all/offering/records', loadAllOfferingRecords);
 
 
 

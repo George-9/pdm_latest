@@ -18,7 +18,8 @@ work(Main);
 let allParishEvents = [],
     parishMembers = [],
     parishOutstations = [],
-    parishSCCs = [];
+    parishSCCs = [],
+    parishOfferingRecords = [];
 
 const marginRuleStyles = [{ 'margin-top': '20px' }]
 
@@ -41,6 +42,14 @@ async function getParishOutstations() {
 async function getParishSCCs() {
     return (await Post(
         '/parish/load/all/sccs', {},
+        {
+            'requiresParishDetails': true
+        }))['response']
+}
+
+async function getParishOfferings() {
+    return (await Post(
+        '/parish/load/all/offering/records', {},
         {
             'requiresParishDetails': true
         }))['response']
@@ -121,12 +130,31 @@ async function Main() {
         });
     } else {
         const drawer = domQuery('.drawer-container');
+        const registryClass = 'registry', reportsClass = 'reports';
+
         const drawerMenus = [
-            new DrawerMenu('miscellenious', [
-                new Menu('members', 'bi-people', showMembersReportsPage),
-                new Menu('outstations', 'bi-collection', viewOutstationsPage),
-                new Menu('SCCs', 'bi-justify-right', viewSCCsPage),
-            ])
+            new DrawerMenu(
+                'Registry',
+                registryClass,
+                [
+                    new Menu('members', 'bi-people', registryClass, promptRegiterMember),
+                    new Menu('Outstation', 'bi-collection', registryClass, promptAddOutstationView),
+                    new Menu('SCC', 'bi-people', registryClass, promptAddSCCView),
+                    new Menu('Offering', 'bi-cash', registryClass, promptAddOffering),
+                    new Menu('Tithe', 'bi-gift', registryClass, promptAddOffering),
+                ]
+            ),
+            new DrawerMenu(
+                'Reports',
+                reportsClass,
+                [
+                    new Menu('members', 'bi-people', reportsClass, showMembersReportsPage),
+                    new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
+                    new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
+                    new Menu('members', 'bi-people', reportsClass, showMembersReportsPage),
+                ],
+                false
+            ),
         ]
 
         populateDrawer(drawer, drawerMenus);
@@ -140,6 +168,7 @@ async function Main() {
         parishOutstations.push(...(await getParishOutstations()));
         parishSCCs.push(...(await getParishSCCs()));
         parishMembers = await getParishMembers();
+        parishOfferingRecords = await getParishOfferings();
 
         setAnchors();
     }
@@ -291,36 +320,35 @@ async function parishEvents() {
 }
 
 function setAnchors() {
-    domQueryById('registry').onclick = openRegistryActionsOptions;
-    domQueryById('reports').onclick = showAllReportsMenuPage;
+    // domQueryById('reports').onclick = showAllReportsMenuPage;
 }
 
-function openRegistryActionsOptions() {
-    const buttonStyles = [{ 'margin-top': '15px' }]
+// function openRegistryActionsOptions() {
+//     const buttonStyles = [{ 'margin-top': '15px' }]
 
-    const regstrationButtons = [
-        Button({ 'text': 'register a member', 'styles': buttonStyles, 'onclick': promptRegiterMember }),
-        Button({ 'text': 'add outstation', 'styles': buttonStyles, onclick: promptAddOutstationView }),
-        Button({ 'text': 'add scc', 'styles': buttonStyles, 'onclick': promptAddSCCView }),
-        Button({ 'text': 'add group', 'styles': buttonStyles }),
-        Button({ 'text': 'add tithe record', 'styles': buttonStyles, 'onclick': promptAddTitheView }),
-        Button({ 'text': 'add offering record', 'styles': buttonStyles, 'onclick': promptAddOffering }),
-    ]
+//     const regstrationButtons = [
+//         Button({ 'text': 'register a member', 'styles': buttonStyles, 'onclick': promptRegiterMember }),
+//         Button({ 'text': 'add outstation', 'styles': buttonStyles, onclick: promptAddOutstationView }),
+//         Button({ 'text': 'add scc', 'styles': buttonStyles, 'onclick': promptAddSCCView }),
+//         Button({ 'text': 'add group', 'styles': buttonStyles }),
+//         Button({ 'text': 'add tithe record', 'styles': buttonStyles, 'onclick': promptAddTitheView }),
+//         Button({ 'text': 'add offering record', 'styles': buttonStyles, 'onclick': promptAddOffering }),
+//     ]
 
-    const column = Column({
-        'children': regstrationButtons,
-        'classlist': ['f-w', 'f-h', 'just-center', 'a-c', 'scroll-y'],
-        'styles': [{ 'background-color': 'gainsboro' }]
-    });
+//     const column = Column({
+//         'children': regstrationButtons,
+//         'classlist': ['f-w', 'f-h', 'just-center', 'a-c', 'scroll-y'],
+//         'styles': [{ 'background-color': 'gainsboro' }]
+//     });
 
-    ModalExpertise.showModal({
-        'actionHeading': 'registry',
-        'children': [column],
-        'fullScreen': true,
-        'dismisible': true,
-        'modalChildStyles': []
-    });
-}
+//     ModalExpertise.showModal({
+//         'actionHeading': 'registry',
+//         'children': [column],
+//         'fullScreen': true,
+//         'dismisible': true,
+//         'modalChildStyles': []
+//     });
+// }
 
 function promptAddOutstationView() {
     const nameTextEdit = TextEdit({ 'placeholder': 'outstation name' });
@@ -714,8 +742,8 @@ function promptAddOffering() {
 
     const sourceSelect = MondoSelect({});
     sourceSelect.innerHTML = `
-        <option value="Mass" selected>Sunday Offering</option>
-        <option value="Outside Mass">Other Offering</option>
+        <option value="Sunday Offering" selected>Sunday Offering</option>
+        <option value="Other Offering">Other Offering</option>
     `
 
     const button = Button({
@@ -882,106 +910,6 @@ function memberView(member) {
     });
 }
 
-function showAllReportsMenuPage() {
-    let selectedOutstationAndSCCMembers;
-
-    const membersIcon = domCreate('i');
-    membersIcon.title = 'members';
-    addClasslist(membersIcon, ['bi', 'bi-people', 'bi-pad']);
-
-    const offeringsIcon = domCreate('i');
-    offeringsIcon.title = 'offering';
-    addClasslist(offeringsIcon, ['bi', 'bi-cash-coin', 'bi-pad']);
-
-    const titheIcon = domCreate('i');
-    titheIcon.title = 'tithe';
-    addClasslist(titheIcon, ['bi', 'bi-gift', 'bi-pad']);
-
-    const outstationPicker = OutstationPicker({
-        'outstations': parishOutstations,
-        'styles': marginRuleStyles
-    });
-    StyleView(outstationPicker, [{ 'padding': '10px' }]);
-
-    const sccPicker = MondoSelect({ 'styles': marginRuleStyles });
-    StyleView(sccPicker, [{ 'padding': '10px' }]);
-
-    const table = domCreate('table');
-    StyleView(table, [{ 'margin': '20px', 'min-width': '300px' }]);
-    const tableHeader = domCreate('thead');
-    tableHeader.innerHTML = `
-        <tr>
-            <td>NO</td>
-            <td>NAME</td>
-            <td>TELEPHONE</td>
-        </tr>
-    `
-    const tbody = domCreate('tbody');
-    addChildrenToView(table, [tableHeader, tbody]);
-
-    outstationPicker.addEventListener('change', function (ev) {
-        ev.preventDefault();
-
-        sccPicker.replaceChildren([]);
-
-        const outstation = JSON.parse(outstationPicker.value);
-        let sccs = parishSCCs.filter(function (scc) {
-            return scc['outstation_id'] === outstation['_id']
-        });
-
-        for (let i = 0; i < sccs.length; i++) {
-            const scc = sccs[i];
-
-            let option = domCreate('option');
-            option.innerText = scc['name']
-            option.value = JSON.stringify(scc);
-
-            sccPicker.appendChild(option);
-        }
-        sccPicker.options[0].selected = true;
-
-        selectedOutstationAndSCCMembers = parishMembers.filter(function (member) {
-            return member['outstation_id'] === JSON.parse(outstationPicker.selectedOptions[0].value)['_id']
-                && member['scc_id'] === JSON.parse(sccPicker.selectedOptions[0].value)['_id']
-        });
-
-        tbody.replaceChildren([]);
-        for (let i = 0; i < selectedOutstationAndSCCMembers.length; i++) {
-            const member = selectedOutstationAndSCCMembers[i];
-            const row = domCreate('tr');
-
-            row.innerHTML = `
-                <td>${i + 1}</td>
-                <td>${member['name']}</td>
-                <td>${member['telephone_number']}</td>
-            `
-            tbody.appendChild(row);
-        }
-    });
-
-    const membersColumn = Column({
-        children: parishMembers.map(function (m) {
-            return Column({
-                'classlist': ['f-w', 'a-c', 'scroll-y'],
-                'children': [
-                    outstationPicker,
-                    sccPicker,
-                    table
-                ]
-            })
-        })
-    });
-
-    ModalExpertise.showModal({
-        'actionHeading': `reports`,
-        'modalHeadingStyles': [{ 'background-color': '#aebdeb' }],
-        'children': [membersColumn],
-        'fullScreen': true,
-        'topRowUserActions': [membersIcon, offeringsIcon, titheIcon]
-    });
-
-}
-
 function viewOutstationsPage() {
     const column = VerticalScrollView({
         'classlist': ['f-w', 'a-c', 'just-center'],
@@ -1047,4 +975,204 @@ function viewSCCsPage() {
         'fullScreen': false,
         'dismisible': true,
     });
+}
+
+
+function showAllReportsMenuPage() {
+    const membersIcon = domCreate('i');
+    membersIcon.title = 'members';
+    addClasslist(membersIcon, ['bi', 'bi-people', 'bi-pad']);
+
+    const offeringsIcon = domCreate('i');
+    offeringsIcon.title = 'offering';
+    addClasslist(offeringsIcon, ['bi', 'bi-cash-coin', 'bi-pad']);
+
+    const titheIcon = domCreate('i');
+    titheIcon.title = 'tithe';
+    addClasslist(titheIcon, ['bi', 'bi-gift', 'bi-pad']);
+
+
+    const membersColumn = MembersReportsView();
+    const offeringReportView = OfferingReportView();
+    const mainView = Column({ 'classlist': ['f-w', 'a-c'], 'children': [membersColumn] });
+
+    membersIcon.onclick = function () {
+        mainView.replaceChildren([]);
+        addChildrenToView(mainView, [membersColumn]);
+    }
+
+    offeringsIcon.onclick = function () {
+        mainView.replaceChildren([]);
+        addChildrenToView(mainView, [offeringReportView]);
+    }
+
+    // membersIcon.onclick = function () {
+    //     mainView.replaceChildren([]);
+    //     addChildrenToView(mainView, [membersColumn]);
+    // }
+
+
+    ModalExpertise.showModal({
+        'actionHeading': `reports`,
+        'modalHeadingStyles': [{ 'background-color': '#aebdeb' }],
+        'children': [mainView],
+        'fullScreen': true,
+        'topRowUserActions': [membersIcon, offeringsIcon, titheIcon]
+    });
+
+}
+
+
+function MembersReportsView() {
+    let selectedOutstationAndSCCMembers;
+
+    const outstationPicker = OutstationPicker({
+        'outstations': parishOutstations,
+        'styles': marginRuleStyles
+    });
+
+    StyleView(outstationPicker, [{ 'padding': '10px' }]);
+
+    const sccPicker = MondoSelect({ 'styles': marginRuleStyles });
+    StyleView(sccPicker, [{ 'padding': '10px' }]);
+
+    const table = domCreate('table');
+    StyleView(table, [{ 'margin': '20px', 'min-width': '300px' }]);
+    const tableHeader = domCreate('thead');
+    tableHeader.innerHTML = `
+        <tr>
+            <td>NO</td>
+            <td>NAME</td>
+            <td>TELEPHONE</td>
+        </tr>
+    `
+    const tbody = domCreate('tbody');
+    addChildrenToView(table, [tableHeader, tbody]);
+
+    outstationPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
+
+        sccPicker.replaceChildren([]);
+
+        const outstation = JSON.parse(outstationPicker.value);
+        let sccs = parishSCCs.filter(function (scc) {
+            return scc['outstation_id'] === outstation['_id']
+        });
+
+        for (let i = 0; i < sccs.length; i++) {
+            const scc = sccs[i];
+
+            let option = domCreate('option');
+            option.innerText = scc['name']
+            option.value = JSON.stringify(scc);
+
+            sccPicker.appendChild(option);
+        }
+        sccPicker.options[0].selected = true;
+
+        selectedOutstationAndSCCMembers = parishMembers.filter(function (member) {
+            return member['outstation_id'] === outstationPicker.selectedOptions[0]['_id']
+                && member['scc_id'] === sccPicker.selectedOptions[0].value['_id']
+        });
+
+        tbody.replaceChildren([]);
+        for (let i = 0; i < selectedOutstationAndSCCMembers.length; i++) {
+            const member = selectedOutstationAndSCCMembers[i];
+            const row = domCreate('tr');
+
+            row.innerHTML = `
+                <td>${i + 1}</td>
+                <td>${member['name']}</td>
+                <td>${member['telephone_number']}</td>
+            `
+            tbody.appendChild(row);
+        }
+    });
+
+    const membersColumn = Column({
+        children: parishMembers.map(function (m) {
+            return Column({
+                'classlist': ['f-w', 'a-c', 'scroll-y'],
+                'children': [
+                    outstationPicker,
+                    sccPicker,
+                    table
+                ]
+            })
+        })
+    });
+
+    return membersColumn;
+}
+
+function OfferingReportView() {
+    const outstationPicker = OutstationPicker({
+        'outstations': parishOutstations,
+        'styles': marginRuleStyles
+    });
+    StyleView(outstationPicker, [{ 'padding': '10px' }]);
+
+    const allOfferingWithOutstations = parishOfferingRecords.map(function (offering) {
+        const outstation = parishOutstations.find(function (outstation) {
+            return outstation['_id'] === offering['outstation_id'];
+        });
+
+        delete offering['outstation_id'];
+        offering['outstation'] = outstation['name'];
+
+        return offering;
+    });
+
+    const table = domCreate('table');
+    StyleView(table, [{ 'margin': '20px', 'min-width': '300px' }]);
+
+    const tableHeader = domCreate('thead');
+    tableHeader.innerHTML = `
+        <tr>
+            <td>NO</td>
+            <td>OUTSTATION</td>
+            <td>DATE</td>
+            <td>AMOUNT</td>
+        </tr>
+    `
+    const tbody = domCreate('tbody');
+    addChildrenToView(table, [tableHeader, tbody]);
+
+    outstationPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
+
+        const outstation = JSON.parse(outstationPicker.value);
+        let outstationsOfferings = allOfferingWithOutstations.filter(function (offering) {
+            return outstation['_id'] === offering['outstation_id'];
+        })
+
+        for (let i = 0; i < outstationsOfferings.length; i++) {
+            const outstationsOffering = outstationsOfferings[i];
+            const row = domCreate('tr');
+            console.log(outstationsOffering);
+
+
+            row.innerHTML = `
+                <td>${i + 1}</td>
+                <td>${outstationsOffering['outstation']}</td>
+                <td>${outstationsOffering['date']}</td>
+                <td>${outstationsOffering['amount']}</td>
+            `
+            tbody.appendChild(row);
+        }
+    });
+
+    const offeringColumn = Column({
+        children: parishMembers.map(function (m) {
+            return Column({
+                'classlist': ['f-w', 'a-c', 'scroll-y'],
+                'children': [
+                    outstationPicker,
+                    table
+                ]
+            })
+        })
+    });
+
+    return offeringColumn;
 }
