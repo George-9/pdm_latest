@@ -23,6 +23,7 @@ export const marginRuleStyles = [{ 'margin-top': '20px' }];
 work(Main);
 
 const registryClass = 'registry', reportsClass = 'reports';
+
 const drawerMenus = [
     new DrawerMenu(
         'Registry',
@@ -164,10 +165,14 @@ function handleDateClick(calendar, info) {
 
 
     ModalExpertise.showModal({
-        children: [column],
-        topRowUserActions: [],
-        actionHeading: 'create new event for date: ' + date,
-        modalChildStyles: [
+        'children': [column],
+        'topRowUserActions': [],
+        'modalHeadingStyles': [
+            { 'background-color': 'goldenrod' },
+            { 'color': 'lightgoldenrodyellow' },
+        ],
+        'actionHeading': 'create new event for date: ' + date,
+        'modalChildStyles': [
             { 'max-width': '400px' },
             { 'height': '600px' }
         ],
@@ -175,7 +180,7 @@ function handleDateClick(calendar, info) {
 }
 
 function handleEventClick(info) {
-    let clickedEvent = (allParishEvents.find(function (event) {
+    let clickedEvent = (ParishDataHandle.allParishEvents.find(function (event) {
         return event._id === info.event.extendedProps._id
     }));
 
@@ -195,7 +200,10 @@ function handleEventClick(info) {
 
     ModalExpertise.showModal({
         'actionHeading': clickedEvent.start,
-        'modalChildStyles': [{ 'width': '300px' }, { 'height': '300px' }],
+        'modalChildStyles': [
+            { 'width': '300px' },
+            { 'height': '300px' },
+        ],
         'topRowUserActions': [shareIcon, deleteIcon],
         'children': [column],
         'dismisible': true,
