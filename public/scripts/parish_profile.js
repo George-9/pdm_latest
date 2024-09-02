@@ -4,6 +4,7 @@ import { OutstationPicker } from "./components/tailored_ui/outstation_picker.js"
 import { Button, Column, MondoBigH3Text, MondoSelect, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "./components/utils/stylus.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
+import showOfferingReportView from "./components/view_callbacks/offering.js";
 import { getOutstationMembers, getOutstationSCCs, getSCCMembers } from "./data_pen/parish_data.js";
 import { addChildrenToView } from "./dom/addChildren.js";
 import { domCreate, domQuery, domQueryAll, domQueryById } from "./dom/query.js";
@@ -22,8 +23,7 @@ let allParishEvents = [],
     parishSCCs = [],
     parishOfferingRecords = [];
 
-const printTableStyle = '* { font-family: arial; } table : { border: 1px solid grey; width: 80%; border-collapse: collapse; } tr, td { border: 1px solid grey; }';
-const marginRuleStyles = [{ 'margin-top': '20px' }]
+export const marginRuleStyles = [{ 'margin-top': '20px' }]
 
 async function getParishMembers() {
     return (await Post(
@@ -161,7 +161,10 @@ async function Main() {
                             })
                         }),
                     new Menu('tithe', 'bi-cash-coin', reportsClass),
-                    new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
+                    new Menu('offering', 'bi-cash-coin',
+                        reportsClass, async function (ev) {
+                            await showOfferingReportView(parishOfferingRecords, parishOutstations)
+                        }),
                     new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
                     new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
                 ],
@@ -1154,154 +1157,3 @@ function MembersReportsView() {
     return membersColumn;
 }
 
-
-
-// OFFERING REPORTS
-async function showOfferingReportView() {
-    let outstationTotal = 0;
-
-    parishOfferingRecords = await getParishOfferings();
-    const outstationPicker = OutstationPicker({
-        'outstations': parishOutstations,
-        'styles': marginRuleStyles
-    });
-
-    outstationPicker.options[0].selected = true;
-    StyleView(outstationPicker, [{ 'padding': '10px' }]);
-
-    const offeringTableId = 'offering-table';
-    const table = domCreate('table');
-    table.id = offeringTableId;
-    StyleView(table, [{
-        'margin': '20px',
-        'min-width': '300px',
-        'border-collapse': 'collapse'
-    }]);
-
-    const tableHeader = domCreate('thead');
-    tableHeader.innerHTML = `
-        <tr>
-            <td>NO</td>
-            <td>DATE</td>
-            <td>OUTSTATION</td>
-            <td>AMOUNT</td>
-        </tr>
-    `
-    const tbody = domCreate('tbody');
-    addChildrenToView(table, [tableHeader, tbody]);
-
-    function setRowsValue() {
-        tbody.replaceChildren([]);
-
-        outstationTotal = 0;
-        const existingFooter = table.querySelector('tfoot');
-        if (existingFooter) {
-            table.removeChild(existingFooter);
-        }
-
-        const outstation = JSON.parse(outstationPicker.value);
-        let outstationsOfferings = parishOfferingRecords.filter(function (offering) {
-            return outstation['_id'] === offering['outstation_id'];
-        });
-
-        if (outstationsOfferings && outstationsOfferings.length < 1) {
-            const emptyOfferingRow = domCreate('tr');
-            const emptyOfferingView = Row({
-                'children': [
-                    MondoText({ 'text': 'no offering records were found in this outstation' })
-                ]
-            });
-            emptyOfferingRow.innerHTML = `<td colspan="4">
-            ${emptyOfferingView.innerHTML}
-            </td>`;
-            tbody.appendChild(emptyOfferingRow);
-
-            return
-        }
-
-        tbody.replaceChildren([]);
-        for (let i = 0; i < outstationsOfferings.length; i++) {
-            const outstationsOffering = outstationsOfferings[i];
-            const row = domCreate('tr');
-
-            let outstationAmount = outstationsOffering['amount'];
-            row.innerHTML = `
-            <td> ${i + 1}</td>
-            <td>${outstationsOffering['date']}</td>
-            <td style="text-align: center;">${parishOutstations.find(function (o) {
-                return o['_id'] === (outstationsOffering['outstation_id'])
-            })['name']}</td>
-            <td>${outstationAmount}</td>
-            `
-            outstationTotal += parseFloat(outstationAmount);
-            tbody.appendChild(row);
-        }
-        const tFooter = domCreate('tfoot');
-        tFooter.innerHTML = `
-                <tr>
-                <td colspan="3">TOTAL</td>
-                <td>${outstationTotal}</td>
-            </tr>
-                `
-        table.appendChild(tFooter)
-    }
-
-    // initialize view witha table
-    setRowsValue();
-    outstationPicker.addEventListener('change', function (ev) {
-        ev.preventDefault();
-        setRowsValue();
-    });
-
-    const offeringColumn = Column({
-        children: parishMembers.map(function (m) {
-            return Column({
-                'classlist': ['f-w', 'a-c', 'scroll-y'],
-                'children': [outstationPicker, table]
-            })
-        })
-    });
-
-    ModalExpertise.showModal({
-        'actionHeading': 'offering reports',
-        'children': [offeringColumn],
-        'topRowUserActions': [
-            PDFPrintButton(
-                offeringTableId,
-                `OFFERING ${JSON.parse(outstationPicker.value)['name']} `
-            )
-        ],
-        'dismisible': true,
-    });
-}
-
-
-function PDFPrintButton(tableId, heading) {
-    const printPdfButton = domCreate('i');
-    addClasslist(printPdfButton, ['bi', 'bi-printer']);
-
-    printPdfButton.onclick = function (ev) {
-        const table = domQueryById(tableId);
-        if (!tableId || !table) {
-            return;
-        }
-
-        const printElId = `print - ${tableId} `;
-        const el = domQueryById(printElId);
-
-        // remove any pre-existing print element
-        if (el) { document.body.removeChild(el); }
-
-        let headingEl = MondoBigH3Text({ 'text': heading ? `${heading} `.toUpperCase() : '' });
-        const column = Column({ 'children': [headingEl, table.cloneNode(true)] });
-        column.id = printElId;
-
-        // hide the `print content` element
-        column.style.zIndex = '-10';
-        document.body.appendChild(column);
-
-        printJS({ printable: column.innerHTML, type: 'raw-html', 'style': printTableStyle });
-    }
-
-    return printPdfButton;
-}
