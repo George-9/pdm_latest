@@ -9,9 +9,8 @@ import { promptAddOutstationView, viewOutstationsPage } from "./components/view_
 import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { promptAddSCCView, viewSCCsPage } from "./components/view_callbacks/scc.js";
 import { promptAddTitheView } from "./components/view_callbacks/tithe.js";
-import { parishEvents } from "./data_pen/parish_data.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
-import { getParishMembers, getParishOfferings, getParishOutstations, getParishSCCs } from "./data_source/main.js";
+import { getParishMembers, getParishOfferings, getParishOutstations, getParishSCCs, parishEvents } from "./data_source/main.js";
 import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
 import { work } from "./dom/worker.js";
@@ -60,7 +59,6 @@ async function Main() {
         ParishDataHandle.parishSCCs.push(...(await getParishSCCs()));
         ParishDataHandle.parishMembers.push(...(await getParishMembers()))
         ParishDataHandle.parishOfferingRecords.push(...(await getParishOfferings()));
-
 
         populateDrawer(drawer, drawerMenus);
         showParishName();

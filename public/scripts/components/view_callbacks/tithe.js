@@ -155,3 +155,6 @@ export function promptAddTitheView() {
         addChildrenToView(searchResultViewContainer, matchViews);
     });
 }
+
+export function TitheReportsView() {
+}
