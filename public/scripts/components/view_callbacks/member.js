@@ -6,6 +6,7 @@ import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
 import { marginRuleStyles } from "../../parish_profile.js";
+import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
@@ -140,43 +141,12 @@ export function promptRegiterMember() {
 
     ModalExpertise.showModal({
         'actionHeading': 'member registration',
+        'modalHeadingStyles': [{ 'background-color': 'azure' }],
         'modalChildStyles': [{ 'width': '400px', 'height': '300px' }],
         // 'topRowUserActions': [addFieldIconButton],
         'children': [column],
         'fullScreen': false,
         'dismisible': true,
-    });
-}
-
-export function memberView(member) {
-    const outstation = memberGetOutstation(member, ParishDataHandle.parishOutstations)
-    const scc = memberGetSCC(member, ParishDataHandle.parishSCCs);
-
-    member['outstation'] = outstation['name'];
-    member['scc'] = scc['name'];
-
-    return Column({
-        'classlist': ['f-w', 'a-c', 'scroll-y'],
-        'children': Object.keys(member).map(function (key) {
-            if (key !== '_id' && !`${key}`.match('_id')) {
-                const valueEditor = TextEdit({ 'placeholder': key })
-                valueEditor.value = member[key];
-
-                valueEditor.addEventListener('input', function (ev) {
-                    ev.preventDefault();
-
-                    member[key] = valueEditor.value;
-                })
-
-                return Column({
-                    'children': [
-                        MondoText({ 'text': key.toUpperCase().split('_').join(' ') }),
-                        valueEditor
-                    ]
-                })
-            }
-            return ''
-        })
     });
 }
 
@@ -232,12 +202,14 @@ export function showMembersReportsView() {
 
         sccPicker.options[0].selected = true;
         // set the heading of the currently selected outstation
-        PDFPrintButton.printingHeading = `${JSON.parse(outstationPicker.value)['name']} . ${JSON.parse(sccPicker.value)['name']}`;
+        PDFPrintButton.printingHeading = `${LocalStorageContract.parishName()}
+         ${JSON.parse(outstationPicker.value)['name']} Outstation . ${JSON.parse(sccPicker.value)['name']} SCC members`.toUpperCase();
 
         const setViews = function () {
-            PDFPrintButton.printingHeading = `${JSON.parse(outstationPicker.value)['name']} . ${JSON.parse(sccPicker.value)['name']}`;
-            let outstationMembers = getOutstationMembers(outstationPicker.value);
+            PDFPrintButton.printingHeading = `${LocalStorageContract.parishName()}
+             ${JSON.parse(outstationPicker.value)['name']} Outstation . ${JSON.parse(sccPicker.value)['name']} SCC members`.toUpperCase();
 
+            let outstationMembers = getOutstationMembers(outstationPicker.value);
             selectedOutstationAndSCCMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
             tbody.replaceChildren([]);
 
@@ -326,5 +298,37 @@ export function showMembersReportsView() {
         'children': [membersColumn],
         'topRowUserActions': [printButton],
         'fullScreen': true,
+    });
+}
+
+export function memberView(member) {
+    const outstation = memberGetOutstation(member, ParishDataHandle.parishOutstations)
+    const scc = memberGetSCC(member, ParishDataHandle.parishSCCs);
+
+    member['outstation'] = outstation['name'];
+    member['scc'] = scc['name'];
+
+    return Column({
+        'classlist': ['f-w', 'a-c', 'scroll-y'],
+        'children': Object.keys(member).map(function (key) {
+            if (key !== '_id' && !`${key}`.match('_id')) {
+                const valueEditor = TextEdit({ 'placeholder': key })
+                valueEditor.value = member[key];
+
+                valueEditor.addEventListener('input', function (ev) {
+                    ev.preventDefault();
+
+                    member[key] = valueEditor.value;
+                })
+
+                return Column({
+                    'children': [
+                        MondoText({ 'text': key.toUpperCase().split('_').join(' ') }),
+                        valueEditor
+                    ]
+                })
+            }
+            return ''
+        })
     });
 }

@@ -38,7 +38,7 @@ export class ModalExpertise {
         });
 
         const modalHeaderTopRow = Row({
-            children: [modalChildHeading],
+            'styles': [{ 'background-color': 'whitesmoke' }],
             'classlist': ['f-w',
                 dismisible
                     ? 'space-between'
@@ -46,7 +46,8 @@ export class ModalExpertise {
                 'a-e',
                 'm-pad',
                 'border-bottom'
-            ]
+            ],
+            children: [modalChildHeading],
         });
 
         StyleView(modalHeaderTopRow, modalHeadingStyles)
@@ -56,8 +57,9 @@ export class ModalExpertise {
         }
 
         const userActionsRow = Row({
+            'classlist': ['f-w', 'a-e', 'just-end', 'm-pad', 'border-bottom'],
+            'styles': [{ 'background-color': 'whitesmoke' }],
             'children': topRowUserActions,
-            'classlist': ['f-w', 'a-e', 'just-end', 'm-pad', 'border-bottom']
         });
 
         var modalHeader = Column({

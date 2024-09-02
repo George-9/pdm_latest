@@ -16,7 +16,6 @@ export function TextEdit({
     type = ''
 }) {
     const input = domCreate('input');
-
     input.setAttribute('type', type ?? 'text');
     input.placeholder = placeholder ?? '';
     input.style.width = width ?? '300px';
@@ -27,15 +26,22 @@ export function TextEdit({
         input.setAttribute('type', `${type}`);
     }
 
-    /**
-     * null better than undefined, rule of the thumb
-     */
-    input.addEventListener('input', function (ev) {
-        ev.preventDefault();
-        onType(ev);
-    });
+    if (type === 'date' || input.getAttribute('type') === 'date') {
+        input.addEventListener('click', function () {
+            input.focus();
+            input.showPicker();
+        })
+    }
+    else {
+        input.addEventListener('input', function (ev) {
+            ev.preventDefault();
+            onType(ev);
+        });
 
-    input.addEventListener('submit', onSubmit ?? null);
+        input.addEventListener('submit', onSubmit ?? null);
+    }
+
+    // null better than undefined, rule of the thumb
     StyleView(input, styles);
     return input;
 }

@@ -58,6 +58,7 @@ export function promptAddTitheView() {
     searchResultViewContainer = Column({ 'classlist': ['f-h', 'f-w', 'scroll-y'], 'children': [] });
 
     const memberSearchView = Column({
+        'styles': [{ 'padding-top': '50px' }],
         'classlist': ['f-w', 'a-c'],
         'children': [memberSearchI, dateI, amountI, submitButton, searchResultViewContainer]
     });
@@ -255,6 +256,7 @@ export function showTitheReportsView() {
         'classlist': ['f-w', 'a-c', 'm-pad'],
         'children': [table]
     });
+
     const mainColumn = Column({
         'children': [
             Row({
