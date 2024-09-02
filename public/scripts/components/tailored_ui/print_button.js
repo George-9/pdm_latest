@@ -23,6 +23,7 @@ export class PDFPrintButton {
 
     constructor(tableId) {
         const printPdfButton = domCreate('i');
+        printPdfButton.title = 'print';
         addClasslist(printPdfButton, ['bi', 'bi-printer']);
 
         printPdfButton.onclick = function (ev) {

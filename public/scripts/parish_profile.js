@@ -19,52 +19,54 @@ import { Post } from "./net_tools.js";
 import { DrawerMenu, Menu, populateDrawer } from "./populate_drawer.js";
 import { LocalStorageContract } from "./storage/LocalStorageContract.js";
 
+export const marginRuleStyles = [{ 'margin-top': '20px' }];
+
 work(Main);
 
-export const marginRuleStyles = [{ 'margin-top': '20px' }];
+const registryClass = 'registry', reportsClass = 'reports';
+const drawerMenus = [
+    new DrawerMenu(
+        'Registry',
+        registryClass,
+        [
+            new Menu('members', 'bi-people', registryClass, promptRegiterMember),
+            new Menu('Outstation', 'bi-collection', registryClass, promptAddOutstationView),
+            new Menu('SCC', 'bi-people', registryClass, promptAddSCCView),
+            new Menu('Offering', 'bi-cash', registryClass, promptAddOffering),
+            new Menu('Tithe', 'bi-gift', registryClass, promptAddTitheView),
+        ]
+    ),
+    new DrawerMenu(
+        'Reports',
+        reportsClass,
+        [
+            new Menu('members', 'bi-people', reportsClass, ShowMembersReportsView),
+            new Menu('tithe', 'bi-cash-coin', reportsClass),
+            new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
+            new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
+            new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
+        ],
+        false
+    ),
+]
 
 async function Main() {
     if (LocalStorageContract.parishNotLoggedIn()) {
         promptLogIn();
     } else {
         const drawer = domQuery('.drawer-container');
-        const registryClass = 'registry', reportsClass = 'reports';
 
-        const drawerMenus = [
-            new DrawerMenu(
-                'Registry',
-                registryClass,
-                [
-                    new Menu('members', 'bi-people', registryClass, promptRegiterMember),
-                    new Menu('Outstation', 'bi-collection', registryClass, promptAddOutstationView),
-                    new Menu('SCC', 'bi-people', registryClass, promptAddSCCView),
-                    new Menu('Offering', 'bi-cash', registryClass, promptAddOffering),
-                    new Menu('Tithe', 'bi-gift', registryClass, promptAddTitheView),
-                ]
-            ),
-            new DrawerMenu(
-                'Reports',
-                reportsClass,
-                [
-                    new Menu('members', 'bi-people', reportsClass, ShowMembersReportsView),
-                    new Menu('tithe', 'bi-cash-coin', reportsClass),
-                    new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
-                    new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
-                    new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
-                ],
-                false
-            ),
-        ]
+        ParishDataHandle.parishOutstations.push(...(await getParishOutstations()));
+        ParishDataHandle.parishSCCs.push(...(await getParishSCCs()));
+        ParishDataHandle.parishMembers.push(...(await getParishMembers()))
+        ParishDataHandle.parishOfferingRecords.push(...(await getParishOfferings()));
+
 
         populateDrawer(drawer, drawerMenus);
         showParishName();
         setCalendar();
         showEventsCount();
 
-        ParishDataHandle.parishOutstations.push(...(await getParishOutstations()));
-        ParishDataHandle.parishSCCs.push(...(await getParishSCCs()));
-        ParishDataHandle.parishMembers.push(...(await getParishMembers()))
-        ParishDataHandle.parishOfferingRecords.push(...(await getParishOfferings()));
 
         setAnchors();
 

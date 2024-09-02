@@ -36,8 +36,6 @@ export function getOutstationMembers(outstation = '') {
         });
 }
 
-
-
 /**
  * Retrieves al the members of a given SCC
  * 

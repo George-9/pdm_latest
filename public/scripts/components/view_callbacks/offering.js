@@ -113,11 +113,9 @@ export async function showOfferingReportView() {
         }
 
         const outstation = JSON.parse(outstationPicker.value);
-        let outstationsOfferings = ParishDataHandle
-            .parishOfferingRecords
-            .filter(function (offering) {
-                return outstation['_id'] === offering['outstation_id'];
-            });
+        let outstationsOfferings = ParishDataHandle.parishOfferingRecords.filter(function (offering) {
+            return outstation['_id'] === offering['outstation_id'];
+        });
 
         if (outstationsOfferings && outstationsOfferings.length < 1) {
             const emptyOfferingRow = domCreate('tr');
@@ -181,6 +179,7 @@ export async function showOfferingReportView() {
         'actionHeading': 'offering reports',
         'children': [offeringColumn],
         'topRowUserActions': [new PDFPrintButton(offeringTableId)],
+        'fullScreen': true,
         'dismisible': true,
     });
 }

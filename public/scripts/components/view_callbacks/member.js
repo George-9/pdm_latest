@@ -1,5 +1,6 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
+import { getParishMembers } from "../../data_source/main.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
@@ -10,7 +11,7 @@ import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column } from "../UI/column.js";
-import { Button, MondoSelect, MondoText, TextEdit } from "../UI/cool_tool_ui.js";
+import { Button, MondoSelect, MondoText, Row, TextEdit } from "../UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
@@ -99,11 +100,7 @@ export function promptRegiterMember() {
                 }
             });
 
-            let result = await Post(
-                '/parish/register/member',
-                body,
-                { 'requiresParishDetails': true }
-            );
+            let result = await Post('/parish/register/member', body, { 'requiresParishDetails': true });
 
             const msg = result['response'];
             MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
@@ -186,6 +183,8 @@ export function memberView(member) {
 export function showMembersReportsView() {
     let selectedOutstationAndSCCMembers;
 
+    const tableId = 'members-table';
+    const printButton = new PDFPrintButton(tableId);
     const outstationPicker = OutstationPicker({
         'outstations': ParishDataHandle.parishOutstations,
         'styles': marginRuleStyles
@@ -197,7 +196,10 @@ export function showMembersReportsView() {
     StyleView(sccPicker, [{ 'padding': '10px' }]);
 
     const table = domCreate('table');
-    StyleView(table, [{ 'margin': '20px', 'min-width': '300px' }]);
+    table.id = tableId;
+
+    StyleView(table, [{ 'margin': '20px' }, { 'width': '400px' }]);
+    addClasslist(table, ['txt-c']);
 
     const tableHeader = domCreate('thead');
     tableHeader.innerHTML = `
@@ -205,8 +207,6 @@ export function showMembersReportsView() {
             <td>NO</td>
             <td>NAME</td>
             <td>TELEPHONE</td>
-            <td>VIEW</td>
-            <td>PRINT</td>
         </tr>
     `
     const tbody = domCreate('tbody');
@@ -231,8 +231,11 @@ export function showMembersReportsView() {
         }
 
         sccPicker.options[0].selected = true;
+        // set the heading of the currently selected outstation
+        PDFPrintButton.printingHeading = `${JSON.parse(outstationPicker.value)['name']} . ${JSON.parse(sccPicker.value)['name']}`;
 
         const setViews = function () {
+            PDFPrintButton.printingHeading = `${JSON.parse(outstationPicker.value)['name']} . ${JSON.parse(sccPicker.value)['name']}`;
             let outstationMembers = getOutstationMembers(outstationPicker.value);
 
             selectedOutstationAndSCCMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
@@ -248,25 +251,27 @@ export function showMembersReportsView() {
                     <td>${member['name']}</td>
                     <td><a href="${'tel:' + telephoneNumber}">${telephoneNumber}</a></td>
                 `
-                const viewMemberTd = domCreate('td');
-                const tdContent = domCreate('i');
-                addClasslist(tdContent, ['bi', 'bi-arrows-angle-expand']);
+                addClasslist(row, ['highlightable'])
+                // const viewMemberTd = domCreate('td');
+                // const tdContent = domCreate('i');
+                // addClasslist(tdContent, ['bi', 'bi-arrows-angle-expand']);
 
-                tdContent.onclick = function () {
-                    ModalExpertise.showModal({
-                        'actionHeading': `${member['name']}`.toUpperCase(),
-                        'modalHeadingStyles': [{ 'background-color': 'dodgerblue' }, { 'color': 'white' }],
-                        'modalChildStyles': [{ 'width': '400px' }],
-                        'children': [memberView(member)]
-                    })
+                row.onclick = function (ev) {
+                    if (ev.target === row) {
+                        ModalExpertise.showModal({
+                            'actionHeading': `${member['name']}`.toUpperCase(),
+                            'modalHeadingStyles': [{ 'background-color': 'dodgerblue' }, { 'color': 'white' }],
+                            'modalChildStyles': [{ 'width': '400px' }],
+                            'children': [memberView(member)]
+                        })
+                    }
                 }
-                addChildrenToView(viewMemberTd, [tdContent]);
 
-                const printMemberView = domCreate('td');
-                const printTdContent = new PDFPrintButton('');
-                addChildrenToView(printMemberView, [printTdContent]);
-
-                addChildrenToView(row, [viewMemberTd, printMemberView]);
+                // addChildrenToView(viewMemberTd, [tdContent]);
+                // const printMemberView = domCreate('td');
+                // const printTdContent = new PDFPrintButton('');
+                // addChildrenToView(printMemberView, [printTdContent]);
+                // addChildrenToView(row, [viewMemberTd]);
 
                 tbody.appendChild(row);
             }
@@ -277,16 +282,27 @@ export function showMembersReportsView() {
         sccPicker.addEventListener('change', setViews);
     });
 
-    const styles = [{ 'font-size': '12px' }]
+    const rowStyle = [{ 'width': '360px' }], classlist = ['a-c', 'space-between'],
+        styles = [
+            { 'font-size': '18px' },
+            { 'font-weight': '700' }
+        ]
+
     const pickersRow = Column({
+        'styles': [{ 'width': '80%' }],
+        'classlist': ['a-c'],
         'children': [
-            Column({
+            Row({
+                'classlist': classlist,
+                'styles': rowStyle,
                 'children': [
-                    MondoText({ 'text': 'outstation', 'styles': styles }),
+                    MondoText({ 'text': 'OUTSTATION ', 'styles': styles }),
                     outstationPicker,
                 ]
             }),
-            Column({
+            Row({
+                'classlist': classlist,
+                'styles': rowStyle,
                 'children': [
                     MondoText({ 'text': 'SCC', 'styles': styles }),
                     sccPicker
@@ -299,18 +315,16 @@ export function showMembersReportsView() {
         children: ParishDataHandle.parishMembers.map(function (m) {
             return Column({
                 'classlist': ['f-w', 'a-c', 'scroll-y'],
-                'children': [
-                    pickersRow,
-                    table
-                ]
+                'children': [pickersRow, table]
             })
         })
     });
 
     ModalExpertise.showModal({
-        'actionHeading': 'members report',
-        'modalHeadingStyles': [{ 'background-color': '#bebeff', }],
+        'actionHeading': 'members reports',
+        'modalHeadingStyles': [{ 'background-color': '#e2e1ef', }],
+        'children': [membersColumn],
+        'topRowUserActions': [printButton],
         'fullScreen': true,
-        'children': [membersColumn]
     });
 }

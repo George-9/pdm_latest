@@ -3,9 +3,7 @@ import { ParishLogIn } from "../../log_in.js";
 import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
-import { Button } from "../UI/button.js";
-import { Column } from "../UI/column.js";
-import { MondoText } from "../UI/mondo_text.js";
+import { Button, Column, MondoText } from "../UI/cool_tool_ui.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
 export function promptLogIn() {
