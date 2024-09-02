@@ -4,13 +4,15 @@ import { OutstationPicker } from "./components/tailored_ui/outstation_picker.js"
 import { Button, Column, MondoBigH3Text, MondoSelect, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "./components/utils/stylus.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
-import showOfferingReportView from "./components/view_callbacks/offering.js";
+import { promptAddOffering, showOfferingReportView } from "./components/view_callbacks/offering.js";
+import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
+import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { getOutstationMembers, getOutstationSCCs, getSCCMembers } from "./data_pen/parish_data.js";
+import { getParishMembers, getParishOfferings, getParishOutstations, getParishSCCs } from "./data_source/main.js";
 import { addChildrenToView } from "./dom/addChildren.js";
-import { domCreate, domQuery, domQueryAll, domQueryById } from "./dom/query.js";
+import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
 import { work } from "./dom/worker.js";
-import { ParishLogIn } from "./log_in.js";
 import { Post } from "./net_tools.js";
 import { DrawerMenu, Menu, populateDrawer } from "./populate_drawer.js";
 import { LocalStorageContract } from "./storage/LocalStorageContract.js";
@@ -23,113 +25,11 @@ let allParishEvents = [],
     parishSCCs = [],
     parishOfferingRecords = [];
 
-export const marginRuleStyles = [{ 'margin-top': '20px' }]
-
-async function getParishMembers() {
-    return (await Post(
-        '/parish/load/all/members', {},
-        {
-            'requiresParishDetails': true
-        }))['response']
-}
-
-async function getParishOutstations() {
-    return (await Post(
-        '/parish/load/all/outstations', {},
-        {
-            'requiresParishDetails': true
-        }))['response']
-}
-
-async function getParishSCCs() {
-    return (await Post(
-        '/parish/load/all/sccs', {},
-        {
-            'requiresParishDetails': true
-        }))['response']
-}
-
-async function getParishOfferings() {
-    return (await Post(
-        '/parish/load/all/offering/records', {},
-        {
-            'requiresParishDetails': true
-        }))['response']
-}
+export const marginRuleStyles = [{ 'margin-top': '20px' }];
 
 async function Main() {
     if (LocalStorageContract.parishNotLoggedIn()) {
-        const emailInput = TextEdit({ 'placeholder': 'email' });
-        const passwordInput = TextEdit({ 'placeholder': 'password', onSubmit: doLogIn });
-
-        const button = Button({
-            'text': 'submit',
-            'onclick': doLogIn,
-            'classlist': {},
-            'styles': [{ 'margin-top': '40px' }]
-        });
-
-        const column = Column({
-            'children': [emailInput, passwordInput, button],
-            'classlist': ['f-w', 'fx-col', 'a-c', 'just-center'],
-            styles: [{ 'padding-top': '80px' }]
-        });
-
-        async function doLogIn() {
-            try {
-                TextEditValueValidator.validate('email', emailInput);
-                TextEditValueValidator.validate('password', passwordInput);
-
-                let result = await ParishLogIn(emailInput.value, passwordInput.value);
-                const msg = result['response'];
-
-                MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
-
-                if (msg.match('success')) {
-                    await Post('/parish/details', {
-                        'email': emailInput.value,
-                        'password': passwordInput.value,
-                    },
-                        {
-                            'requiresParishDetails': false
-                        }
-                    ).then(function (parishDetails) {
-                        let credentials = parishDetails['response'];
-                        if (credentials) {
-                            /**remove unneccessary mongodb objectId */
-                            delete credentials['_id']
-
-                            LocalStorageContract.storeDetails(credentials);
-                            window.location.reload();
-                        } else {
-                            MessegePopup.showMessegePuppy([MondoText({ 'text': 'something went wrong' })]);
-                        }
-                    })
-
-                }
-            } catch (error) {
-                if (error instanceof TextEditError) {
-                    MessegePopup.showMessegePuppy([MondoText({ 'text': error.message })]);
-                }
-            }
-        }
-
-        domQueryAll('h3').forEach(function (el) {
-            el.style.display = 'none';
-        });
-
-        domQueryAll('.drawer').forEach(function (el) {
-            el.style.display = 'none';
-        });
-
-        ModalExpertise.showModal({
-            'actionHeading': 'Log In',
-            'children': [column],
-            'classlist': ['f-w'],
-            'dismisible': false,
-            'fullScreen': false,
-            'modalChildStyles': [{ 'width': '400px' }]
-        });
+        promptLogIn();
     } else {
         const drawer = domQuery('.drawer-container');
         const registryClass = 'registry', reportsClass = 'reports';
@@ -140,9 +40,9 @@ async function Main() {
                 registryClass,
                 [
                     new Menu('members', 'bi-people', registryClass, promptRegiterMember),
-                    new Menu('Outstation', 'bi-collection', registryClass, promptAddOutstationView),
+                    new Menu('Outstation', 'bi-collection', registryClass, () => promptAddOutstationView(parishOutstations)),
                     new Menu('SCC', 'bi-people', registryClass, promptAddSCCView),
-                    new Menu('Offering', 'bi-cash', registryClass, promptAddOffering),
+                    new Menu('Offering', 'bi-cash', registryClass, () => promptAddOffering(parishOutstations)),
                     new Menu('Tithe', 'bi-gift', registryClass, promptAddTitheView),
                 ]
             ),
@@ -165,7 +65,7 @@ async function Main() {
                         reportsClass, async function (ev) {
                             await showOfferingReportView(parishOfferingRecords, parishOutstations)
                         }),
-                    new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
+                    new Menu('Outstations', 'bi-collection', reportsClass, () => viewOutstationsPage(parishOutstations, parishMembers)),
                     new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
                 ],
                 false
@@ -363,44 +263,6 @@ function setAnchors() {
 //     });
 // }
 
-function promptAddOutstationView() {
-    const nameTextEdit = TextEdit({ 'placeholder': 'outstation name' });
-
-    const button = Button({ 'text': 'submit' });
-    button.onclick = async function (ev) {
-        ev.preventDefault();
-        try {
-            TextEditValueValidator.validate('outstation name', nameTextEdit);
-
-            let result = await Post('/parish/add/outstation',
-                { outstation: { 'name': nameTextEdit.value } },
-                { 'requiresParishDetails': true });
-            let msg = result['response'];
-
-            MessegePopup.showMessegePuppy([new MondoText({ 'text': msg })])
-            if (msg.match('success') || msg.match('save')) {
-                clearTextEdits([nameTextEdit]);
-                parishOutstations = await getParishOutstations();
-            }
-        } catch (error) {
-            MessegePopup.showMessegePuppy([MondoText({ 'text': error })])
-        }
-    }
-
-    const column = Column({
-        'children': [nameTextEdit, button],
-        'classlist': ['f-w', 'a-c']
-    });
-    column.style.paddingTop = '30px';
-
-    ModalExpertise.showModal({
-        'actionHeading': 'add outstations to your parish',
-        'children': [column],
-        'fullScreen': false,
-        'modalChildStyles': [{ 'width': '400px', 'height': '50%' }]
-    });
-}
-
 function promptAddSCCView() {
     const sccNameI = TextEdit({ 'placeholder': 'scc name' });
     const outstationPicker = OutstationPicker({
@@ -431,7 +293,7 @@ function promptAddSCCView() {
                 MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
                 if (msg.match('success' || msg.match('save'))) {
                     clearTextEdits(sccNameI);
-                    parishSCCs = await getParishSCCs();
+                    parishSCCs = getParishSCCs();
                 }
             } catch (error) {
                 MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
@@ -559,7 +421,7 @@ function promptRegiterMember() {
 
             if (msg.match('success') || msg.match('save')) {
                 clearTextEdits([nameI, dobI, motherNameI, fatherNameI, GodParentNameI]);
-                parishMembers = await getParishMembers();
+                parishMembers = getParishMembers();
             }
         }
     });
@@ -599,7 +461,6 @@ function promptRegiterMember() {
         'dismisible': true,
     });
 }
-
 
 function promptAddTitheView() {
     let selectedMemberId, searchResultViewContainer;
@@ -748,63 +609,6 @@ function promptAddTitheView() {
 }
 
 
-function promptAddOffering() {
-    const outstationPicker = OutstationPicker({ 'outstations': parishOutstations });
-    const dateI = TextEdit({ 'type': 'date' });
-    const amountI = TextEdit({ 'placeholder': 'amount' });
-
-    const sourceSelect = MondoSelect({});
-    sourceSelect.innerHTML = `
-        <option value="Sunday Offering" selected>Sunday Offering</option>
-        <option value="Other Offering">Other Offering</option>
-    `
-
-    const button = Button({
-        'text': 'submit', 'onclick': async function () {
-            TextEditValueValidator.validate('outstation', outstationPicker);
-            TextEditValueValidator.validate('amount', amountI);
-            TextEditValueValidator.validate('date', dateI);
-
-            const body = {
-                offering: {
-                    outstation_id: JSON.parse(outstationPicker.selectedOptions[0].value)['_id'],
-                    source: sourceSelect.selectedOptions[0].value,
-                    date: dateI.value,
-                    amount: amountI.value,
-                }
-            }
-
-            let result = await Post('/parish/record/offering', body, { 'requiresParishDetails': true })
-            let msg = result['response'];
-
-            MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
-
-            if (msg.match('success') || msg.match('save')) {
-                clearTextEdits([amountI]);
-            }
-        }
-    })
-
-    const column = Column({
-        'classlist': ['f-w', 'f-h', 'a-c'],
-        'children': [
-            outstationPicker,
-            sourceSelect,
-            dateI,
-            amountI,
-            button
-        ]
-    });
-
-    ModalExpertise.showModal({
-        'actionHeading': 'add offering records',
-        'modalChildStyles': [{ 'width': '400px', 'height': '400px' }],
-        'dismisible': true,
-        'children': [column],
-    });
-}
-
-
 // function showMembersReportsPage() {
 //     let agridApi;
 
@@ -920,35 +724,6 @@ function memberView(member) {
             }
             return ''
         })
-    });
-}
-
-function viewOutstationsPage() {
-    const column = VerticalScrollView({
-        'classlist': ['f-w', 'a-c', 'just-center'],
-        'children': parishOutstations.map(function (outstation) {
-            let outstationMembersCount = parishMembers.filter(function (m) {
-                return m['outstation_id'] === outstation['_id']
-            }).length;
-
-            return Row({
-                'classlist': ['space-around', 'a-c', 'outlined'],
-                'styles': [{ 'width': '50%' }, { 'margin': '10px' }],
-                'children': [
-                    MondoBigH3Text({ 'text': outstation['name'] }),
-                    MondoText({ 'text': `${outstationMembersCount} members` })
-                ]
-            });
-        })
-    });
-
-    ModalExpertise.showModal({
-        'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
-        'actionHeading': `parish outstations (${parishOutstations.length})`,
-        'children': [column],
-        'modalChildStyles': [{ 'width': '400px' }],
-        'fullScreen': false,
-        'dismisible': true,
     });
 }
 

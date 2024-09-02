@@ -1,16 +1,74 @@
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate } from "../../dom/query.js";
+import { clearTextEdits } from "../../dom/text_edit_utils.js";
+import { Post } from "../../net_tools.js";
 import { marginRuleStyles } from "../../parish_profile.js";
 import { ModalExpertise } from "../actions/modal.js";
+import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
-import { Column, Row, MondoText } from "../UI/cool_tool_ui.js";
+import { Column, Row, MondoText, TextEdit, Button, MondoSelect } from "../UI/cool_tool_ui.js";
 import { StyleView } from "../utils/stylus.js";
+import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
-export default showOfferingReportView
+// ADD OFFERING REPORTS
+export function promptAddOffering(parishOutstations) {
+    const outstationPicker = OutstationPicker({ 'outstations': parishOutstations });
+    const dateI = TextEdit({ 'type': 'date' });
+    const amountI = TextEdit({ 'placeholder': 'amount' });
+
+    const sourceSelect = MondoSelect({});
+    sourceSelect.innerHTML = `
+        <option value="Sunday Offering" selected>Sunday Offering</option>
+        <option value="Other Offering">Other Offering</option>
+    `
+
+    const button = Button({
+        'text': 'submit', 'onclick': async function () {
+            TextEditValueValidator.validate('outstation', outstationPicker);
+            TextEditValueValidator.validate('amount', amountI);
+            TextEditValueValidator.validate('date', dateI);
+
+            const body = {
+                offering: {
+                    outstation_id: JSON.parse(outstationPicker.selectedOptions[0].value)['_id'],
+                    source: sourceSelect.selectedOptions[0].value,
+                    date: dateI.value,
+                    amount: amountI.value,
+                }
+            }
+
+            let result = await Post('/parish/record/offering', body, { 'requiresParishDetails': true })
+            let msg = result['response'];
+            MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
+
+            if (msg.match('success') || msg.match('save')) {
+                clearTextEdits([amountI]);
+            }
+        }
+    })
+
+    const column = Column({
+        'classlist': ['f-w', 'f-h', 'a-c'],
+        'children': [
+            outstationPicker,
+            sourceSelect,
+            dateI,
+            amountI,
+            button
+        ]
+    });
+
+    ModalExpertise.showModal({
+        'actionHeading': 'add offering records',
+        'modalChildStyles': [{ 'width': '400px', 'height': '400px' }],
+        'dismisible': true,
+        'children': [column],
+    });
+}
 
 // OFFERING REPORTS
-async function showOfferingReportView(parishOfferingRecords, parishOutstations) {
+export async function showOfferingReportView(parishOfferingRecords, parishOutstations) {
     let outstationTotal = 0;
     const outstationPicker = OutstationPicker({
         'outstations': parishOutstations,
