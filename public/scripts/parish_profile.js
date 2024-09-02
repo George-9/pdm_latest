@@ -802,82 +802,82 @@ function promptAddOffering() {
 }
 
 
-function showMembersReportsPage() {
-    let agridApi;
+// function showMembersReportsPage() {
+//     let agridApi;
 
-    const membersGridDiv = domCreate('div');
-    addClasslist(membersGridDiv, ['ag-theme-alpine']);
-    StyleView(membersGridDiv, [{ 'height': '500px' }]);
+//     const membersGridDiv = domCreate('div');
+//     addClasslist(membersGridDiv, ['ag-theme-alpine']);
+//     StyleView(membersGridDiv, [{ 'height': '500px' }]);
 
-    const column = Column({
-        'children': [membersGridDiv],
-        'styles': [{ 'padding': '20px' }]
-    });
+//     const column = Column({
+//         'children': [membersGridDiv],
+//         'styles': [{ 'padding': '20px' }]
+//     });
 
-    let gridOptions = {
-        'columnDefs': [
-            {
-                'field': 'member_number',
-                'headerName': 'NO',
-                'filter': true,
-            },
-            {
-                'field': 'name',
-                'headerName': 'NAME',
-                'filter': true,
-            },
-            {
-                'field': 'date_of_birth',
-                'headerName': 'DATE OF BIRTH',
-            },
-        ],
-        'rowData': parishMembers,
-        'pagination': true,
-        'onRowClicked': function (ev) {
-            const member = ev.data;
+//     let gridOptions = {
+//         'columnDefs': [
+//             {
+//                 'field': 'member_number',
+//                 'headerName': 'NO',
+//                 'filter': true,
+//             },
+//             {
+//                 'field': 'name',
+//                 'headerName': 'NAME',
+//                 'filter': true,
+//             },
+//             {
+//                 'field': 'date_of_birth',
+//                 'headerName': 'DATE OF BIRTH',
+//             },
+//         ],
+//         'rowData': parishMembers,
+//         'pagination': true,
+//         'onRowClicked': function (ev) {
+//             const member = ev.data;
 
-            const updateIcon = domCreate('i');
-            addClasslist(updateIcon, ['bi', 'bi-save'])
+//             const updateIcon = domCreate('i');
+//             addClasslist(updateIcon, ['bi', 'bi-save'])
 
-            updateIcon.onclick = async function (ev) {
-                ev.preventDefault();
+//             updateIcon.onclick = async function (ev) {
+//                 ev.preventDefault();
 
-                let newDetails = member;
+//                 let newDetails = member;
 
-                delete newDetails['outstation']
-                delete newDetails['scc']
+//                 delete newDetails['outstation']
+//                 delete newDetails['scc']
 
-                let updateResult = await Post('/parish/update/member',
-                    { member: newDetails },
-                    { 'requiresParishDetails': true });
+//                 let updateResult = await Post('/parish/update/member',
+//                     { member: newDetails },
+//                     { 'requiresParishDetails': true });
 
-                MessegePopup.showMessegePuppy([
-                    MondoText({ 'text': updateResult['response'] })
-                ]);
-            }
+//                 MessegePopup.showMessegePuppy([
+//                     MondoText({ 'text': updateResult['response'] })
+//                 ]);
+//             }
 
-            ModalExpertise.showModal({
-                'actionHeading': member['name'],
-                'topRowUserActions': [updateIcon],
-                'children': [memberView(member)],
-                'modalChildStyles': [{ 'width': '400px', 'height': '600px' }]
-            });
-        }
-    };
+//             ModalExpertise.showModal({
+//                 'actionHeading': member['name'],
+//                 'topRowUserActions': [updateIcon],
+//                 'children': [memberView(member)],
+//                 'modalChildStyles': [{ 'width': '400px', 'height': '600px' }]
+//             });
+//         }
+//     };
 
-    agridApi = agGrid.createGrid(membersGridDiv, gridOptions);
+//     agridApi = agGrid.createGrid(membersGridDiv, gridOptions);
 
-    const resizedView = Column({
-        'classlist': ['f-w', 'f-h', 'scroll-y'],
-        'children': [column]
-    });
+//     const resizedView = Column({
+//         'classlist': ['f-w', 'f-h', 'scroll-y'],
+//         'children': [column]
+//     });
 
-    ModalExpertise.showModal({
-        'actionHeading': 'MEMBERS',
-        'fullScreen': true,
-        'children': [resizedView]
-    });
-}
+//     ModalExpertise.showModal({
+//         'actionHeading': 'MEMBERS',
+//         'fullScreen': true,
+//         'children': [resizedView]
+//     });
+// }
 
 
 export function memberGetOutstation(member, parishOutstations) {
@@ -1158,6 +1158,8 @@ function MembersReportsView() {
 
 // OFFERING REPORTS
 async function showOfferingReportView() {
+    let outstationTotal = 0;
+
     parishOfferingRecords = await getParishOfferings();
     const outstationPicker = OutstationPicker({
         'outstations': parishOutstations,
@@ -1170,7 +1172,11 @@ async function showOfferingReportView() {
     const offeringTableId = 'offering-table';
     const table = domCreate('table');
     table.id = offeringTableId;
-    StyleView(table, [{ 'margin': '20px', 'min-width': '300px' }]);
+    StyleView(table, [{
+        'margin': '20px',
+        'min-width': '300px',
+        'border-collapse': 'collapse'
+    }]);
 
     const tableHeader = domCreate('thead');
     tableHeader.innerHTML = `
@@ -1184,29 +1190,67 @@ async function showOfferingReportView() {
     const tbody = domCreate('tbody');
     addChildrenToView(table, [tableHeader, tbody]);
 
-    outstationPicker.addEventListener('change', function (ev) {
-        ev.preventDefault();
+    function setRowsValue() {
         tbody.replaceChildren([]);
+
+        outstationTotal = 0;
+        const existingFooter = table.querySelector('tfoot');
+        if (existingFooter) {
+            table.removeChild(existingFooter);
+        }
 
         const outstation = JSON.parse(outstationPicker.value);
         let outstationsOfferings = parishOfferingRecords.filter(function (offering) {
             return outstation['_id'] === offering['outstation_id'];
         });
 
+        if (outstationsOfferings && outstationsOfferings.length < 1) {
+            const emptyOfferingRow = domCreate('tr');
+            const emptyOfferingView = Row({
+                'children': [
+                    MondoText({ 'text': 'no offering records were found in this outstation' })
+                ]
+            });
+            emptyOfferingRow.innerHTML = `<td colspan="4">
+            ${emptyOfferingView.innerHTML}
+            </td>`;
+            tbody.appendChild(emptyOfferingRow);
+
+            return
+        }
+
+        tbody.replaceChildren([]);
         for (let i = 0; i < outstationsOfferings.length; i++) {
             const outstationsOffering = outstationsOfferings[i];
             const row = domCreate('tr');
 
+            let outstationAmount = outstationsOffering['amount'];
             row.innerHTML = `
-                <td>${i + 1}</td>
-                <td>${outstationsOffering['date']}</td>
-                <td style="text-align: center;">${parishOutstations.find(function (o) {
+            <td> ${i + 1}</td>
+            <td>${outstationsOffering['date']}</td>
+            <td style="text-align: center;">${parishOutstations.find(function (o) {
                 return o['_id'] === (outstationsOffering['outstation_id'])
             })['name']}</td>
-                <td>${outstationsOffering['amount']}</td>
+            <td>${outstationAmount}</td>
             `
+            outstationTotal += parseFloat(outstationAmount);
             tbody.appendChild(row);
         }
+        const tFooter = domCreate('tfoot');
+        tFooter.innerHTML = `
+                <tr>
+                <td colspan="3">TOTAL</td>
+                <td>${outstationTotal}</td>
+            </tr>
+                `
+        table.appendChild(tFooter)
+    }
+
+    // initialize view witha table
+    setRowsValue();
+    outstationPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
+        setRowsValue();
     });
 
     const offeringColumn = Column({
@@ -1224,7 +1268,7 @@ async function showOfferingReportView() {
         'topRowUserActions': [
             PDFPrintButton(
                 offeringTableId,
-                `OFFERING ${JSON.parse(outstationPicker.value)['name']}`
+                `OFFERING ${JSON.parse(outstationPicker.value)['name']} `
             )
         ],
         'dismisible': true,
@@ -1242,13 +1286,13 @@ function PDFPrintButton(tableId, heading) {
             return;
         }
 
-        const printElId = `print-${tableId}`;
+        const printElId = `print - ${tableId} `;
         const el = domQueryById(printElId);
 
         // remove any pre-existing print element
         if (el) { document.body.removeChild(el); }
 
-        let headingEl = MondoBigH3Text({ 'text': heading });
+        let headingEl = MondoBigH3Text({ 'text': heading ? `${heading} `.toUpperCase() : '' });
         const column = Column({ 'children': [headingEl, table.cloneNode(true)] });
         column.id = printElId;
 

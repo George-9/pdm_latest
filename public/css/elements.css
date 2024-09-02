@@ -30,7 +30,8 @@ td {
     border-collapse: collapse;
 }
 
-thead {
+thead,
+tfoot {
     font-weight: 800;
     width: max-content;
 }
