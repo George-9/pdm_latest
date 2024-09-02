@@ -1,10 +1,11 @@
 import { domQueryAll } from "../../dom/query.js";
 import { ParishLogIn } from "../../log_in.js";
+import { Post } from "../../net_tools.js";
 import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { Button, Column, MondoText, TextEdit } from "../UI/cool_tool_ui.js";
-import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
+import { TextEditError, TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
 export function promptLogIn() {
     const emailInput = TextEdit({ 'placeholder': 'email' });
@@ -32,7 +33,6 @@ export function promptLogIn() {
             const msg = result['response'];
 
             MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
-
             if (msg.match('success')) {
                 await Post('/parish/details', {
                     'email': emailInput.value,
@@ -43,6 +43,8 @@ export function promptLogIn() {
                     }
                 ).then(function (parishDetails) {
                     let credentials = parishDetails['response'];
+                    console.log(credentials);
+
                     if (credentials) {
                         /**remove unneccessary mongodb objectId */
                         delete credentials['_id']
@@ -56,6 +58,8 @@ export function promptLogIn() {
 
             }
         } catch (error) {
+            console.log(error);
+
             if (error instanceof TextEditError) {
                 MessegePopup.showMessegePuppy([MondoText({ 'text': error.message })]);
             }
