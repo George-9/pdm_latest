@@ -1,11 +1,14 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
+import { getMemberById, getOutstationSCCs, memberGetOutstation, SCCGetTitheRecords } from "../../data_pen/puppet.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
-import { domQueryById } from "../../dom/query.js";
+import { domCreate, domQueryById } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
-import { Column, MondoText, TextEdit, Button, Row } from "../UI/cool_tool_ui.js";
+import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
+import { Column, MondoText, TextEdit, Button, Row, MondoSelect } from "../UI/cool_tool_ui.js";
+import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
 
@@ -156,5 +159,109 @@ export function promptAddTitheView() {
     });
 }
 
-export function TitheReportsView() {
+export function showTitheReportsView() {
+    let selectedOutstationSCCs = [];
+
+    let outstationTotalTithe = 0, selectedSCCTotalTithe = 0;
+
+    const tmp = ParishDataHandle.parishTitheRecords;
+    const outstationPicker = OutstationPicker({ 'outstations': ParishDataHandle.parishOutstations });
+    const sccPicker = MondoSelect({});
+
+    const table = domCreate('table');
+    StyleView(table, [{ 'width': '400px' }]);
+    addClasslist(table, ['txt-c'])
+
+    const tableHeader = domCreate('thead');
+    const topRow = domCreate('tr');
+    topRow.innerHTML = `
+            <td>NO</t>
+            <td>DATE</t>
+            <td>MEMBER NAME</t>
+            <td>AMOUNT</t>
+            `
+    tableHeader.appendChild(topRow);
+
+    const tbody = domCreate('tbody');
+    const tFooter = domCreate('tfoot');
+
+    addChildrenToView(table, [tableHeader, tbody, tFooter]);
+
+    setViews();
+    sccPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
+
+        selectedSCCTotalTithe = 0;
+        const SCCTitheRecords = SCCGetTitheRecords(sccPicker.value);
+
+        tbody.replaceChildren([]);
+        tFooter.replaceChildren([]);
+
+        for (let i = 0; i < SCCTitheRecords.length; i++) {
+            const titheRecord = SCCTitheRecords[i];
+            let amount = titheRecord['amount'];
+            const row = domCreate('tr');
+            row.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${titheRecord['date']}</td>
+            <td>${getMemberById(titheRecord['member_id'])['name']}</td>
+            <td>${amount}</td>
+            `
+            selectedSCCTotalTithe += amount;
+            tbody.appendChild(row)
+        }
+        const row = domCreate('tr');
+        row.innerHTML = `
+            <td colspan="3">TOTAL</td>
+            <td>${selectedSCCTotalTithe}</td>
+        `
+        tFooter.appendChild(row);
+    });
+
+    function setViews() {
+        selectedOutstationSCCs = getOutstationSCCs(outstationPicker.value);
+
+        sccPicker.replaceChildren([]);
+        tbody.replaceChildren([]);
+
+        for (let i = 0; i < selectedOutstationSCCs.length; i++) {
+            const SCC = selectedOutstationSCCs[i];
+            const option = domCreate('option');
+            option.innerText = SCC['name'];
+            option.value = JSON.stringify(SCC);
+
+            sccPicker.appendChild(option);
+        }
+    }
+
+
+    outstationPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
+        setViews();
+    })
+
+
+    const containerColumn = Column({
+        'classlist': ['f-w', 'a-c', 'm-pad'],
+        'children': [table]
+    });
+    const mainColumn = Column({
+        'children': [
+            Row({
+                'classlist': ['f-w', 'just-center'],
+                'children': [
+                    outstationPicker,
+                    sccPicker,
+                ]
+            }),
+            containerColumn
+        ]
+    });
+
+    ModalExpertise.showModal({
+        'actionHeading': 'tithe records',
+        'children': [mainColumn],
+        'fullScreen': true,
+        'topRowUserActions': []
+    })
 }

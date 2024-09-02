@@ -8,9 +8,9 @@ import { promptAddOffering, showOfferingReportView } from "./components/view_cal
 import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
 import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { promptAddSCCView, viewSCCsPage } from "./components/view_callbacks/scc.js";
-import { promptAddTitheView } from "./components/view_callbacks/tithe.js";
+import { promptAddTitheView, showTitheReportsView } from "./components/view_callbacks/tithe.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
-import { getParishMembers, getParishOfferings, getParishOutstations, getParishSCCs, parishEvents } from "./data_source/main.js";
+import { getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishSCCs, getParishTitheRecords, parishEvents } from "./data_source/main.js";
 import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
 import { work } from "./dom/worker.js";
@@ -40,7 +40,7 @@ const drawerMenus = [
         reportsClass,
         [
             new Menu('members', 'bi-people', reportsClass, ShowMembersReportsView),
-            new Menu('tithe', 'bi-cash-coin', reportsClass),
+            new Menu('tithe', 'bi-cash-coin', reportsClass, showTitheReportsView),
             new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
             new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
             new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
@@ -58,7 +58,8 @@ async function Main() {
         ParishDataHandle.parishOutstations.push(...(await getParishOutstations()));
         ParishDataHandle.parishSCCs.push(...(await getParishSCCs()));
         ParishDataHandle.parishMembers.push(...(await getParishMembers()))
-        ParishDataHandle.parishOfferingRecords.push(...(await getParishOfferings()));
+        ParishDataHandle.parishOfferingRecords.push(...(await getParishOfferingsRecords()));
+        ParishDataHandle.parishTitheRecords.push(...(await getParishTitheRecords()))
 
         populateDrawer(drawer, drawerMenus);
         showParishName();

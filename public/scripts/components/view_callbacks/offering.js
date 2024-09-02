@@ -1,5 +1,5 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getParishOfferings } from "../../data_source/main.js";
+import { getParishOfferingsRecords } from "../../data_source/main.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
@@ -46,7 +46,7 @@ export function promptAddOffering() {
 
             if (msg.match('success') || msg.match('save')) {
                 clearTextEdits([amountI]);
-                ParishDataHandle.parishOfferingRecords = await getParishOfferings();
+                ParishDataHandle.parishOfferingRecords = await getParishOfferingsRecords();
             }
         }
     })

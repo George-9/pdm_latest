@@ -49,9 +49,22 @@ export async function getParishSCCs() {
  * fetches the whole list of parish offering records
  * @returns { object[] }
  */
-export async function getParishOfferings() {
+export async function getParishOfferingsRecords() {
     return (await Post(
         '/parish/load/all/offering/records', {},
+        {
+            'requiresParishDetails': true
+        }))['response']
+}
+
+/**
+ * fetches the whole list of parish tithe records
+ * @returns { object[] }
+ */
+export async function getParishTitheRecords() {
+    return (await Post(
+        '/parish/load/all/tithe/records',
+        {},
         {
             'requiresParishDetails': true
         }))['response']

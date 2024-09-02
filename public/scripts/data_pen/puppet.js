@@ -64,3 +64,28 @@ export function getSCCMembersFromList(members = [], scc) {
         return member['scc_id'] === SCCId;
     });
 }
+
+/**
+ * Retrieves a member by a given id
+ * 
+ * @param { string } memberId
+ * @returns { object } member
+ */
+export function getMemberById(memberId) {
+    return ParishDataHandle.parishMembers.find(function (member) {
+        return member['_id'] === memberId;
+    });
+}
+
+/**
+ * gets the tithe records of those members who belong to this SCC
+ * @param {object} SCC
+ */
+export function SCCGetTitheRecords(SCC) {
+    const SCCMembers = getSCCMembers(SCC);
+    return ParishDataHandle.parishTitheRecords.filter(function (titheRecord) {
+        return SCCMembers.some(function (SCCMember) {
+            return SCCMember['_id'] === titheRecord['member_id']
+        })
+    });
+}

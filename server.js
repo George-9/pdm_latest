@@ -19,6 +19,8 @@ import { addTitheRecord } from './routes_callbacks/parish/post/record_tithe.js';
 import { addOfferingRecord } from './routes_callbacks/parish/post/addOffering.js';
 import { updateMemberDetails } from './routes_callbacks/parish/post/update_member.js';
 import { loadAllOfferingRecords } from './routes_callbacks/parish/post/get_all_offering_records.js';
+import { getParishTitheRecords } from './public/scripts/data_source/main.js';
+import { loadAllTitheRecords } from './routes_callbacks/parish/post/get_tithe_records.js';
 
 // __________________ADMIN
 
@@ -67,6 +69,8 @@ server.post('/parish/load/all/sccs', getSmallChristianCommunities);
 
 // TITHE
 server.post('/parish/record/tithe', addTitheRecord);
+server.post('/parish/load/all/tithe/records', loadAllTitheRecords);
+
 
 // OFFERING
 server.post('/parish/record/offering', addOfferingRecord);
