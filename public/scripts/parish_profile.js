@@ -4,6 +4,7 @@ import { OutstationPicker } from "./components/tailored_ui/outstation_picker.js"
 import { Button, Column, MondoBigH3Text, MondoSelect, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "./components/utils/stylus.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
+import { getOutstationMembers, getOutstationSCCs, getSCCMembers } from "./data_pen/parish_data.js";
 import { addChildrenToView } from "./dom/addChildren.js";
 import { domCreate, domQuery, domQueryAll, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
@@ -21,6 +22,7 @@ let allParishEvents = [],
     parishSCCs = [],
     parishOfferingRecords = [];
 
+const printTableStyle = '* { font-family: arial; } table : { border: 1px solid grey; width: 80%; border-collapse: collapse; } tr, td { border: 1px solid grey; }';
 const marginRuleStyles = [{ 'margin-top': '20px' }]
 
 async function getParishMembers() {
@@ -134,29 +136,6 @@ async function Main() {
 
         const drawerMenus = [
             new DrawerMenu(
-                'Reports',
-                reportsClass,
-                [
-                    new Menu('members', 'bi-people',
-                        reportsClass,
-                        function () {
-                            ModalExpertise.showModal({
-                                'actionHeading': 'members report',
-                                'modalHeadingStyles': [{
-                                    'background-color': '#bebeff',
-                                }],
-                                'children': [
-                                    MembersReportsView()
-                                ]
-                            })
-                        }),
-                    new Menu('tithe', 'bi-cash-coin', reportsClass),
-                    new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
-                    new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
-                ],
-                false
-            ),
-            new DrawerMenu(
                 'Registry',
                 registryClass,
                 [
@@ -167,6 +146,27 @@ async function Main() {
                     new Menu('Tithe', 'bi-gift', registryClass, promptAddTitheView),
                 ]
             ),
+            new DrawerMenu(
+                'Reports',
+                reportsClass,
+                [
+                    new Menu('members', 'bi-people',
+                        reportsClass,
+                        function () {
+                            ModalExpertise.showModal({
+                                'actionHeading': 'members report',
+                                'modalHeadingStyles': [{ 'background-color': '#bebeff', }],
+                                'fullScreen': true,
+                                'children': [MembersReportsView()]
+                            })
+                        }),
+                    new Menu('tithe', 'bi-cash-coin', reportsClass),
+                    new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
+                    new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
+                    new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
+                ],
+                false
+            ),
         ]
 
         populateDrawer(drawer, drawerMenus);
@@ -174,13 +174,11 @@ async function Main() {
         work(populateDrawer);
         setCalendar();
         showEventsCount();
-        // parishMembers = await getParishMembers();
-        // console.log(parishMembers);
 
         parishOutstations.push(...(await getParishOutstations()));
         parishSCCs.push(...(await getParishSCCs()));
-        parishMembers = await getParishMembers();
-        parishOfferingRecords = await getParishOfferings();
+        parishMembers.push(...(await getParishMembers()))
+        parishOfferingRecords.push(...(await getParishOfferings()));
 
         setAnchors();
     }
@@ -990,49 +988,49 @@ function viewSCCsPage() {
 }
 
 
-function showAllReportsMenuPage() {
-    const membersIcon = domCreate('i');
-    membersIcon.title = 'members';
-    addClasslist(membersIcon, ['bi', 'bi-people', 'bi-pad']);
+// function showAllReportsMenuPage() {
+//     const membersIcon = domCreate('i');
+//     membersIcon.title = 'members';
+//     addClasslist(membersIcon, ['bi', 'bi-people', 'bi-pad']);
 
-    const offeringsIcon = domCreate('i');
-    offeringsIcon.title = 'offering';
-    addClasslist(offeringsIcon, ['bi', 'bi-cash-coin', 'bi-pad']);
+//     const offeringsIcon = domCreate('i');
+//     offeringsIcon.title = 'offering';
+//     addClasslist(offeringsIcon, ['bi', 'bi-cash-coin', 'bi-pad']);
 
-    const titheIcon = domCreate('i');
-    titheIcon.title = 'tithe';
-    addClasslist(titheIcon, ['bi', 'bi-gift', 'bi-pad']);
-
-
-    const membersColumn = MembersReportsView();
-    const offeringReportView = OfferingReportView();
-    const mainView = Column({ 'classlist': ['f-w', 'a-c'], 'children': [membersColumn] });
-
-    membersIcon.onclick = function () {
-        mainView.replaceChildren([]);
-        addChildrenToView(mainView, [membersColumn]);
-    }
-
-    offeringsIcon.onclick = function () {
-        mainView.replaceChildren([]);
-        addChildrenToView(mainView, [offeringReportView]);
-    }
-
-    // membersIcon.onclick = function () {
-    //     mainView.replaceChildren([]);
-    //     addChildrenToView(mainView, [membersColumn]);
-    // }
+//     const titheIcon = domCreate('i');
+//     titheIcon.title = 'tithe';
+//     addClasslist(titheIcon, ['bi', 'bi-gift', 'bi-pad']);
 
 
-    ModalExpertise.showModal({
-        'actionHeading': `reports`,
-        'modalHeadingStyles': [{ 'background-color': '#aebdeb' }],
-        'children': [mainView],
-        'fullScreen': true,
-        'topRowUserActions': [membersIcon, offeringsIcon, titheIcon]
-    });
+//     const membersColumn = MembersReportsView();
+//     const offeringReportView = OfferingReportView();
+//     const mainView = Column({ 'classlist': ['f-w', 'a-c'], 'children': [membersColumn] });
 
-}
+//     membersIcon.onclick = function () {
+//         mainView.replaceChildren([]);
+//         addChildrenToView(mainView, [membersColumn]);
+//     }
+
+//     offeringsIcon.onclick = function () {
+//         mainView.replaceChildren([]);
+//         addChildrenToView(mainView, [offeringReportView]);
+//     }
+
+//     // membersIcon.onclick = function () {
+//     //     mainView.replaceChildren([]);
+//     //     addChildrenToView(mainView, [membersColumn]);
+//     // }
+
+
+//     ModalExpertise.showModal({
+//         'actionHeading': `reports`,
+//         'modalHeadingStyles': [{ 'background-color': '#aebdeb' }],
+//         'children': [mainView],
+//         'fullScreen': true,
+//         'topRowUserActions': [membersIcon, offeringsIcon, titheIcon]
+//     });
+
+// }
 
 
 function MembersReportsView() {
@@ -1056,6 +1054,8 @@ function MembersReportsView() {
             <td>NO</td>
             <td>NAME</td>
             <td>TELEPHONE</td>
+            <td>VIEW</td>
+            <td>PRINT</td>
         </tr>
     `
     const tbody = domCreate('tbody');
@@ -1067,9 +1067,7 @@ function MembersReportsView() {
         sccPicker.replaceChildren([]);
 
         const outstation = JSON.parse(outstationPicker.value);
-        let sccs = parishSCCs.filter(function (scc) {
-            return scc['outstation_id'] === outstation['_id']
-        });
+        let sccs = getOutstationSCCs(parishSCCs, outstation);
 
         for (let i = 0; i < sccs.length; i++) {
             const scc = sccs[i];
@@ -1080,25 +1078,65 @@ function MembersReportsView() {
 
             sccPicker.appendChild(option);
         }
+
         sccPicker.options[0].selected = true;
 
-        selectedOutstationAndSCCMembers = parishMembers.filter(function (member) {
-            return member['outstation_id'] === outstationPicker.selectedOptions[0]['_id']
-                && member['scc_id'] === sccPicker.selectedOptions[0].value['_id']
-        });
+        const setViews = function () {
+            let members = getOutstationMembers(parishMembers, outstationPicker.value);
 
-        tbody.replaceChildren([]);
-        for (let i = 0; i < selectedOutstationAndSCCMembers.length; i++) {
-            const member = selectedOutstationAndSCCMembers[i];
-            const row = domCreate('tr');
+            selectedOutstationAndSCCMembers = getSCCMembers(members, sccPicker.value);
+            console.log(selectedOutstationAndSCCMembers);
 
-            row.innerHTML = `
-                <td>${i + 1}</td>
-                <td>${member['name']}</td>
-                <td>${member['telephone_number']}</td>
-            `
-            tbody.appendChild(row);
+            tbody.replaceChildren([]);
+            for (let i = 0; i < selectedOutstationAndSCCMembers.length; i++) {
+                const member = selectedOutstationAndSCCMembers[i];
+                const row = domCreate('tr');
+
+                let telephoneNumber = member['telephone_number'];
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${member['name']}</td>
+                    <td><a href="${'tel:' + telephoneNumber}">${telephoneNumber}</a></td>
+                `
+                const viewMemberTd = domCreate('td');
+                const tdContent = domCreate('i');
+                addClasslist(tdContent, ['bi', 'bi-printer']);
+                tdContent.onclick = function () {
+                    ModalExpertise.showModal({
+                        'actionHeading': `${member['name']}`.toUpperCase(),
+                        'modalHeadingStyles': [{ 'background-color': 'dodgerblue' }, { 'color': 'white' }],
+                        'modalChildStyles': [{ 'width': '400px' }],
+                        'children': [memberView(member)]
+                    })
+                }
+                addChildrenToView(viewMemberTd, [tdContent]);
+                row.appendChild(viewMemberTd);
+
+                tbody.appendChild(row);
+            }
         }
+
+        setViews()
+
+        sccPicker.addEventListener('change', setViews);
+    });
+
+    const styles = [{ 'font-size': '12px' }]
+    const pickersRow = Column({
+        'children': [
+            Column({
+                'children': [
+                    MondoText({ 'text': 'outstation', 'styles': styles }),
+                    outstationPicker,
+                ]
+            }),
+            Column({
+                'children': [
+                    MondoText({ 'text': 'SCC', 'styles': styles }),
+                    sccPicker
+                ],
+            })
+        ]
     });
 
     const membersColumn = Column({
@@ -1106,8 +1144,7 @@ function MembersReportsView() {
             return Column({
                 'classlist': ['f-w', 'a-c', 'scroll-y'],
                 'children': [
-                    outstationPicker,
-                    sccPicker,
+                    pickersRow,
                     table
                 ]
             })
@@ -1117,33 +1154,30 @@ function MembersReportsView() {
     return membersColumn;
 }
 
-function OfferingReportView() {
+
+
+// OFFERING REPORTS
+async function showOfferingReportView() {
+    parishOfferingRecords = await getParishOfferings();
     const outstationPicker = OutstationPicker({
         'outstations': parishOutstations,
         'styles': marginRuleStyles
     });
+
+    outstationPicker.options[0].selected = true;
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 
-    const allOfferingWithOutstations = parishOfferingRecords.map(function (offering) {
-        const outstation = parishOutstations.find(function (outstation) {
-            return outstation['_id'] === offering['outstation_id'];
-        });
-
-        delete offering['outstation_id'];
-        offering['outstation'] = outstation['name'];
-
-        return offering;
-    });
-
+    const offeringTableId = 'offering-table';
     const table = domCreate('table');
+    table.id = offeringTableId;
     StyleView(table, [{ 'margin': '20px', 'min-width': '300px' }]);
 
     const tableHeader = domCreate('thead');
     tableHeader.innerHTML = `
         <tr>
             <td>NO</td>
-            <td>OUTSTATION</td>
             <td>DATE</td>
+            <td>OUTSTATION</td>
             <td>AMOUNT</td>
         </tr>
     `
@@ -1152,22 +1186,23 @@ function OfferingReportView() {
 
     outstationPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
+        tbody.replaceChildren([]);
 
         const outstation = JSON.parse(outstationPicker.value);
-        let outstationsOfferings = allOfferingWithOutstations.filter(function (offering) {
+        let outstationsOfferings = parishOfferingRecords.filter(function (offering) {
             return outstation['_id'] === offering['outstation_id'];
-        })
+        });
 
         for (let i = 0; i < outstationsOfferings.length; i++) {
             const outstationsOffering = outstationsOfferings[i];
             const row = domCreate('tr');
-            console.log(outstationsOffering);
-
 
             row.innerHTML = `
                 <td>${i + 1}</td>
-                <td>${outstationsOffering['outstation']}</td>
                 <td>${outstationsOffering['date']}</td>
+                <td style="text-align: center;">${parishOutstations.find(function (o) {
+                return o['_id'] === (outstationsOffering['outstation_id'])
+            })['name']}</td>
                 <td>${outstationsOffering['amount']}</td>
             `
             tbody.appendChild(row);
@@ -1178,13 +1213,51 @@ function OfferingReportView() {
         children: parishMembers.map(function (m) {
             return Column({
                 'classlist': ['f-w', 'a-c', 'scroll-y'],
-                'children': [
-                    outstationPicker,
-                    table
-                ]
+                'children': [outstationPicker, table]
             })
         })
     });
 
-    return offeringColumn;
+    ModalExpertise.showModal({
+        'actionHeading': 'offering reports',
+        'children': [offeringColumn],
+        'topRowUserActions': [
+            PDFPrintButton(
+                offeringTableId,
+                `OFFERING ${JSON.parse(outstationPicker.value)['name']}`
+            )
+        ],
+        'dismisible': true,
+    });
+}
+
+
+function PDFPrintButton(tableId, heading) {
+    const printPdfButton = domCreate('i');
+    addClasslist(printPdfButton, ['bi', 'bi-printer']);
+
+    printPdfButton.onclick = function (ev) {
+        const table = domQueryById(tableId);
+        if (!tableId || !table) {
+            return;
+        }
+
+        const printElId = `print-${tableId}`;
+        const el = domQueryById(printElId);
+
+        // remove any pre-existing print element
+        if (el) { document.body.removeChild(el); }
+
+        let headingEl = MondoBigH3Text({ 'text': heading });
+        const column = Column({ 'children': [headingEl, table.cloneNode(true)] });
+        column.id = printElId;
+
+        // hide the `print content` element
+        column.style.zIndex = '-10';
+        document.body.appendChild(column);
+
+        printJS({ printable: column.innerHTML, type: 'raw-html', 'style': printTableStyle });
+    }
+
+    return printPdfButton;
 }
