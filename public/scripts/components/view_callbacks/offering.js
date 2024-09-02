@@ -1,3 +1,5 @@
+import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
+import { getParishOfferings } from "../../data_source/main.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
@@ -12,8 +14,8 @@ import { StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
 // ADD OFFERING REPORTS
-export function promptAddOffering(parishOutstations) {
-    const outstationPicker = OutstationPicker({ 'outstations': parishOutstations });
+export function promptAddOffering() {
+    const outstationPicker = OutstationPicker({ 'outstations': ParishDataHandle.parishOutstations });
     const dateI = TextEdit({ 'type': 'date' });
     const amountI = TextEdit({ 'placeholder': 'amount' });
 
@@ -44,6 +46,7 @@ export function promptAddOffering(parishOutstations) {
 
             if (msg.match('success') || msg.match('save')) {
                 clearTextEdits([amountI]);
+                ParishDataHandle.parishOfferingRecords = await getParishOfferings();
             }
         }
     })
@@ -68,14 +71,15 @@ export function promptAddOffering(parishOutstations) {
 }
 
 // OFFERING REPORTS
-export async function showOfferingReportView(parishOfferingRecords, parishOutstations) {
+export async function showOfferingReportView() {
     let outstationTotal = 0;
+
     const outstationPicker = OutstationPicker({
-        'outstations': parishOutstations,
-        'styles': marginRuleStyles
+        'outstations': ParishDataHandle.parishOutstations,
+        'styles': marginRuleStyles,
+        'onchange': setRowsValue
     });
 
-    outstationPicker.options[0].selected = true;
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 
     const offeringTableId = 'offering-table';
@@ -109,9 +113,11 @@ export async function showOfferingReportView(parishOfferingRecords, parishOutsta
         }
 
         const outstation = JSON.parse(outstationPicker.value);
-        let outstationsOfferings = parishOfferingRecords.filter(function (offering) {
-            return outstation['_id'] === offering['outstation_id'];
-        });
+        let outstationsOfferings = ParishDataHandle
+            .parishOfferingRecords
+            .filter(function (offering) {
+                return outstation['_id'] === offering['outstation_id'];
+            });
 
         if (outstationsOfferings && outstationsOfferings.length < 1) {
             const emptyOfferingRow = domCreate('tr');
@@ -137,33 +143,32 @@ export async function showOfferingReportView(parishOfferingRecords, parishOutsta
             row.innerHTML = `
             <td> ${i + 1}</td>
             <td>${outstationsOffering['date']}</td>
-            <td style="text-align: center;">${parishOutstations.find(function (o) {
-                return o['_id'] === (outstationsOffering['outstation_id'])
+            <td style="text-align: center;">${ParishDataHandle.parishOutstations.find(function (o) {
+                return o['_id'] === outstationsOffering['outstation_id']
             })['name']}</td>
             <td>${outstationAmount}</td>
             `
-            outstationTotal += parseFloat(outstationAmount);
             tbody.appendChild(row);
+
+            outstationTotal += parseFloat(outstationAmount);
         }
+        PDFPrintButton.printingHeading = `OFFERING ${outstation['name']}`;
+
         const tFooter = domCreate('tfoot');
         tFooter.innerHTML = `
-                <tr>
+            <tr>
                 <td colspan="3">TOTAL</td>
                 <td>${outstationTotal}</td>
             </tr>
-                `
-        table.appendChild(tFooter)
+            `
+        table.appendChild(tFooter);
     }
 
-    // initialize view witha table
+    // initialize view with a table
     setRowsValue();
-    outstationPicker.addEventListener('change', function (ev) {
-        ev.preventDefault();
-        setRowsValue();
-    });
 
     const offeringColumn = Column({
-        children: parishOfferingRecords.map(function (m) {
+        children: ParishDataHandle.parishOfferingRecords.map(function (m) {
             return Column({
                 'classlist': ['f-w', 'a-c', 'scroll-y'],
                 'children': [outstationPicker, table]
@@ -171,15 +176,11 @@ export async function showOfferingReportView(parishOfferingRecords, parishOutsta
         })
     });
 
+
     ModalExpertise.showModal({
         'actionHeading': 'offering reports',
         'children': [offeringColumn],
-        'topRowUserActions': [
-            PDFPrintButton(
-                offeringTableId,
-                `OFFERING ${JSON.parse(outstationPicker.value)['name']} `
-            )
-        ],
+        'topRowUserActions': [new PDFPrintButton(offeringTableId)],
         'dismisible': true,
     });
 }

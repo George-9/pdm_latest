@@ -11,32 +11,43 @@ const printTableStyle = '* { font-family: arial; padding: 5px; } table { border:
  * @param {string} tableId 
  * @param {string} heading
  */
-export function PDFPrintButton(tableId, heading) {
-    const printPdfButton = domCreate('i');
-    addClasslist(printPdfButton, ['bi', 'bi-printer']);
+/**
+ * prints an HTML content using `printJS` api
+ *
+ * @param {string} tableId
+ * @param {string} heading
+ */
+export class PDFPrintButton {
 
-    printPdfButton.onclick = function (ev) {
-        const table = domQueryById(tableId);
-        if (!tableId || !table) {
-            return;
-        }
+    static printingHeading = '';
 
-        const printElId = `print - ${tableId} `;
-        const el = domQueryById(printElId);
+    constructor(tableId) {
+        const printPdfButton = domCreate('i');
+        addClasslist(printPdfButton, ['bi', 'bi-printer']);
 
-        // remove any pre-existing print element
-        if (el) { document.body.removeChild(el); }
+        printPdfButton.onclick = function (ev) {
+            const table = domQueryById(tableId);
+            if (!tableId || !table) {
+                return;
+            }
 
-        let headingEl = MondoBigH3Text({ 'text': heading ? `${heading} `.toUpperCase() : '' });
-        const column = Column({ 'children': [headingEl, table.cloneNode(true)] });
-        column.id = printElId;
+            const printElId = `print - ${tableId} `;
+            const el = domQueryById(printElId);
 
-        // hide the `print content` element
-        column.style.zIndex = '-10';
-        document.body.appendChild(column);
+            // remove any pre-existing print element
+            if (el) { document.body.removeChild(el); }
 
-        printJS({ printable: column.innerHTML, type: 'raw-html', 'style': printTableStyle });
+            let headingEl = MondoBigH3Text({ 'text': PDFPrintButton.printingHeading ? `${PDFPrintButton.printingHeading} `.toUpperCase() : '' });
+            const column = Column({ 'children': [headingEl, table.cloneNode(true)] });
+            column.id = printElId;
+
+            // hide the `print content` element
+            column.style.zIndex = '-10';
+            document.body.appendChild(column);
+
+            printJS({ printable: column.innerHTML, type: 'raw-html', 'style': printTableStyle });
+        };
+
+        return printPdfButton;
     }
-
-    return printPdfButton;
 }

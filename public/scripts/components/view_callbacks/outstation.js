@@ -1,15 +1,14 @@
+import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getParishOutstations } from "../../data_source/main.js";
+import { clearTextEdits } from "../../dom/text_edit_utils.js";
+import { Post } from "../../net_tools.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
-import { Button } from "../UI/button.js";
 import { Column } from "../UI/column.js";
-import { MondoBigH3Text, MondoText } from "../UI/mondo_text.js";
-import { Row } from "../UI/row.js";
-import { TextEdit } from "../UI/textedit.js";
-import { VerticalScrollView } from "../UI/vertical_scrollview.js";
+import { Button, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "../UI/cool_tool_ui.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
-export function promptAddOutstationView(parishOutstations) {
+export function promptAddOutstationView() {
     const nameTextEdit = TextEdit({ 'placeholder': 'outstation name' });
 
     const button = Button({ 'text': 'submit' });
@@ -26,7 +25,7 @@ export function promptAddOutstationView(parishOutstations) {
             MessegePopup.showMessegePuppy([new MondoText({ 'text': msg })])
             if (msg.match('success') || msg.match('save')) {
                 clearTextEdits([nameTextEdit]);
-                parishOutstations = await getParishOutstations();
+                ParishDataHandle.parishOutstations = await getParishOutstations();
             }
         } catch (error) {
             MessegePopup.showMessegePuppy([MondoText({ 'text': error })])
@@ -47,12 +46,11 @@ export function promptAddOutstationView(parishOutstations) {
     });
 }
 
-
-export function viewOutstationsPage(parishOutstations, parishMembers) {
+export function viewOutstationsPage() {
     const column = VerticalScrollView({
         'classlist': ['f-w', 'a-c', 'just-center'],
-        'children': parishOutstations.map(function (outstation) {
-            let outstationMembersCount = parishMembers.filter(function (m) {
+        'children': ParishDataHandle.parishOutstations.map(function (outstation) {
+            let outstationMembersCount = ParishDataHandle.parishMembers.filter(function (m) {
                 return m['outstation_id'] === outstation['_id']
             }).length;
 
@@ -69,7 +67,7 @@ export function viewOutstationsPage(parishOutstations, parishMembers) {
 
     ModalExpertise.showModal({
         'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
-        'actionHeading': `parish outstations (${parishOutstations.length})`,
+        'actionHeading': `parish outstations (${ParishDataHandle.parishOutstations.length})`,
         'children': [column],
         'modalChildStyles': [{ 'width': '400px' }],
         'fullScreen': false,

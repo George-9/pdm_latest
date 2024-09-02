@@ -15,9 +15,9 @@ export function OutstationPicker({ outstations = [], classlist = [], styles = []
         option.innerText = outstation['name'];
         option.value = JSON.stringify(outstation);
         picker.appendChild(option);
-        picker.options[0].selected = true;
     }
 
+    picker.options[0].selected = true;
     picker.addEventListener('change', function (ev) {
         onchange(ev);
     })
