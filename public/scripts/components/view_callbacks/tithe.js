@@ -1,5 +1,5 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getMemberById, getOutstationSCCs, memberGetOutstation, SCCGetTitheRecords } from "../../data_pen/puppet.js";
+import { getMemberById, getOutstationSCCs, memberGetOutstation, obtainObjectValueBykey, SCCGetTitheRecords } from "../../data_pen/puppet.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate, domQueryById } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
@@ -7,6 +7,7 @@ import { Post } from "../../net_tools.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
+import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column, MondoText, TextEdit, Button, Row, MondoSelect } from "../UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
@@ -161,14 +162,16 @@ export function promptAddTitheView() {
 
 export function showTitheReportsView() {
     let selectedOutstationSCCs = [];
+    const tableId = 'tithe-table';
 
-    let outstationTotalTithe = 0, selectedSCCTotalTithe = 0;
+    let selectedOutstation, selectedSCC, outstationTotalTithe = 0, selectedSCCTotalTithe = 0;
 
     const tmp = ParishDataHandle.parishTitheRecords;
     const outstationPicker = OutstationPicker({ 'outstations': ParishDataHandle.parishOutstations });
     const sccPicker = MondoSelect({});
 
     const table = domCreate('table');
+    table.id = tableId;
     StyleView(table, [{ 'width': '400px' }]);
     addClasslist(table, ['txt-c'])
 
@@ -207,6 +210,7 @@ export function showTitheReportsView() {
             <td>${getMemberById(titheRecord['member_id'])['name']}</td>
             <td>${amount}</td>
             `
+
             selectedSCCTotalTithe += amount;
             tbody.appendChild(row)
         }
@@ -231,15 +235,21 @@ export function showTitheReportsView() {
             option.value = JSON.stringify(SCC);
 
             sccPicker.appendChild(option);
-        }
-    }
 
+            selectedOutstation = outstationPicker.value;
+            selectedSCC = sccPicker.value;
+        }
+
+        console.log(selectedOutstation, selectedSCC);
+        PDFPrintButton.printingHeading = `${JSON.parse(selectedOutstation)['name']} . ${JSON.parse(selectedSCC)['name']}`
+    }
 
     outstationPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
         setViews();
-    })
+    });
 
+    const printButton = new PDFPrintButton(tableId)
 
     const containerColumn = Column({
         'classlist': ['f-w', 'a-c', 'm-pad'],
@@ -260,8 +270,8 @@ export function showTitheReportsView() {
 
     ModalExpertise.showModal({
         'actionHeading': 'tithe records',
-        'children': [mainColumn],
         'fullScreen': true,
-        'topRowUserActions': []
+        'topRowUserActions': [printButton],
+        'children': [mainColumn],
     })
 }

@@ -89,3 +89,11 @@ export function SCCGetTitheRecords(SCC) {
         })
     });
 }
+
+
+export function obtainObjectValueBykey(object, key) {
+    if (object && (typeof object === 'object') && key) {
+        const keys = Object.keys(object);
+        return object['key'];
+    }
+}
