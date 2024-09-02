@@ -9,7 +9,7 @@ import { TextEditError, TextEditValueValidator } from "../utils/textedit_value_v
 
 export function promptLogIn() {
     const emailInput = TextEdit({ 'placeholder': 'email' });
-    const passwordInput = TextEdit({ 'placeholder': 'password', onSubmit: doLogIn });
+    const passwordInput = TextEdit({ 'placeholder': 'password', 'type': 'password', onSubmit: doLogIn });
 
     const button = Button({
         'text': 'submit',
