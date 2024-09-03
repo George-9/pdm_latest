@@ -84,7 +84,7 @@ export function populateDrawer(drawer, drawerMenus) {
         addClasslist(menusCategoryTitle, ['c-p']);
 
         const column = Column({
-            'styles': [{ 'margin-top': '10px' }],
+            'styles': [{ 'margin-top': '30px' }],
             'children': [menusCategoryTitle],
         });
 
