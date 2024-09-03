@@ -1,14 +1,17 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getMemberById, getOutstationSCCs, memberGetOutstation, obtainObjectValueBykey, SCCGetTitheRecords } from "../../data_pen/puppet.js";
+import { getOutstationSCCs, getSCCMembers, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
+import { getParishOutstations } from "../../data_source/main.js";
+import { PRIESTS_COMMUNITY_NAME } from "../../data_source/other_sources.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate, domQueryById } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
+import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
-import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
+import { addPriestCommunityOptionToPicker, OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
-import { Column, MondoText, TextEdit, Button, Row, MondoSelect } from "../UI/cool_tool_ui.js";
+import { Column, MondoText, TextEdit, Button, Row, MondoSelect, VerticalScrollView } from "../UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
@@ -87,16 +90,15 @@ export function promptAddTitheView() {
 
         if (match) {
             match = match.map(function (member) {
+                let outstation = memberGetOutstation(member);
+                const scc = memberGetSCC(member);
+
                 return {
                     _id: member['_id'],
                     'name': member['name'],
                     'telephone_number': member['telephone_number'] || '_',
-                    'outstation': ParishDataHandle.parishOutstations.find(function (scc) {
-                        return scc['_id'] === member['outstation_id'];
-                    })['name'],
-                    'scc': ParishDataHandle.parishSCCs.find(function (scc) {
-                        return scc['_id'] === member['scc_id'];
-                    })['name'],
+                    'outstation': outstation ? outstation['name'] : PRIESTS_COMMUNITY_NAME,
+                    'scc': scc['name'],
                 }
             });
         }
@@ -165,11 +167,20 @@ export function showTitheReportsView() {
     let selectedOutstationSCCs = [];
     const tableId = 'tithe-table';
 
+    const viewTotalsForEachSCCButton = domCreate('i');
+    StyleView(viewTotalsForEachSCCButton, [{ 'color': 'blue' }])
+    addClasslist(viewTotalsForEachSCCButton, ['bi', 'bi-opencollective']);
+
     let selectedOutstation, selectedSCC, outstationTotalTithe = 0, selectedSCCTotalTithe = 0;
 
-    const tmp = ParishDataHandle.parishTitheRecords;
     const outstationPicker = OutstationPicker({ 'outstations': ParishDataHandle.parishOutstations });
     const sccPicker = MondoSelect({});
+
+    let outstationTotalTitheDispensor = MondoText({
+        'text': '',
+        'styles': [{ 'font-weight': '700' },
+        { 'color': 'blue' }]
+    });
 
     const table = domCreate('table');
     table.id = tableId;
@@ -191,12 +202,30 @@ export function showTitheReportsView() {
 
     addChildrenToView(table, [tableHeader, tbody, tFooter]);
 
+    showOutstationTotalTithe();
     setViews();
+
     sccPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
 
         selectedSCCTotalTithe = 0;
-        const SCCTitheRecords = SCCGetTitheRecords(sccPicker.value);
+        const thiSCCMembers = getSCCMembers(sccPicker.value, outstationPicker.value);
+
+        const SCCTitheRecords = [];
+        for (let i = 0; i < ParishDataHandle.parishTitheRecords.length; i++) {
+            const titheRecord = ParishDataHandle.parishTitheRecords[i];
+            for (let i = 0; i < thiSCCMembers.length; i++) {
+                const member = thiSCCMembers[i];
+
+                if (titheRecord['member_id'] === member['_id']) {
+                    SCCTitheRecords.push({
+                        'date': titheRecord['date'],
+                        'member': member['name'],
+                        'amount': titheRecord['amount']
+                    });
+                }
+            }
+        }
 
         tbody.replaceChildren([]);
         tFooter.replaceChildren([]);
@@ -204,17 +233,19 @@ export function showTitheReportsView() {
         for (let i = 0; i < SCCTitheRecords.length; i++) {
             const titheRecord = SCCTitheRecords[i];
             let amount = titheRecord['amount'];
+
             const row = domCreate('tr');
             row.innerHTML = `
             <td>${i + 1}</td>
             <td>${titheRecord['date']}</td>
-            <td>${getMemberById(titheRecord['member_id'])['name']}</td>
+            <td>${titheRecord['member']}</td>
             <td>${amount}</td>
             `
 
             selectedSCCTotalTithe += amount;
             tbody.appendChild(row)
         }
+
         const row = domCreate('tr');
         row.innerHTML = `
             <td colspan="3">TOTAL</td>
@@ -241,20 +272,42 @@ export function showTitheReportsView() {
             selectedSCC = sccPicker.value;
         }
 
-        console.log(selectedOutstation, selectedSCC);
-        PDFPrintButton.printingHeading = `${JSON.parse(selectedOutstation)['name']} . ${JSON.parse(selectedSCC)['name']}`
+        addPriestCommunityOptionToPicker(sccPicker);
+        PDFPrintButton.printingHeading = `${JSON.parse(selectedOutstation)['name']} . ${JSON.parse(selectedSCC)['name']} TITHE RECORDS`
+    }
+
+    function showOutstationTotalTithe() {
+        outstationTotalTithe = 0;
+
+        for (let i = 0; i < ParishDataHandle.parishTitheRecords.length; i++) {
+            const titheRecord = ParishDataHandle.parishTitheRecords[i];
+            for (let j = 0; j < ParishDataHandle.parishMembers.length; j++) {
+                const member = ParishDataHandle.parishMembers[j];
+
+                const amount = parseFloat(titheRecord['amount']);
+                if (titheRecord['member_id'] === member['_id'] && (member['outstation_id'] === outstationPicker.value['_id']
+                    || (member['outstation_id'] === JSON.parse(outstationPicker.value)['_id']))) {
+                    outstationTotalTithe += amount;
+                }
+            }
+        }
+        outstationTotalTitheDispensor.innerText = `${(JSON.parse(outstationPicker.value))['name']} outstation total ${outstationTotalTithe}`.toUpperCase();
     }
 
     outstationPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
+        showOutstationTotalTithe();
         setViews();
     });
 
     const printButton = new PDFPrintButton(tableId)
 
     const containerColumn = Column({
-        'classlist': ['f-w', 'a-c', 'm-pad'],
-        'children': [table]
+        'classlist': ['f-w', 'a-c', 'm-pad', 'scroll-y'],
+        'children': [
+            outstationTotalTitheDispensor,
+            table
+        ]
     });
 
     const mainColumn = Column({
@@ -270,10 +323,73 @@ export function showTitheReportsView() {
         ]
     });
 
+    viewTotalsForEachSCCButton.onclick = function (ev) {
+        const sccInnerTbaleId = 'scc-inner-table-id';
+        const printIcon = new PDFPrintButton(sccInnerTbaleId);
+
+        PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' outstations tithe records\''
+
+        const table = domCreate('table');
+        table.id = sccInnerTbaleId;
+        const tableHead = domCreate('tableHead');
+
+        const scrollView = VerticalScrollView({
+            'children': [table]
+        });
+
+        tableHeader.innerHTML = `
+        <tr>
+            <th>NO</th>
+            <th>SCC</th>
+            <th>amount</th>
+        </tr>
+        `
+
+        let parishTotalTithe = 0;
+        for (let l = 0; l < ParishDataHandle.parishOutstations.length; l++) {
+            let outstationTotalTithe = 0;
+            const outstation = ParishDataHandle.parishOutstations[l];
+            for (let j = 0; j < ParishDataHandle.parishTitheRecords.length; j++) {
+                const titheRecord = ParishDataHandle.parishTitheRecords[j];
+                let amount = parseFloat(titheRecord['amount']);
+
+                for (let k = 0; k < ParishDataHandle.parishMembers.length; k++) {
+                    const member = ParishDataHandle.parishMembers[k];
+                    if (member && member['outstation_id'] === outstation['_id'] && member['_id'] === titheRecord['member_id']) {
+                        outstationTotalTithe += amount;
+                    }
+                }
+                parishTotalTithe += amount;
+            }
+            const row = domCreate('tr');
+            if (l % 2 === 0) {
+                StyleView(row, [{ 'background-color': '#ffebeb' }])
+            }
+
+            row.innerHTML = `
+                <td>${l + 1}</td>
+                <td>${outstation['name']}</td>
+                <td style={ color: 'blue'; }>${outstationTotalTithe}</td>
+            `
+            addChildrenToView(table, [row]);
+        }
+
+        const tbody = domCreate('tbody');
+        addChildrenToView(table, [tableHead, tbody]);
+
+        ModalExpertise.showModal({
+            'fullScreen': false,
+            'dismisible': true,
+            'topRowUserActions': [printIcon],
+            'actionHeading': 'parish tithe records',
+            'children': [scrollView]
+        });
+    }
+
     ModalExpertise.showModal({
         'actionHeading': 'tithe records',
         'fullScreen': true,
-        'topRowUserActions': [printButton],
+        'topRowUserActions': [viewTotalsForEachSCCButton, printButton],
         'children': [mainColumn],
     })
 }

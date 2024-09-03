@@ -70,7 +70,7 @@ caption {
 
 thead,
 tfoot {
-    background-color: rgb(228 240 245);
+    background-color: #ffffff;
 }
 
 th,
@@ -83,8 +83,8 @@ td:last-of-type {
     text-align: center;
 }
 
-tbody>tr:nth-of-type(even) {
-    background-color: rgb(237 238 242);
+tbody>tr {
+    background-color: #d1e9ff;
 }
 
 tfoot th {
@@ -126,6 +126,11 @@ nav p {
     height: 20px;
     display: flex;
     align-items: normal;
+}
+
+.bi,
+i {
+    padding: 5px;
 }
 
 input,

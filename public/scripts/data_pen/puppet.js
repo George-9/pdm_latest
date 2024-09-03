@@ -1,3 +1,4 @@
+import { PRIESTS_COMMUNITY_NAME } from "../data_source/other_sources.js";
 import { ParishDataHandle } from "./parish_data_handle.js";
 
 export function memberGetOutstation(member) {
@@ -9,8 +10,14 @@ export function memberGetOutstation(member) {
 export function memberGetSCC(member) {
     return ParishDataHandle
         .parishSCCs
-        .find(function (scc) { return scc['_id'] === member['scc_id'] });
+        .find(function (scc) { return scc['_id'] === member['scc_id'] })
+        ||
+    {
+        '_id': PRIESTS_COMMUNITY_NAME,
+        'name': PRIESTS_COMMUNITY_NAME
+    };
 }
+
 
 /**
  * Retrieves all the SCCs of a given Outstation
@@ -26,7 +33,7 @@ export function getOutstationSCCs(outstation = '') {
 
 /**
  * returns the mebers of a given outstation
- * @param {string} outstationId
+ * @param {object | string} outstationId
  */
 export function getOutstationMembers(outstation = '') {
     return ParishDataHandle
@@ -42,10 +49,11 @@ export function getOutstationMembers(outstation = '') {
  * @param {string} sccId 
  * @returns {object[]} list of members
  */
-export function getSCCMembers(scc) {
+export function getSCCMembers(scc, outstation) {
+    let outstationMmebers = getOutstationMembers(outstation);
     let SCCId = (scc['_id'] || (JSON.parse(scc))['_id'])
 
-    return ParishDataHandle.parishMembers.filter(function (member) {
+    return outstationMmebers.filter(function (member) {
         return member['scc_id'] === SCCId;
     });
 }
@@ -77,18 +85,18 @@ export function getMemberById(memberId) {
     });
 }
 
-/**
- * gets the tithe records of those members who belong to this SCC
- * @param {object} SCC
- */
-export function SCCGetTitheRecords(SCC) {
-    const SCCMembers = getSCCMembers(SCC);
-    return ParishDataHandle.parishTitheRecords.filter(function (titheRecord) {
-        return SCCMembers.some(function (SCCMember) {
-            return SCCMember['_id'] === titheRecord['member_id']
-        })
-    });
-}
+// /**
+//  * gets the tithe records of those members who belong to this SCC
+//  * @param {object} SCC
+//  */
+// export function SCCGetTitheRecords(SCC) {
+//     const SCCMembers = getSCCMembers(SCC,ou);
+//     return ParishDataHandle.parishTitheRecords.filter(function (titheRecord) {
+//         return SCCMembers.some(function (SCCMember) {
+//             return SCCMember['_id'] === titheRecord['member_id']
+//         })
+//     });
+// }
 
 
 export function obtainObjectValueBykey(object, key) {

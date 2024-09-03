@@ -1,6 +1,7 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
 import { getParishMembers } from "../../data_source/main.js";
+import { PRIESTS_COMMUNITY_NAME } from "../../data_source/other_sources.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
@@ -9,7 +10,7 @@ import { marginRuleStyles } from "../../parish_profile.js";
 import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
-import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
+import { addPriestCommunityOptionToPicker, OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column } from "../UI/column.js";
 import { Button, MondoSelect, MondoText, Row, TextEdit } from "../UI/cool_tool_ui.js";
@@ -27,18 +28,46 @@ export function promptRegiterMember() {
     const GodParentNameI = TextEdit({ 'placeholder': 'God parent\'s', 'styles': marginRuleStyles });
     const telephoneNumberI = TextEdit({ 'placeholder': 'telephone number', 'styles': marginRuleStyles });
 
+    const genderPicker = MondoSelect({});
+    genderPicker.innerHTML = `
+        <option selected>MALE</option>
+        <option>FEMALE</option>
+    `
+
     const sccPicker = MondoSelect({
+        'styles': marginRuleStyles,
         'onChange': function (ev) {
             ev.preventDefault();
         },
-        'styles': marginRuleStyles
     });
+    StyleView(sccPicker, [{ 'display': 'none' }]);
+
+    const categoryPicker = MondoSelect({});
+    StyleView(categoryPicker, [{ 'display': 'none' }]);
+
+    categoryPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
+        console.log(categoryPicker.value);
+
+        if (categoryPicker.value === 'WITH SCC') {
+            StyleView(sccPicker, [{ 'display': 'block' }]);
+        } else {
+            StyleView(sccPicker, [{ 'display': 'none' }]);
+        }
+    })
+
+    categoryPicker.innerHTML = `
+        <option selected value="${PRIESTS_COMMUNITY_NAME}">${PRIESTS_COMMUNITY_NAME}</option>
+        <option value="WITH SCC">WITH SCC</option>
+    `;
 
     const outstationPicker = OutstationPicker({
         'outstations': ParishDataHandle.parishOutstations,
-        'styles': marginRuleStyles,
+        'styles': { ...marginRuleStyles },
         'onchange': function (ev) {
             ev.preventDefault();
+
+            StyleView(categoryPicker, [{ 'display': 'block' }]);
             sccPicker.replaceChildren([]);
 
             const outstation = JSON.parse(outstationPicker.value);
@@ -59,56 +88,67 @@ export function promptRegiterMember() {
         }
     });
 
+    outstationPicker.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        StyleView(categoryPicker, [{ 'display': 'block' }]);
+    });
+
     const button = Button({
         'text': 'submit',
         'styles': marginRuleStyles,
         onclick: async function (ev) {
-            TextEditValueValidator.validate('name', nameI);
-            TextEditValueValidator.validate('date of birth', dobI);
-            TextEditValueValidator.validate('mother\'s name', motherNameI);
-            TextEditValueValidator.validate('father\'s name', fatherNameI);
-            TextEditValueValidator.validate('GodParent\'s name', GodParentNameI);
+            try {
+                TextEditValueValidator.validate('name', nameI);
+                TextEditValueValidator.validate('date of birth', dobI);
+                TextEditValueValidator.validate('gender', genderPicker);
+                // TextEditValueValidator.validate('telephone number', motherNameI);
+                // TextEditValueValidator.validate('father\'s name', fatherNameI);
+                TextEditValueValidator.validate('GodParent\'s name', GodParentNameI);
 
-            if (!outstationPicker.value || !sccPicker.value) {
-                return MessegePopup.showMessegePuppy([
-                    MondoText({ 'text': 'outstation and SCC must not be empty' })
-                ]);
-            }
-
-            let theGodParents;
-            if (GodParentNameI.value && GodParentNameI.value.includes(',')) {
-                theGodParents = [...(GodParentNameI.value.split(',') || [])];
-            } else {
-                theGodParents = [`${GodParentNameI.value}`.trim()];
-            }
-
-            const body = {
-                member: {
-                    'name': `${nameI.value}`.trim(),
-                    'date_of_birth': `${dobI.value}`.trim(),
-                    'mother': `${motherNameI.value}`.trim(),
-                    'father': `${fatherNameI.value}`,
-                    'God_Parents': theGodParents,
-                    'outstation_id': (JSON.parse(outstationPicker.value))['_id'],
-                    'scc_id': (JSON.parse(sccPicker.value))['_id'],
-                    'telephone_number': telephoneNumberI.value,
+                if (!outstationPicker.value || !sccPicker.value) {
+                    return MessegePopup.showMessegePuppy([
+                        MondoText({ 'text': 'outstation and SCC must not be empty' })
+                    ]);
                 }
-            };
 
-            Object.keys(body.member).forEach(function (key) {
-                if (!body.member[key] || `${body.member[key]}`.match('undefined')) {
-                    body.member[key] = '_'
+                let theGodParents;
+                if (GodParentNameI.value && GodParentNameI.value.includes(',')) {
+                    theGodParents = [...(GodParentNameI.value.split(',') || [])];
+                } else {
+                    theGodParents = [`${GodParentNameI.value}`.trim()];
                 }
-            });
 
-            let result = await Post('/parish/register/member', body, { 'requiresParishDetails': true });
+                const body = {
+                    member: {
+                        'name': `${nameI.value}`.trim(),
+                        'gender': genderPicker.value,
+                        'date_of_birth': `${dobI.value}`.trim(),
+                        'mother': `${motherNameI.value}`.trim(),
+                        'father': `${fatherNameI.value}`,
+                        'God_Parents': theGodParents,
+                        'outstation_id': (JSON.parse(outstationPicker.value))['_id'],
+                        'scc_id': (sccPicker.style.display === 'block' && sccPicker.value) ? (JSON.parse(sccPicker.value))['_id'] : 'PRIEST COMMUNITY',
+                        'telephone_number': telephoneNumberI.value,
+                    }
+                };
 
-            const msg = result['response'];
-            MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
+                Object.keys(body.member).forEach(function (key) {
+                    if (!body.member[key] || `${body.member[key]}`.match('undefined')) {
+                        body.member[key] = '_'
+                    }
+                });
 
-            if (msg.match('success') || msg.match('save')) {
-                clearTextEdits([nameI, dobI, motherNameI, fatherNameI, GodParentNameI]);
-                ParishDataHandle.parishMembers = await getParishMembers();
+                let result = await Post('/parish/register/member', body, { 'requiresParishDetails': true });
+
+                const msg = result['response'];
+                MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
+
+                if (msg.match('success') || msg.match('save')) {
+                    clearTextEdits([nameI, dobI, motherNameI, fatherNameI, GodParentNameI]);
+                    ParishDataHandle.parishMembers = await getParishMembers();
+                }
+            } catch (error) {
+                MessegePopup.showMessegePuppy([MondoText({ 'text': error })]);
             }
         }
     });
@@ -117,11 +157,13 @@ export function promptRegiterMember() {
         'classlist': ['f-w', 'f-w', 'a-c', 'scroll-y'],
         'children': [
             nameI,
+            genderPicker,
             dobI,
             motherNameI,
             fatherNameI,
             GodParentNameI,
             outstationPicker,
+            categoryPicker,
             sccPicker,
             telephoneNumberI,
             button,
@@ -199,6 +241,7 @@ export function showMembersReportsView() {
 
             sccPicker.appendChild(option);
         }
+        addPriestCommunityOptionToPicker(sccPicker);
 
         sccPicker.options[0].selected = true;
         // set the heading of the currently selected outstation

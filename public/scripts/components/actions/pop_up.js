@@ -14,10 +14,10 @@ export class MessegePopup {
         const popupId = 'msg-pop-up';
 
         function hidePopup() {
-            let showingPopUp = domQueryById(popupId)
+            let showingPopUp = domQueryById(popupId);
+
             if (showingPopUp) {
                 document.body.removeChild(showingPopUp);
-                console.log(showingPopUp);
             }
         }
 
@@ -25,7 +25,7 @@ export class MessegePopup {
             setTimeout(function () {
                 hidePopup();
                 MessegePopup.#showingPopUps = false;
-            }, 1);
+            }, 100);
         } else {
             let row = Row({ 'children': children });
             row.id = popupId;
@@ -42,13 +42,14 @@ export class MessegePopup {
             row.style.bottom = `${(parseFloat(row.style.height) / 2)}px`;
 
             if (document.body.appendChild(row)) {
-                document.body.appendChild(row);
+                setTimeout(function () {
+                    hidePopup();
+                    MessegePopup.#showingPopUps = true;
+                    setTimeout(() => {
+                        MessegePopup.#showingPopUps = false;
+                    }, 100);
+                }, 3000);
             }
-
-            setTimeout(function () {
-                hidePopup();
-                MessegePopup.#showingPopUps = true;
-            }, 3000);
         }
     }
 }

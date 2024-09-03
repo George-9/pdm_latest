@@ -38,7 +38,7 @@ export function promptAddSCCView() {
 
                 MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
                 if (msg.match('success' || msg.match('save'))) {
-                    clearTextEdits(sccNameI);
+                    clearTextEdits([sccNameI]);
                     ParishDataHandle.parishSCCs = await getParishSCCs();
                 }
             } catch (error) {

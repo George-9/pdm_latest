@@ -11,6 +11,7 @@ import { promptAddSCCView, viewSCCsPage } from "./components/view_callbacks/scc.
 import { promptAddTitheView, showTitheReportsView } from "./components/view_callbacks/tithe.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
 import { getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishSCCs, getParishTitheRecords, parishEvents } from "./data_source/main.js";
+import { PRIESTS_COMMUNITY_NAME } from "./data_source/other_sources.js";
 import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
 import { work } from "./dom/worker.js";
@@ -61,6 +62,11 @@ async function Main() {
         ParishDataHandle.parishMembers.push(...(await getParishMembers()))
         ParishDataHandle.parishOfferingRecords.push(...(await getParishOfferingsRecords()));
         ParishDataHandle.parishTitheRecords.push(...(await getParishTitheRecords()))
+
+        ParishDataHandle.parishSCCs.push({
+            'id': PRIESTS_COMMUNITY_NAME,
+            'name': PRIESTS_COMMUNITY_NAME
+        });
 
         populateDrawer(drawer, drawerMenus);
         showParishName();
