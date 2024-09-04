@@ -10,7 +10,7 @@ import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column, Row, MondoText, TextEdit, Button, MondoSelect } from "../UI/cool_tool_ui.js";
-import { StyleView } from "../utils/stylus.js";
+import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
 // ADD OFFERING REPORTS
@@ -174,11 +174,93 @@ export async function showOfferingReportView() {
         })
     });
 
+    function showWholeParishOfferingRecords() {
+        const tableId = 'all-outstations-offering';
+        const table = domCreate('table');
+        table.id = tableId;
+
+        const tableHead = domCreate('thead');
+        tableHead.innerHTML = `
+            <tr>
+                <td>NO</td>
+                <td>OUTSTATION</td>
+                <td>AMOUNT</td>
+            </tr>
+        `
+        const tbody = domCreate('tbody');
+        const tfoot = domCreate('tfoot');
+        addChildrenToView(table, [tableHead, tbody, tfoot]);
+
+        const column = Column({
+            'styles': [{ 'margin': '20px' }],
+            'children': [table],
+        });
+
+        let mappedData = {};
+        for (let i = 0; i < ParishDataHandle.parishOutstations.length; i++) {
+            const outstation = ParishDataHandle.parishOutstations[i];
+            mappedData[outstation['_id']] = {
+                'name': outstation['name'],
+                '_id': outstation['_id'],
+                'amount': 0
+            }
+        }
+
+        let parishTotal = 0;
+        const keys = Object.keys(mappedData)
+        for (let i = 0; i < keys.length; i++) {
+            const outstationOfferingRecord = mappedData[keys[i]];
+            for (let i = 0; i < ParishDataHandle.parishOfferingRecords.length; i++) {
+                const offeringRecord = ParishDataHandle.parishOfferingRecords[i];
+                if (outstationOfferingRecord['_id'] === offeringRecord['outstation_id']) {
+                    parishTotal += outstationOfferingRecord['amount'] += parseFloat(offeringRecord['amount'])
+                }
+            }
+        }
+
+        for (let i = 0; i < keys.length; i++) {
+            const data = mappedData[keys[i]];
+
+            const row = domCreate('tr');
+            row.innerHTML = `
+                <td>${i + 1}</td>
+                <td>${data['name']}</td>
+                <td>${data['amount']}</td>
+                `
+            addChildrenToView(tbody, [row]);
+        }
+        const row = domCreate('tr');
+        row.innerHTML = `
+            <td colspan="2">TOTAL</td>
+            <td>${parishTotal}</td>
+            `
+        addChildrenToView(tfoot, [row]);
+
+        ModalExpertise.showModal({
+            'actionHeading': 'parish offering records',
+            'topRowUserActions': [new PDFPrintButton(tableId)],
+            'children': [column]
+        });
+    }
+
+    const showWholeParishOfferingRecordsButton = domCreate('i')
+    showWholeParishOfferingRecordsButton.title = 'whole parish records'
+    addClasslist(showWholeParishOfferingRecordsButton, ['bi', 'bi-wallet2'])
+    showWholeParishOfferingRecordsButton.onclick = showWholeParishOfferingRecords;
+
+    // StyleView(showWholeParishOfferingRecordsButton,
+    //     [
+    //         { 'background-color': 'gainsboro' },
+    //         { 'color': 'black' },
+    //         { 'width': 'auto' },
+    //         { 'border-radius': '120px' },
+    //     ])
 
     ModalExpertise.showModal({
         'actionHeading': 'offering reports',
+        'modalHeadingStyles': [{ 'background-color': '#8000003d' }],
         'children': [offeringColumn],
-        'topRowUserActions': [new PDFPrintButton(offeringTableId)],
+        'topRowUserActions': [showWholeParishOfferingRecordsButton, new PDFPrintButton(offeringTableId)],
         'fullScreen': true,
         'dismisible': true,
     });

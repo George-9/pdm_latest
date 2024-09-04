@@ -10,7 +10,7 @@ import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { addPriestCommunityOptionToPicker, OutstationPicker } from "../tailored_ui/outstation_picker.js";
-import { PDFPrintButton } from "../tailored_ui/print_button.js";
+import { ExcelExportButton, PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column, MondoText, TextEdit, Button, Row, MondoSelect, VerticalScrollView } from "../UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
@@ -247,12 +247,12 @@ export function showTitheReportsView() {
             tbody.appendChild(row)
         }
 
-        const row = domCreate('tr');
-        row.innerHTML = `
-            <td colspan="3">TOTAL</td>
-            <td>${selectedSCCTotalTithe}</td>
-        `
-        tFooter.appendChild(row);
+        // const row = domCreate('tr');
+        // row.innerHTML = `
+        //     <td colspan="3">TOTAL</td>
+        //     <td>${selectedSCCTotalTithe}</td>
+        // `
+        // tFooter.appendChild(row);
     });
 
     function setViews() {
@@ -332,6 +332,7 @@ export function showTitheReportsView() {
         const tableHead = domCreate('tableHead');
 
         const scrollView = VerticalScrollView({
+            'styles': [{ 'margin': '30px' }],
             'children': [table]
         });
 
@@ -381,11 +382,12 @@ export function showTitheReportsView() {
 
         const tbody = domCreate('tbody');
         addChildrenToView(table, [tableHead, tbody]);
+        const excelExportButton = ExcelExportButton(tableId, ParishDataHandle.parishTitheRecords)
 
         ModalExpertise.showModal({
             'fullScreen': false,
             'dismisible': true,
-            'topRowUserActions': [printIcon],
+            'topRowUserActions': [excelExportButton, printIcon],
             'actionHeading': 'parish tithe records',
             'children': [scrollView]
         });

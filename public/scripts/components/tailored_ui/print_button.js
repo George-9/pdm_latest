@@ -52,3 +52,37 @@ export class PDFPrintButton {
         return printPdfButton;
     }
 }
+
+
+/**
+ * exports a table or JSON data to a workbook
+ * @param {string?} tableId id of the exportable table
+ */
+export function ExcelExportButton(tableId, json) {
+    const iconButton = domCreate('i');
+    addClasslist(iconButton, ['bi', 'bi-file-earmark-excel']);
+
+    iconButton.onclick = function (ev) {
+        if (!tableId && !json) {
+            return;
+        }
+        const fileName = `${prompt('enter file name') || 'data'}.xlsx`;
+        if (tableId) {
+            const table = domQueryById(tableId);
+            if (table) {
+                const workbook = XLSX.utils.table_to_book(table, { 'sheet': 'sheet 1' });
+                XLSX.writeFile(workbook, fileName);
+            }
+        }
+
+        if (json && typeof json === 'object') {
+            const worksheet = XLSX.utils.json_to_sheet(json);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+            XLSX.writeFile(workbook, fileName);
+        }
+    }
+
+    return iconButton;
+}
