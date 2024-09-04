@@ -5,6 +5,7 @@ import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
 import { marginRuleStyles } from "../../parish_profile.js";
+import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
@@ -175,6 +176,8 @@ export async function showOfferingReportView() {
     });
 
     function showWholeParishOfferingRecords() {
+        PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' PARISH TITHE RECORDS'
+
         const tableId = 'all-outstations-offering';
         const table = domCreate('table');
         table.id = tableId;
@@ -235,9 +238,14 @@ export async function showOfferingReportView() {
             <td>${parishTotal}</td>
             `
         addChildrenToView(tfoot, [row]);
-
+        // VERY USEFUL REDISH PINKISH COLOR
+        // [{ 'background-color': '#ff9f9f' }]
+        // ALSO THIS
+        // #8000003d
+        const bgStyles = [{ 'background-color': '#9fffb4' }]
         ModalExpertise.showModal({
             'actionHeading': 'parish offering records',
+            'modalHeadingStyles': bgStyles,
             'topRowUserActions': [new PDFPrintButton(tableId)],
             'children': [column]
         });
@@ -258,7 +266,7 @@ export async function showOfferingReportView() {
 
     ModalExpertise.showModal({
         'actionHeading': 'offering reports',
-        'modalHeadingStyles': [{ 'background-color': '#8000003d' }],
+        'modalHeadingStyles': [{ 'background-color': '#9fffb4' }],
         'children': [offeringColumn],
         'topRowUserActions': [showWholeParishOfferingRecordsButton, new PDFPrintButton(offeringTableId)],
         'fullScreen': true,
