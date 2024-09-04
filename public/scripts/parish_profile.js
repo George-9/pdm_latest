@@ -49,15 +49,14 @@ const drawerMenus = [
             new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
             new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
             new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
+            new Menu('projects', 'bi-building-add', reportsClass, showProjectReportView),
         ],
         false
     ),
-    new DrawerMenu('Finance', financeClass,
-        [
-            new Menu('projects', 'bi-building-add', financeClass, showProjectReportView),
-        ],
-        false
-    )
+    // new DrawerMenu('Finance', financeClass,
+    //     [],
+    //     false
+    // )
 ]
 
 async function Main() {
@@ -91,7 +90,6 @@ async function Main() {
     }
 }
 
-
 function setProfileView() {
     let logOut = Row({
         'styles': [{ 'width': 'match-parent', 'margin-top': '20px', }],
@@ -119,7 +117,6 @@ function setProfileView() {
     //     ]
     // });
 }
-
 
 async function setCalendar() {
     var calendarEl = domQueryById('calendar');

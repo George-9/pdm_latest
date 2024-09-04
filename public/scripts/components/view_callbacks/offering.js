@@ -150,7 +150,7 @@ export async function showOfferingReportView() {
 
             outstationTotal += parseFloat(outstationAmount);
         }
-        PDFPrintButton.printingHeading = `${outstation['name']} . OFFERING`;
+        PDFPrintButton.printingHeading = `${outstation['name']} OUTSTATION OFFERING`;
 
         const tFooter = domCreate('tfoot');
         tFooter.innerHTML = `
