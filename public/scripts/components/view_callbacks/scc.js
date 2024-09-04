@@ -81,7 +81,7 @@ export function viewSCCsPage() {
 
             return Row({
                 'classlist': ['space-around', 'f-w', 'a-c', 'outlined', 'highlightable'],
-                'styles': [{ 'width': '90%' }, { 'margin': '5px' }],
+                'styles': [{ 'width': '90%' }, { 'margin-top': '5px' }],
                 'children': [
                     Column({
                         'children': [
@@ -102,7 +102,7 @@ export function viewSCCsPage() {
         'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
         'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
         'children': [column],
-        'modalChildStyles': [{ 'width': '400px' }],
+        'modalChildStyles': [{ 'width': '400px' }, { 'height': '90%' }],
         'fullScreen': false,
         'dismisible': true,
     });

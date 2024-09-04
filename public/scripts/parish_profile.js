@@ -26,7 +26,7 @@ work(Main);
 
 const registryClass = 'registry',
     reportsClass = 'reports',
-    financeClass = 'finance',
+    overView = 'overview',
     dataEntry = 'data-entry';
 
 const drawerMenus = [
@@ -56,16 +56,17 @@ const drawerMenus = [
             new Menu('members', 'bi-people', reportsClass, ShowMembersReportsView),
             new Menu('tithe', 'bi-cash-coin', reportsClass, showTitheReportsView),
             new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
-            new Menu('Outstations', 'bi-collection', reportsClass, viewOutstationsPage),
-            new Menu('SCCs', 'bi-justify-right', reportsClass, viewSCCsPage),
             new Menu('projects', 'bi-building-add', reportsClass, showProjectReportView),
         ],
         false
     ),
-    // new DrawerMenu('Finance', financeClass,
-    //     [],                                                          
-    //     false
-    // )
+    new DrawerMenu('OVERVIEW', overView,
+        [
+            new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
+            new Menu('SCCs', 'bi-justify-right', overView, viewSCCsPage),
+        ],
+        false
+    )
 ]
 
 async function Main() {

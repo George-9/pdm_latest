@@ -78,7 +78,7 @@ export function populateDrawer(drawer, drawerMenus) {
                 indicatorIcon,
                 MondoBigH3Text({
                     'text': drawerMainMenu.heading,
-                    'styles': [{ 'color': 'white', 'font-weight': '900' }],
+                    'styles': [{ 'color': 'white' }, { 'font-weight': '800' }],
                 })
             ],
         });
