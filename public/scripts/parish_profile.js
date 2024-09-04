@@ -24,24 +24,33 @@ export const marginRuleStyles = [{ 'margin-top': '20px' }];
 
 work(Main);
 
-const registryClass = 'registry', reportsClass = 'reports', financeClass = 'finance';
+const registryClass = 'registry',
+    reportsClass = 'reports',
+    financeClass = 'finance',
+    dataEntry = 'data-entry';
 
 const drawerMenus = [
     new DrawerMenu(
-        'Registry',
+        'REGISTRY',
         registryClass,
         [
             new Menu('members', 'bi-people', registryClass, promptRegiterMember),
             new Menu('Outstation', 'bi-collection', registryClass, promptAddOutstationView),
             new Menu('SCC', 'bi-people', registryClass, promptAddSCCView),
-            new Menu('Offering', 'bi-cash', registryClass, promptAddOffering),
-            new Menu('Tithe', 'bi-gift', registryClass, promptAddTitheView),
-            new Menu('projects', 'bi-building-add', registryClass, promptAddProject),
+        ],
+        false
+    ),
+    new DrawerMenu('DATA ENTRY',
+        dataEntry,
+        [
+            new Menu('Offering', 'bi-cash', dataEntry, promptAddOffering),
+            new Menu('Tithe', 'bi-gift', dataEntry, promptAddTitheView),
+            new Menu('projects', 'bi-building-add', dataEntry, promptAddProject),
         ],
         false
     ),
     new DrawerMenu(
-        'Reports',
+        'REPORTS',
         reportsClass,
         [
             new Menu('members', 'bi-people', reportsClass, ShowMembersReportsView),
@@ -54,7 +63,7 @@ const drawerMenus = [
         false
     ),
     // new DrawerMenu('Finance', financeClass,
-    //     [],
+    //     [],                                                          
     //     false
     // )
 ]
@@ -84,39 +93,37 @@ async function Main() {
 
 
         setAnchors();
-        setProfileView();
+        // setProfileView();
 
         work(populateDrawer);
     }
 }
 
-function setProfileView() {
-    let logOut = Row({
-        'styles': [{ 'width': 'match-parent', 'margin-top': '20px', }],
-        'classlist': ['f-w', 'a-c', 'txt-c'],
-        'children': [
-            MondoText({ 'text': 'Log Out' })
-        ]
-    })
+// function setProfileView() {
+//     let logOut = Row({
+//         'styles': [{ 'width': 'match-parent', 'margin-top': '20px', }],
+//         'classlist': ['f-w', 'a-c', 'txt-c'],
+//         'children': [
+//             MondoText({ 'text': 'Log Out' })
+//         ]
+//     })
 
-    logOut.onclick = LogOut;
-    function LogOut() {
-        localStorage.clear();
-        window.location.reload()
-    }
+//     logOut.onclick = LogOut;
+//     function LogOut() {
+//         localStorage.clear();
+//         window.location.reload()
+//     }
 
-    const column = Column({
-        'children': [
-            logOut
-        ]
-    });
+//     const column = Column({
+//         'children': [
+//             logOut
+//         ]
+//     });
 
-    // domQueryById('profile-setting-veiw').onclick = ModalExpertise.showModal({
-    //     'children': [
-    //         column
-    //     ]
-    // });
-}
+//     ModalExpertise.showModal({
+//         'children': [column]
+//     });
+// }
 
 async function setCalendar() {
     var calendarEl = domQueryById('calendar');
@@ -267,7 +274,7 @@ function showEventsCount() {
 }
 
 function setAnchors() {
-    // domQueryById('reports').onclick = showAllReportsMenuPage;
+    // domQueryById('profile-setting-view').onclick = setProfileView;
 }
 
 // function openRegistryActionsOptions() {
