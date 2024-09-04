@@ -25,8 +25,7 @@ export function promptAddTitheView() {
     const dateI = TextEdit({ 'type': 'date' });
     dateI.id = dateId;
 
-    const amountI = TextEdit({ 'placeholder': 'amount' });
-
+    const amountI = TextEdit({ 'placeholder': 'amount', 'keyboardType': 'number' });
     async function saveTitheRecord() {
         if (!selectedMemberId) {
             return MessegePopup.showMessegePuppy([MondoText({ 'text': 'select a member to continue' })])
@@ -208,6 +207,8 @@ export function showTitheReportsView() {
     sccPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
 
+        PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' ' + (JSON.parse(sccPicker.value))['name'] + ' SCC tithe records\''
+
         selectedSCCTotalTithe = 0;
         const thiSCCMembers = getSCCMembers(sccPicker.value, outstationPicker.value);
 
@@ -304,10 +305,7 @@ export function showTitheReportsView() {
 
     const containerColumn = Column({
         'classlist': ['f-w', 'a-c', 'm-pad', 'scroll-y'],
-        'children': [
-            outstationTotalTitheDispensor,
-            table
-        ]
+        'children': [outstationTotalTitheDispensor, table]
     });
 
     const mainColumn = Column({
@@ -359,8 +357,8 @@ export function showTitheReportsView() {
                         outstationTotalTithe += amount;
                     }
                 }
-                parishTotalTithe += amount;
             }
+            parishTotalTithe += outstationTotalTithe;
             const row = domCreate('tr');
             if (l % 2 === 0) {
                 StyleView(row, [{ 'background-color': '#ffebeb' }])
@@ -373,6 +371,13 @@ export function showTitheReportsView() {
             `
             addChildrenToView(table, [row]);
         }
+        const row = domCreate('tr');
+        row.innerHTML = `
+            <td colspan="2">TOTAL</td>
+            <td style={ color: 'blue'; }>${parishTotalTithe}</td>
+        `
+        addChildrenToView(tFooter, [row]);
+        addChildrenToView(table, [tFooter]);
 
         const tbody = domCreate('tbody');
         addChildrenToView(table, [tableHead, tbody]);
@@ -389,7 +394,34 @@ export function showTitheReportsView() {
     ModalExpertise.showModal({
         'actionHeading': 'tithe records',
         'fullScreen': true,
-        'topRowUserActions': [viewTotalsForEachSCCButton, printButton],
+        'topRowUserActions': [
+            Column({
+                'styles': [{ 'width': '150px' }],
+                'classlist': ['f-x', 'txt-c'],
+                'children': [
+                    MondoText({
+                        'text': 'print whole parish', 'styles': [
+                            { 'color': 'grey' },
+                            { 'font-size': '12px' }
+                        ]
+                    }),
+                    viewTotalsForEachSCCButton,
+                ]
+            }),
+            Column({
+                'styles': [{ 'width': '150px' }],
+                'classlist': ['f-x', 'txt-c'],
+                'children': [
+                    MondoText({
+                        'text': 'print selection', 'styles': [
+                            { 'color': 'grey' },
+                            { 'font-size': '12px' }
+                        ]
+                    }),
+                    printButton
+                ]
+            }),
+        ],
         'children': [mainColumn],
     })
 }

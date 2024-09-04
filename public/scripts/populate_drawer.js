@@ -1,6 +1,7 @@
 import { Column } from "./components/UI/column.js";
 import { MondoBigH3Text, MondoText } from "./components/UI/mondo_text.js";
 import { Row } from "./components/UI/row.js";
+import { VerticalScrollView } from "./components/UI/vertical_scrollview.js";
 import { addClasslist, StyleView } from "./components/utils/stylus.js";
 import { domCreate, domQueryAll } from "./dom/query.js";
 
@@ -65,6 +66,7 @@ export class Menu {
  * @param {DrawerMenu[]} drawerMenus array to populate the drawer
  */
 export function populateDrawer(drawer, drawerMenus) {
+
     for (let i = 0; i < drawerMenus.length; i++) {
         const drawerMainMenu = drawerMenus[i];
         const indicatorIcon = domCreate('i');
@@ -83,8 +85,9 @@ export function populateDrawer(drawer, drawerMenus) {
 
         addClasslist(menusCategoryTitle, ['c-p']);
 
-        const column = Column({
-            'styles': [{ 'margin-top': '30px' }],
+        let column = Column({
+            'classlist': ['f-w', 'fx-col'],
+            'styles': [{ 'padding-top': '10px' }],
             'children': [menusCategoryTitle],
         });
 
@@ -111,18 +114,6 @@ export function populateDrawer(drawer, drawerMenus) {
             column.appendChild(subMenu.view);
         }
 
-        let logOut = MondoText({ 'text': 'Log Out' });
-        StyleView(logOut, [{ 'position': 'fixed' }, { 'bottom': '0px' }, { 'padding': '10px' }])
-
-        logOut.onclick = LogOut;
-
-        column.appendChild(logOut);
         drawer.appendChild(column);
     }
-}
-
-
-function LogOut() {
-    localStorage.clear();
-    window.location.reload()
 }

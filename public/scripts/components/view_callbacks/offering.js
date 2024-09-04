@@ -17,7 +17,7 @@ import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 export function promptAddOffering() {
     const outstationPicker = OutstationPicker({ 'outstations': ParishDataHandle.parishOutstations });
     const dateI = TextEdit({ 'type': 'date' });
-    const amountI = TextEdit({ 'placeholder': 'amount' });
+    const amountI = TextEdit({ 'placeholder': 'amount', 'keyboardType': 'number' });
 
     const sourceSelect = MondoSelect({});
     sourceSelect.innerHTML = `

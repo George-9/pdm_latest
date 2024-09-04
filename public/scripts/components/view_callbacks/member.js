@@ -241,6 +241,7 @@ export function showMembersReportsView() {
 
             sccPicker.appendChild(option);
         }
+
         addPriestCommunityOptionToPicker(sccPicker);
 
         sccPicker.options[0].selected = true;

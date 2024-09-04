@@ -8,7 +8,7 @@
 
         justify-content: center;
 
-        height: 0%;
+        height: 0vh;
         width: 100%;
         max-width: 100% !important;
 
@@ -73,9 +73,14 @@
     }
 
     .drawer {
-        flex: 1;
+        /* flex: 1; */
         opacity: 1 !important;
-        height: 100% !important;
+        height: 100vh !important;
+        overflow-y: hidden !important;
+    }
+
+    .drawer>.f-h {
+        height: 90vh;
         padding: 10px !important;
     }
 

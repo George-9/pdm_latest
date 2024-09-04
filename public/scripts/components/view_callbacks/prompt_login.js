@@ -8,7 +8,7 @@ import { Button, Column, MondoText, TextEdit } from "../UI/cool_tool_ui.js";
 import { TextEditError, TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
 export function promptLogIn() {
-    const emailInput = TextEdit({ 'placeholder': 'email' });
+    const detail = TextEdit({ 'placeholder': 'parish email or parish code' });
     const passwordInput = TextEdit({ 'placeholder': 'password', 'type': 'password', onSubmit: doLogIn });
 
     const button = Button({
@@ -19,23 +19,23 @@ export function promptLogIn() {
     });
 
     const column = Column({
-        'children': [emailInput, passwordInput, button],
+        'children': [detail, passwordInput, button],
         'classlist': ['f-w', 'fx-col', 'a-c', 'just-center'],
         styles: [{ 'padding-top': '80px' }]
     });
 
     async function doLogIn() {
         try {
-            TextEditValueValidator.validate('email', emailInput);
+            TextEditValueValidator.validate('email or parish ccde', detail);
             TextEditValueValidator.validate('password', passwordInput);
 
-            let result = await ParishLogIn(emailInput.value, passwordInput.value);
+            let result = await ParishLogIn(detail.value, passwordInput.value);
             const msg = result['response'];
 
             MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
             if (msg.match('success')) {
                 await Post('/parish/details', {
-                    'email': emailInput.value,
+                    'detail': detail.value,
                     'password': passwordInput.value,
                 },
                     {
@@ -43,7 +43,6 @@ export function promptLogIn() {
                     }
                 ).then(function (parishDetails) {
                     let credentials = parishDetails['response'];
-                    console.log(credentials);
 
                     if (credentials) {
                         /**remove unneccessary mongodb objectId */

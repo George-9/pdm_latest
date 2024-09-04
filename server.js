@@ -21,6 +21,7 @@ import { updateMemberDetails } from './routes_callbacks/parish/post/update_membe
 import { loadAllOfferingRecords } from './routes_callbacks/parish/post/get_all_offering_records.js';
 import { getParishTitheRecords } from './public/scripts/data_source/main.js';
 import { loadAllTitheRecords } from './routes_callbacks/parish/post/get_tithe_records.js';
+import { addContributionToProjectRecord, addProjectRecord, loadParishProjectRecords } from './routes_callbacks/parish/post/parish_projects.js';
 
 // __________________ADMIN
 
@@ -51,7 +52,6 @@ server.post('/parish/log/in', parishLogInCallback);
 server.post('/parish/details', parishGetCredentials);
 
 
-
 // MEMBERS
 server.post('/parish/register/member', addMember);
 server.post('/parish/update/member/', updateMemberDetails);
@@ -76,12 +76,17 @@ server.post('/parish/load/all/tithe/records', loadAllTitheRecords);
 server.post('/parish/record/offering', addOfferingRecord);
 server.post('/parish/load/all/offering/records', loadAllOfferingRecords);
 
-
-
 // EVENTS | HOLIDAYS
 server.post('/parish/add/event', addParishEvent);
 server.post('/parish/events', loadParishEvents);
 server.post('/parish/delete/event', deleteParishEvent);
+
+
+// PROJECTS
+server.post('/parish/add/project/record', addProjectRecord);
+server.post('/parish/load/all/projects/records', loadParishProjectRecords);
+server.post('/parish/add/project/contribution', addContributionToProjectRecord);
+
 
 /**
  * safely the start server

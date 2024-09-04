@@ -1,4 +1,5 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
+import { getAllMembersWithoutSCC } from "../../data_pen/puppet.js";
 import { getParishSCCs } from "../../data_source/main.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
@@ -72,7 +73,7 @@ export function viewSCCsPage() {
         'children': ParishDataHandle.parishSCCs.map(function (scc) {
             let outstation = ParishDataHandle.parishOutstations.find(function (o) {
                 return o['_id'] === scc['outstation_id']
-            });
+            }) || { 'name': 'EVERY OUTSTATION' };
 
             let members = ParishDataHandle.parishMembers.filter(function (m) {
                 return m['scc_id'] === scc['_id']
@@ -85,10 +86,13 @@ export function viewSCCsPage() {
                     Column({
                         'children': [
                             MondoBigH3Text({ 'text': scc['name'] }),
-                            MondoText({ 'text': `outstation: ${outstation['name']}`, 'styles': [{ 'font-size': '12px', 'color': 'grey' }] }),
+                            MondoText({
+                                'text': `outstation: ${outstation['name']}`,
+                                'styles': [{ 'font-size': '12px', 'color': 'grey' }]
+                            }),
                         ]
                     }),
-                    MondoText({ 'text': `${members} members` })
+                    MondoText({ 'text': `${!(outstation['_id']) ? getAllMembersWithoutSCC().length : members} members` })
                 ]
             });
         })

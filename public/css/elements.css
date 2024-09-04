@@ -41,7 +41,7 @@ nav {
     margin: 0px;
     padding: 3px;
     padding-left: 15px;
-    background-color: white;
+    background-color: cornsilk;
     border-bottom: 1px grey;
 
     margin: 1px;
@@ -83,8 +83,8 @@ td:last-of-type {
     text-align: center;
 }
 
-tbody>tr {
-    background-color: #d1e9ff;
+tbody>tr:nth-of-type(even) {
+    background-color: #ebefff;
 }
 
 tfoot th {
@@ -159,7 +159,7 @@ p i {
 
 @supports selector(::-webkit-scrollbar) {
     *::-webkit-scrollbar {
-        background: grey;
+        background: rgb(255, 239, 239);
     }
 
     *::-webkit-scrollbar-thumb {

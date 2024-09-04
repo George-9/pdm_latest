@@ -18,7 +18,6 @@ export function memberGetSCC(member) {
     };
 }
 
-
 /**
  * Retrieves all the SCCs of a given Outstation
  * 
@@ -97,6 +96,17 @@ export function getMemberById(memberId) {
 //         })
 //     });
 // }
+
+
+/**
+ * get members without SCC PRIEST COMMUNITY GROUP
+ * @returns {object[]} list of members
+ */
+export function getAllMembersWithoutSCC() {
+    return ParishDataHandle.parishMembers.filter(function (member) {
+        return member['scc_id'] === PRIESTS_COMMUNITY_NAME;
+    }) || [];
+}
 
 
 export function obtainObjectValueBykey(object, key) {

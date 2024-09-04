@@ -1,16 +1,17 @@
 import { ModalExpertise } from "./components/actions/modal.js";
 import { MessegePopup } from "./components/actions/pop_up.js";
-import { Button, Column, MondoBigH3Text, MondoText, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
+import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { addClasslist } from "./components/utils/stylus.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
 import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember } from "./components/view_callbacks/member.js";
 import { promptAddOffering, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
+import { promptAddProject, showProjectReportView } from "./components/view_callbacks/projects.js";
 import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { promptAddSCCView, viewSCCsPage } from "./components/view_callbacks/scc.js";
 import { promptAddTitheView, showTitheReportsView } from "./components/view_callbacks/tithe.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
-import { getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishSCCs, getParishTitheRecords, parishEvents } from "./data_source/main.js";
+import { getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishTitheRecords, parishEvents } from "./data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "./data_source/other_sources.js";
 import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
@@ -23,7 +24,7 @@ export const marginRuleStyles = [{ 'margin-top': '20px' }];
 
 work(Main);
 
-const registryClass = 'registry', reportsClass = 'reports';
+const registryClass = 'registry', reportsClass = 'reports', financeClass = 'finance';
 
 const drawerMenus = [
     new DrawerMenu(
@@ -35,7 +36,9 @@ const drawerMenus = [
             new Menu('SCC', 'bi-people', registryClass, promptAddSCCView),
             new Menu('Offering', 'bi-cash', registryClass, promptAddOffering),
             new Menu('Tithe', 'bi-gift', registryClass, promptAddTitheView),
-        ]
+            new Menu('projects', 'bi-building-add', registryClass, promptAddProject),
+        ],
+        false
     ),
     new DrawerMenu(
         'Reports',
@@ -49,6 +52,12 @@ const drawerMenus = [
         ],
         false
     ),
+    new DrawerMenu('Finance', financeClass,
+        [
+            new Menu('projects', 'bi-building-add', financeClass, showProjectReportView),
+        ],
+        false
+    )
 ]
 
 async function Main() {
@@ -62,6 +71,7 @@ async function Main() {
         ParishDataHandle.parishMembers.push(...(await getParishMembers()))
         ParishDataHandle.parishOfferingRecords.push(...(await getParishOfferingsRecords()));
         ParishDataHandle.parishTitheRecords.push(...(await getParishTitheRecords()))
+        ParishDataHandle.parishProjectsRecords.push(...(await getParishProjectsRecords()))
 
         ParishDataHandle.parishSCCs.push({
             'id': PRIESTS_COMMUNITY_NAME,
@@ -75,10 +85,41 @@ async function Main() {
 
 
         setAnchors();
+        setProfileView();
 
         work(populateDrawer);
     }
 }
+
+
+function setProfileView() {
+    let logOut = Row({
+        'styles': [{ 'width': 'match-parent', 'margin-top': '20px', }],
+        'classlist': ['f-w', 'a-c', 'txt-c'],
+        'children': [
+            MondoText({ 'text': 'Log Out' })
+        ]
+    })
+
+    logOut.onclick = LogOut;
+    function LogOut() {
+        localStorage.clear();
+        window.location.reload()
+    }
+
+    const column = Column({
+        'children': [
+            logOut
+        ]
+    });
+
+    // domQueryById('profile-setting-veiw').onclick = ModalExpertise.showModal({
+    //     'children': [
+    //         column
+    //     ]
+    // });
+}
+
 
 async function setCalendar() {
     var calendarEl = domQueryById('calendar');

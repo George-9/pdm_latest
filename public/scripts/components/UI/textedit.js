@@ -13,7 +13,8 @@ export function TextEdit({
     styles = [],
     onType = new Function(),
     onSubmit = new Function(),
-    type = ''
+    type = '',
+    keyboardType = ''
 }) {
     const input = domCreate('input');
     input.setAttribute('type', type ?? 'text');
@@ -35,6 +36,23 @@ export function TextEdit({
     else {
         input.addEventListener('input', function (ev) {
             ev.preventDefault();
+            function reset() {
+                if (!input.value && isNaN(parseFloat(input.value)) || input.value.length === 1) {
+                    input.value = '';
+                }
+                input.value = input.value.substring(0, (input.value.length - 1))
+            }
+            if (keyboardType && keyboardType === 'number') {
+                if (input.value) {
+                    if (input.value[input.value.length - 1] === '.' && input.value[input.value.length - 2] === '.') {
+                        reset();
+                    }
+                    if (parseFloat(input.value) && ((`${parseFloat(input.value)}`.length !== input.value.length))) {
+                        reset();
+                    }
+                }
+                input.value = parseFloat(input.value) || '';
+            }
             onType(ev);
         });
 
