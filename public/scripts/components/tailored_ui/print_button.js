@@ -3,7 +3,7 @@ import { Column } from "../UI/column.js";
 import { MondoBigH3Text } from "../UI/mondo_text.js";
 import { addClasslist } from "../utils/stylus.js";
 
-const printTableStyle = '* { font-family: arial; padding: 5px; } table { border: 1px solid grey; width: 80%; text-align: center; border-collapse: collapse; } tr, td { border: 1px solid grey; } thead, tfoot { font-weight: 800; }';
+const printTableStyle = '* { font-family: arial; padding: 5px; } table { border: 1px solid grey; width: 100%; text-align: start; border-collapse: collapse; } tr, td { border: 1px solid grey; } thead, tfoot { font-weight: 300; }';
 
 /**
  * prints an HTML content using `printJS` api

@@ -40,7 +40,7 @@ const drawerMenus = [
         ],
         false
     ),
-    new DrawerMenu('DATA ENTRY',
+    new DrawerMenu('FINANCE ENTRY',
         dataEntry,
         [
             new Menu('Offering', 'bi-cash', dataEntry, promptAddOffering),
@@ -53,7 +53,6 @@ const drawerMenus = [
         'REPORTS',
         reportsClass,
         [
-            new Menu('members', 'bi-people', reportsClass, ShowMembersReportsView),
             new Menu('tithe', 'bi-cash-coin', reportsClass, showTitheReportsView),
             new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
             new Menu('projects', 'bi-building-add', reportsClass, showProjectReportView),
@@ -62,6 +61,7 @@ const drawerMenus = [
     ),
     new DrawerMenu('OVERVIEW', overView,
         [
+            new Menu('members', 'bi-people', overView, ShowMembersReportsView),
             new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
             new Menu('SCCs', 'bi-justify-right', overView, viewSCCsPage),
         ],
@@ -83,7 +83,7 @@ async function Main() {
         ParishDataHandle.parishProjectsRecords.push(...(await getParishProjectsRecords()))
 
         ParishDataHandle.parishSCCs.push({
-            'id': PRIESTS_COMMUNITY_NAME,
+            '_id': PRIESTS_COMMUNITY_NAME,
             'name': PRIESTS_COMMUNITY_NAME
         });
 

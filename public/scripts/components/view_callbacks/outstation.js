@@ -1,9 +1,12 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getParishOutstations } from "../../data_source/main.js";
+import { addChildrenToView } from "../../dom/addChildren.js";
+import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
+import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column } from "../UI/column.js";
 import { Button, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "../UI/cool_tool_ui.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
@@ -47,29 +50,62 @@ export function promptAddOutstationView() {
 }
 
 export function viewOutstationsPage() {
-    const column = VerticalScrollView({
-        'classlist': ['f-w', 'a-c', 'just-center'],
-        'children': ParishDataHandle.parishOutstations.map(function (outstation) {
-            let outstationMembersCount = ParishDataHandle.parishMembers.filter(function (m) {
-                return m['outstation_id'] === outstation['_id']
-            }).length;
+    const tableId = 'outstations-table';
 
-            return Row({
-                'classlist': ['space-around', 'a-c', 'outlined'],
-                'styles': [{ 'width': '50%' }, { 'margin': '10px' }],
-                'children': [
-                    MondoBigH3Text({ 'text': outstation['name'] }),
-                    MondoText({ 'text': `${outstationMembersCount} members` })
-                ]
-            });
-        })
+    const table = domCreate('table');
+    table.id = tableId;
+
+    const thead = domCreate('thead');
+    const tbody = domCreate('tbody');
+    const tfoot = domCreate('tfoot');
+
+    thead.innerHTML = `
+        <tr>
+            <td>NO</td>
+            <td>OUTSTATION</td>
+            <td>SCCs</td>
+            <td>MEMBER COUNT</td>
+        </tr>
+    `
+    addChildrenToView(table, [thead, tbody, tfoot]);
+    ParishDataHandle.parishOutstations.forEach(function (outstation, i) {
+        let sccCount = ParishDataHandle.parishSCCs.filter(function (scc) {
+            return scc['outstation_id'] === outstation['_id']
+        }).length;
+
+        let membersCount = ParishDataHandle.parishMembers.filter(function (m) {
+            return m['outstation_id'] === outstation['_id']
+        }).length;
+
+        const row = domCreate('tr');
+        row.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${outstation['name']}</td>
+            <td>${sccCount}</td>
+            <td>${membersCount}</td>
+        `
+        table.appendChild(row);
+    });
+    const lastRow = domCreate('tr');
+    lastRow.innerHTML = `
+        <td colspan="2">TOTAL</td>
+        <td>${ParishDataHandle.parishSCCs.length}</td>
+        <td>${ParishDataHandle.parishMembers.length}</td>
+    `
+    table.appendChild(lastRow)
+
+    const column = Column({
+        'styles': [{ 'margin': '10px' }, { 'padding': '10px' }],
+        'classlist': ['f-w', 'a-c', 'just-center', 'scroll-y'],
+        'children': [table]
     });
 
     ModalExpertise.showModal({
+        'topRowUserActions': [new PDFPrintButton(tableId)],
         'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
         'actionHeading': `parish outstations (${ParishDataHandle.parishOutstations.length})`,
         'children': [column],
-        'modalChildStyles': [{ 'width': '400px' }],
+        'modalChildStyles': [{ 'width': '80%' }],
         'fullScreen': false,
         'dismisible': true,
     });

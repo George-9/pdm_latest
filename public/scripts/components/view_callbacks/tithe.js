@@ -207,7 +207,7 @@ export function showTitheReportsView() {
     sccPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
 
-        PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' ' + (JSON.parse(sccPicker.value))['name'] + ' SCC tithe records\''
+        PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' ' + (JSON.parse(sccPicker.value))['name'] + ' SCC tithe records'
 
         selectedSCCTotalTithe = 0;
         const thiSCCMembers = getSCCMembers(sccPicker.value, outstationPicker.value);
@@ -329,7 +329,7 @@ export function showTitheReportsView() {
 
         const table = domCreate('table');
         table.id = sccInnerTbaleId;
-        const tableHead = domCreate('tableHead');
+        const tableHeader = domCreate('thead');
 
         const scrollView = VerticalScrollView({
             'styles': [{ 'margin': '30px' }],
@@ -341,9 +341,9 @@ export function showTitheReportsView() {
             <th>NO</th>
             <th>SCC</th>
             <th>amount</th>
-        </tr>
-        `
-
+            </tr>
+            `
+        addChildrenToView(table, [tableHeader]);
         let parishTotalTithe = 0;
         for (let l = 0; l < ParishDataHandle.parishOutstations.length; l++) {
             let outstationTotalTithe = 0;
@@ -381,7 +381,7 @@ export function showTitheReportsView() {
         addChildrenToView(table, [tFooter]);
 
         const tbody = domCreate('tbody');
-        addChildrenToView(table, [tableHead, tbody]);
+        addChildrenToView(table, [tableHeader, tbody]);
         const excelExportButton = ExcelExportButton(tableId, ParishDataHandle.parishTitheRecords)
 
         ModalExpertise.showModal({

@@ -1,12 +1,16 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getAllMembersWithoutSCC } from "../../data_pen/puppet.js";
 import { getParishSCCs } from "../../data_source/main.js";
+import { PRIESTS_COMMUNITY_NAME } from "../../data_source/other_sources.js";
+import { addChildrenToView } from "../../dom/addChildren.js";
+import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
 import { marginRuleStyles } from "../../parish_profile.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
+import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column, MondoText, TextEdit, Button, VerticalScrollView, MondoBigH3Text, Row } from "../UI/cool_tool_ui.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
@@ -68,41 +72,62 @@ export function promptAddSCCView() {
 }
 
 export function viewSCCsPage() {
-    const column = VerticalScrollView({
-        'classlist': ['f-w', 'a-c', 'just-center'],
-        'children': ParishDataHandle.parishSCCs.map(function (scc) {
-            let outstation = ParishDataHandle.parishOutstations.find(function (o) {
-                return o['_id'] === scc['outstation_id']
-            }) || { 'name': 'EVERY OUTSTATION' };
+    const tableId = 'sccs-table';
 
-            let members = ParishDataHandle.parishMembers.filter(function (m) {
-                return m['scc_id'] === scc['_id']
-            }).length;
+    const table = domCreate('table');
+    table.id = tableId;
 
-            return Row({
-                'classlist': ['space-around', 'f-w', 'a-c', 'outlined', 'highlightable'],
-                'styles': [{ 'width': '90%' }, { 'margin-top': '5px' }],
-                'children': [
-                    Column({
-                        'children': [
-                            MondoBigH3Text({ 'text': scc['name'] }),
-                            MondoText({
-                                'text': `outstation: ${outstation['name']}`,
-                                'styles': [{ 'font-size': '12px', 'color': 'grey' }]
-                            }),
-                        ]
-                    }),
-                    MondoText({ 'text': `${!(outstation['_id']) ? getAllMembersWithoutSCC().length : members} members` })
-                ]
-            });
-        })
+    const thead = domCreate('thead');
+    const tbody = domCreate('tbody');
+    const tfoot = domCreate('tfoot');
+
+    thead.innerHTML = `
+        <tr>
+            <td>NO</td>
+            <td>SCC</td>
+            <td>OUTSTATION</td>
+            <td>MEMBER COUNT</td>
+        </tr>
+    `
+    addChildrenToView(table, [thead, tbody, tfoot]);
+    ParishDataHandle.parishSCCs.forEach(function (scc, i) {
+        let outstation = ParishDataHandle.parishOutstations.find(function (o) {
+            return o['_id'] === scc['outstation_id']
+        }) || { 'name': 'EVERY OUTSTATION' };
+
+        let members = ParishDataHandle.parishMembers.filter(function (m) {
+            console.log(scc, '::::', m);
+
+            return m['scc_id'] === scc['_id']
+        }).length;
+        const row = domCreate('tr');
+        row.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${scc['name']}</td>
+            <td>${outstation['name']}</td>
+            <td>${members}</td>
+        `
+        table.appendChild(row);
+    });
+    const lastRow = domCreate('tr');
+    lastRow.innerHTML = `
+        <td colspan="3">TOTAL</td>
+        <td>${ParishDataHandle.parishMembers.length}</td>
+    `
+    table.appendChild(lastRow)
+
+    const column = Column({
+        'classlist': ['f-w', 'a-c', 'just-center', 'scroll-y'],
+        'styles': [{ 'padding': '10px' }],
+        'children': [table]
     });
 
     ModalExpertise.showModal({
-        'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
+        'modalHeadingStyles': [{ 'background': 'gainsboro' }, { 'color': 'white' }],
         'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
+        'topRowUserActions': [new PDFPrintButton(tableId)],
         'children': [column],
-        'modalChildStyles': [{ 'width': '400px' }, { 'height': '90%' }],
+        'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],
         'fullScreen': false,
         'dismisible': true,
     });
