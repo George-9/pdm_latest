@@ -90,7 +90,7 @@ function RegisterParish() {
     ModalExpertise.showModal({
         'actionHeading': 'register parish',
         'children': [column],
-        'modalChildStyles': [{ 'width': '400px' }],
+        'modalChildStyles': [{ 'width': '80%' }],
         'dismisible': false
     });
 }

@@ -64,7 +64,7 @@ export function promptAddSCCView() {
 
     ModalExpertise.showModal({
         'actionHeading': 'add an SCC',
-        'modalChildStyles': [{ 'width': '400px', 'height': '300px' }],
+        'modalChildStyles': [{ 'width': '80%', 'height': '300px' }],
         'children': [column],
         'fullScreen': false,
         'dismisible': true

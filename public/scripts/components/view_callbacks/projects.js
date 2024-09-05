@@ -211,7 +211,7 @@ export function promptAddProject() {
 
     ModalExpertise.showModal({
         'actionHeading': 'add Project records',
-        'modalChildStyles': [{ 'width': '400px', 'height': '400px' }],
+        'modalChildStyles': [{ 'width': '80%', 'height': '400px' }],
         'dismisible': true,
         'children': [column],
     });
@@ -632,7 +632,7 @@ export async function showProjectReportView() {
 
     ModalExpertise.showModal({
         'actionHeading': 'Select Project',
-        'modalChildStyles': [{ 'width': '400px' }],
+        'modalChildStyles': [{ 'width': '80%' }],
         'children': [projectsColumn],
         'dismisible': true,
     });

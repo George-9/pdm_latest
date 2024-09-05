@@ -133,27 +133,45 @@ async function setCalendar() {
     ParishDataHandle.allParishEvents.push(...savedParishEvents);
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
         headerToolbar: {
-            left: 'title',
-            center: 'dayGridMonth,timeGridWeek,listWeek',
-            right: 'prev,next today'
+            left: '',
+            center: 'title',
+            right: ''
         },
-        views: {
-            listDay: { buttonText: 'Day' },
-            listWeek: { buttonText: 'Week' },
-            listMonth: { buttonText: 'Month' }
-        },
+        footerToolbar: false,
         events: ParishDataHandle.allParishEvents.map(function (ev) {
             ev['id'] = ev['_id'];
             return ev;
         }),
-
         dateClick: function (info) { handleDateClick(calendar, info) },
         eventClick: handleEventClick
     });
 
     calendar.render();
+
+    document.getElementById('prev-button').addEventListener('click', function () {
+        calendar.prev();
+    });
+
+    document.getElementById('next-button').addEventListener('click', function () {
+        calendar.next();
+    });
+
+    document.getElementById('today-button').addEventListener('click', function () {
+        calendar.today();
+    });
+
+    document.getElementById('month-view').addEventListener('click', function () {
+        calendar.changeView('dayGridMonth');
+    });
+
+    document.getElementById('week-view').addEventListener('click', function () {
+        calendar.changeView('timeGridWeek');
+    });
+
+    document.getElementById('day-view').addEventListener('click', function () {
+        calendar.changeView('timeGridDay');
+    });
 }
 
 function handleDateClick(calendar, info) {

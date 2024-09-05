@@ -185,7 +185,7 @@ export function promptRegiterMember() {
     ModalExpertise.showModal({
         'actionHeading': 'member registration',
         'modalHeadingStyles': [{ 'background-color': 'azure' }],
-        'modalChildStyles': [{ 'width': '400px', 'height': '300px' }],
+        'modalChildStyles': [{ 'width': '80%', 'height': '300px' }],
         // 'topRowUserActions': [addFieldIconButton],
         'children': [column],
         'fullScreen': false,
@@ -211,7 +211,7 @@ export function showMembersReportsView() {
     const table = domCreate('table');
     table.id = tableId;
 
-    StyleView(table, [{ 'margin': '20px' }, { 'width': '400px' }]);
+    StyleView(table, [{ 'margin': '20px' }, { 'width': '60%' }]);
     addClasslist(table, ['txt-c']);
 
     const tableHeader = domCreate('thead');
@@ -278,7 +278,7 @@ export function showMembersReportsView() {
                         ModalExpertise.showModal({
                             'actionHeading': `${member['name']}`.toUpperCase(),
                             'modalHeadingStyles': [{ 'background-color': 'dodgerblue' }, { 'color': 'white' }],
-                            'modalChildStyles': [{ 'width': '400px' }],
+                            'modalChildStyles': [{ 'width': '60%' }],
                             'children': [memberView(member)]
                         })
                     }
@@ -299,10 +299,10 @@ export function showMembersReportsView() {
         sccPicker.addEventListener('change', setViews);
     });
 
-    const rowStyle = [{ 'width': '360px' }], classlist = ['a-c', 'space-between'],
+    const rowStyle = [{ 'width': '100%' }], classlist = ['a-c', 'space-between'],
         styles = [
             { 'font-size': '18px' },
-            { 'font-weight': '700' }
+            { 'font-weight': '300' }
         ]
 
     const pickersRow = Column({
@@ -310,20 +310,25 @@ export function showMembersReportsView() {
         'classlist': ['a-c'],
         'children': [
             Row({
-                'classlist': classlist,
-                'styles': rowStyle,
                 'children': [
-                    MondoText({ 'text': 'OUTSTATION ', 'styles': styles }),
-                    outstationPicker,
+
+                    Column({
+                        'classlist': classlist,
+                        'styles': rowStyle,
+                        'children': [
+                            MondoText({ 'text': 'OUTSTATION ', 'styles': styles }),
+                            outstationPicker,
+                        ]
+                    }),
+                    Column({
+                        'classlist': classlist,
+                        'styles': rowStyle,
+                        'children': [
+                            MondoText({ 'text': 'SCC', 'styles': styles }),
+                            sccPicker
+                        ],
+                    })
                 ]
-            }),
-            Row({
-                'classlist': classlist,
-                'styles': rowStyle,
-                'children': [
-                    MondoText({ 'text': 'SCC', 'styles': styles }),
-                    sccPicker
-                ],
             })
         ]
     });

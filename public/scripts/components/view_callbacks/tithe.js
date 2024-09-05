@@ -70,7 +70,7 @@ export function promptAddTitheView() {
         'actionHeading': 'add tithe record',
         'fullScreen': false,
         'dismisible': true,
-        'modalChildStyles': [{ 'width': '400px', 'height': '400px' }],
+        'modalChildStyles': [{ 'width': '80%', 'height': '400px' }],
         'modalHeadingStyles': [{ 'background-color': 'green' }, { 'color': 'white' }],
         'children': [memberSearchView]
     });
@@ -183,7 +183,7 @@ export function showTitheReportsView() {
 
     const table = domCreate('table');
     table.id = tableId;
-    StyleView(table, [{ 'width': '400px' }]);
+    StyleView(table, [{ 'width': '80%' }]);
     addClasslist(table, ['txt-c'])
 
     const tableHeader = domCreate('thead');

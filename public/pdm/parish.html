@@ -110,6 +110,27 @@
         .fc-h-event .fc-event-title-container {
             background-color: aliceblue;
         }
+
+        .view1 {
+            border: 1px solid gray;
+            background-color: azure;
+        }
+
+        .view2 {
+            border: 1px solid gray;
+            background-color: azure;
+        }
+
+        /* custom FullCalendar buttons */
+        .view-buttons {
+            display: flex;
+            justify-content: center;
+            margin: 10px;
+            margin-bottom: 10px;
+            background-color: #bae7c2;
+            border: none;
+            padding: 10px;
+        }
     </style>
 
 </head>
@@ -146,14 +167,28 @@
             <div class="drawer-container f-w f-h just-start fx-col scroll-y hide-scroll-x"></div>
         </div>
 
-        <div class="content fx-col a-c f-w">
+        <div class="content centered-view hide-scroll-x a-c f-w">
             <div class="full-width" style="min-width: 80%">
                 <h3 id="parish-name" style="color: royalblue; font-weight: 900; text-transform: uppercase;"></h3>
                 <div class="fx-row just-start">
                     <h3 id="events-count"></h3>
                 </div>
+
                 <!-- Calendar -->
-                <div class="flex-column" id="calendar"></div>
+                <div class="fx-row scroll-x">
+                    <div id="nav-buttons" class="fx-row view1">
+                        <button id="prev-button" class="view-buttons">Prev</button>
+                        <button id="next-button" class="view-buttons">Next</button>
+                        <button id="today-button" class="view-buttons">Today</button>
+                    </div>
+
+                    <div id="view-buttons" class="fx-row view2">
+                        <button id="month-view" class="view-buttons">Month</button>
+                        <button id="week-view" class="view-buttons">Week</button>
+                        <button id="day-view" class="view-buttons">Day</button>
+                    </div>
+                </div>
+                <div id="calendar" class="fx-col" style="display: block;"></div>
             </div>
         </div>
     </div>

@@ -79,6 +79,6 @@ export function promptLogIn() {
         'classlist': ['f-w'],
         'dismisible': false,
         'fullScreen': false,
-        'modalChildStyles': [{ 'width': '400px' }]
+        'modalChildStyles': [{ 'width': '80%' }]
     });
 }

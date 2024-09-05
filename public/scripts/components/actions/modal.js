@@ -22,6 +22,7 @@ export class ModalExpertise {
     }) {
         let modalCloseEl = domCreate('i');
         modalCloseEl.classList.add('bi', 'fx-col', 'a-c', 'just-center');
+
         if (fullScreen && fullScreen === true) {
             addClasslist(modalCloseEl, ['bi-backspace-reverse'])
         } else {
@@ -89,7 +90,6 @@ export class ModalExpertise {
         });
 
         StyleView(modalChild, modalChildStyles);
-
         var modal = Column({
             'classlist': [
                 'modal',
