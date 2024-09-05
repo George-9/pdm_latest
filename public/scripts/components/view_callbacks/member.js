@@ -185,7 +185,7 @@ export function promptRegiterMember() {
     ModalExpertise.showModal({
         'actionHeading': 'member registration',
         'modalHeadingStyles': [{ 'background-color': 'azure' }],
-        'modalChildStyles': [{ 'width': '80%', 'height': '300px' }],
+        'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': 'max-content' }, { 'padding': '20px' }],
         // 'topRowUserActions': [addFieldIconButton],
         'children': [column],
         'fullScreen': false,
@@ -306,7 +306,7 @@ export function showMembersReportsView() {
         ]
 
     const pickersRow = Column({
-        'styles': [{ 'width': '80%' }],
+        'styles': [{ 'width': 'fit-content' }],
         'classlist': ['a-c'],
         'children': [
             Row({

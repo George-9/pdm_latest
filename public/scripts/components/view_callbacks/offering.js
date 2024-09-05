@@ -65,7 +65,7 @@ export function promptAddOffering() {
 
     ModalExpertise.showModal({
         'actionHeading': 'add offering records',
-        'modalChildStyles': [{ 'width': '80%', 'height': '400px' }],
+        'modalChildStyles': [{ 'height': '400px' }],
         'dismisible': true,
         'children': [column],
     });

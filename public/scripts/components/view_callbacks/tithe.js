@@ -70,7 +70,7 @@ export function promptAddTitheView() {
         'actionHeading': 'add tithe record',
         'fullScreen': false,
         'dismisible': true,
-        'modalChildStyles': [{ 'width': '80%', 'height': '400px' }],
+        'modalChildStyles': [{ 'height': '400px' }],
         'modalHeadingStyles': [{ 'background-color': 'green' }, { 'color': 'white' }],
         'children': [memberSearchView]
     });

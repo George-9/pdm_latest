@@ -105,7 +105,7 @@ export function viewOutstationsPage() {
         'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
         'actionHeading': `parish outstations (${ParishDataHandle.parishOutstations.length})`,
         'children': [column],
-        'modalChildStyles': [{ 'width': '80%' }],
+        'modalChildStyles': [{}],
         'fullScreen': false,
         'dismisible': true,
     });

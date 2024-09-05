@@ -29,6 +29,6 @@
 }
 
 .not-full-screen-modal-child {
-    width: 88%;
-    height: 88%;
+    width: fit-content;
+    height: fit-content;
 }
