@@ -84,6 +84,20 @@ export function getMemberById(memberId) {
     });
 }
 
+/**
+ * Retrieves an SCC by a given id
+ * 
+ * @param { string } sccID
+ * @returns { object } SCC
+ */
+export function getSCCById(sccID) {
+    return (
+        ParishDataHandle.parishSCCs.find(function (SCC) { return SCC['_id'] === sccID; })
+        ||
+        { '_id': PRIESTS_COMMUNITY_NAME, 'name': PRIESTS_COMMUNITY_NAME }
+    );
+}
+
 // /**
 //  * gets the tithe records of those members who belong to this SCC
 //  * @param {object} SCC

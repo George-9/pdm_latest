@@ -1,5 +1,5 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getOutstationSCCs, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
+import { getSCCById, getOutstationSCCs, memberGetOutstation, memberGetSCC, getMemberById } from "../../data_pen/puppet.js";
 import { getParishProjectsRecords } from "../../data_source/main.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate, domQueryById } from "../../dom/query.js";
@@ -55,13 +55,26 @@ export function promptAddProject() {
     projectParishLevelCategoryPicker.addEventListener('change', resetViews);
 
     const projectContributionModePicker = MondoSelect({});
+
+    const projectAmountPerMemberBudgetI = TextEdit({
+        'placeholder': 'IN KSH',
+        'keyboardType': 'number'
+    });
+
+    const amountEntryColumn = Column({
+        'children': [
+            MondoText({ 'text': 'amount per member' }),
+            projectAmountPerMemberBudgetI
+        ]
+    })
+
     ProjectContributionModes.ALL_MODES.forEach(function (mode) {
         const option = domCreate('option');
         option.innerText = mode;
         option.value = mode;
 
         projectContributionModePicker.appendChild(option);
-    })
+    });
 
     function resetViews(ev) {
         if (projectParishLevelCategoryPicker.value === projectLeveCategories[0]) {
@@ -79,6 +92,24 @@ export function promptAddProject() {
     const startDateRow = Column({ 'children': [MondoText({ 'text': 'start date' }), startDateI,] })
     const endDateI = TextEdit({ 'type': 'date' });
     const endDateRow = Column({ 'children': [MondoText({ 'text': 'end date' }), endDateI] });
+
+
+    projectContributionModePicker.addEventListener('change', function (ev) {
+        setAmountPerContributor();
+        console.log(projectContributionModePicker.value);
+    });
+
+    function setAmountPerContributor() {
+        if (projectContributionModePicker.value === ProjectContributionModes.MEMBER) {
+            StyleView(projectAmountPerMemberBudgetI, [{ 'display': 'block' }]);
+            StyleView(amountEntryColumn, [{ 'display': 'block' }]);
+        } else {
+            StyleView(projectAmountPerMemberBudgetI, [{ 'display': 'none' }]);
+            StyleView(amountEntryColumn, [{ 'display': 'none' }]);
+        }
+    }
+
+    setAmountPerContributor();
 
     const projecBudgetI = TextEdit({
         'placeholder': 'IN KSH',
@@ -110,6 +141,7 @@ export function promptAddProject() {
                         'budget': parseFloat(projecBudgetI.value),
                         'start_date': startDateI.value,
                         'end_date': endDateI.value,
+                        'mode_amount': projectAmountPerMemberBudgetI.value,
 
                         // the selected level of the project
                         'host': (outstationPicker.style.display === 'block' && outstationPicker.value)
@@ -118,6 +150,16 @@ export function promptAddProject() {
                                 'name': (JSON.parse(outstationPicker.value)['name']) + ' outstation'
                             }
                             : { 'name': `${LocalStorageContract.parishName()} ${projectLeveCategories[0]}` }
+                    }
+                }
+
+                if (projectContributionModePicker.value === ProjectContributionModes.MEMBER) {
+                    if (projectAmountPerMemberBudgetI.style.display === 'block') {
+                        if (!projectAmountPerMemberBudgetI.value) {
+                            return MessegePopup.showMessegePuppy([MondoText({ 'text': 'please enter amount per member to continue' })])
+                        } else {
+                            body.project.mode_amount = parseFloat(projectAmountPerMemberBudgetI.value);
+                        }
                     }
                 }
 
@@ -154,6 +196,7 @@ export function promptAddProject() {
                     projectContributionModePicker,
                 ]
             }),
+            amountEntryColumn,
             startDateRow,
             endDateRow,
             Column({
@@ -186,13 +229,17 @@ export async function showProjectReportView() {
     /**
      * @todo IMPLEMENT AND MAKE GLOBAL TO THIS FILE [MODULE]
     */
-    function getProjectToTalContribution() {
-    }
+    // function getProjectToTalContribution() {
+    //     for (let i = 0; i < pro.length; i++) {
+    //         const element = pro[i];
+    //     }
+    // }
 
     function showProjectView(projectRecord = {
         name: '',
         budget: '',
         level: '',
+        mode_amount: 0,
         contribution_mode: ProjectContributionModes.ALL_MODES[0],
         contributions: []
     }) {
@@ -336,7 +383,6 @@ export async function showProjectReportView() {
             }
             sccPicker.options[0].selected = true;
             selectedContributorId = (JSON.parse(sccPicker.value))['_id'];
-            console.log(selectedContributorId);
         });
 
         const sccPicker = MondoSelect({});
@@ -460,10 +506,108 @@ export async function showProjectReportView() {
             return console.log(projectRecord['_id']);
         };
 
+        // RETRIEVE A SIMPLIFIED COLLECTION OF EVERY CONTRIBUTION AND THEIR AMOUNT[SUMMED UP AMOUNT]
+        function ProjectContributionData(projectRecord = { contributions: [{ contributor_id: '', amount: 0 }] }) {
+            let actualContributions = {};
+            for (let i = 0; i < projectRecord.contributions.length; i++) {
+                const contribution = projectRecord.contributions[i];
+                if (!actualContributions[contribution.contributor_id]) {
+                    actualContributions[contribution.contributor_id] = {
+                        'contributor_id': contribution.contributor_id,
+                        'amount': parseFloat(contribution.amount),
+                        'contributor_name': (getMemberById(contribution.contributor_id)
+                            || getSCCById(contribution.contributor_id))['name']
+                    }
+                } else {
+                    actualContributions[contribution.contributor_id]['amount'] += parseFloat(contribution.amount)
+                }
+            }
+            return actualContributions;
+        }
+
+
+        const contributionsTableId = 'projects-contributions-table-1';
+        function ProjectContributionViewTable(contributions) {
+            const keys = Object.keys(contributions);
+            const table = domCreate('table');
+            const thead = domCreate('thead');
+            const tbody = domCreate('tbody');
+            const tfooter = domCreate('tfoot');
+
+            let projectTotalContribution = 0;
+            table.id = contributionsTableId;
+
+            thead.innerHTML = `
+            <tr>
+                    <td>NO</td>
+                    <td>NAME</td>
+                    <td>EXPECTED</td>
+                    <td>CONTRIBUTION</td>
+                    <td>BAL/SURPLUS</td>
+            </tr>
+            `
+            let balanceOrSurplusTotal = 0
+            addChildrenToView(table, [thead, tbody, tfooter])
+            for (let i = 0; i < keys.length; i++) {
+                let modeBalOrSurplus = 0;
+                const contribution = contributions[keys[i]];
+                modeBalOrSurplus = parseFloat(projectRecord['mode_amount']) - contribution['amount'];
+                const row = domCreate('tr');
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${contribution['contributor_name']}</td>
+                    <td>${projectRecord['mode_amount']}</td>
+                    <td>${contribution['amount']}</td>
+                    <td>${modeBalOrSurplus}</td>
+                `
+                projectTotalContribution += parseFloat(contribution['amount']);
+                addChildrenToView(table, [row]);
+                balanceOrSurplusTotal += modeBalOrSurplus;
+            }
+
+            const row = domCreate('tr');
+            row.innerHTML = `
+                <td colspan="2">TOTAL</td>
+                <td>${keys.length * parseFloat(projectRecord['mode_amount'])}</td>
+                <td>${projectTotalContribution}</td>
+                <td>${balanceOrSurplusTotal}</td>
+            `
+            addChildrenToView(tfooter, [row]);
+
+            const column = Column({
+                'styles': [{ 'margin': '30px' }],
+                'children': [
+                    MondoText({ 'text': `${getProjectRemainingDays(projectRecord)}` }),
+                    table
+                ]
+            });
+
+            // ModalExpertise.showModal({
+            //     'actionHeading': projectRecord['name'] + ' contributions',
+            //     'children': [column],
+            //     'fullScreen': true,
+            // })
+            return column;
+        }
+
+        function getProjectRemainingDays(projectRecord) {
+            const dateDifferenceInDays = (new Date(projectRecord['end_date']) - new Date(projectRecord['start_date'])) / (1000 * 60 * 60 * 24);
+            return dateDifferenceInDays > 0 ? `${dateDifferenceInDays} days to go` : `past by ${dateDifferenceInDays} days`;
+        }
+
+        PDFPrintButton.printingHeading = `
+        ${LocalStorageContract.parishName()} parish
+        ${projectRecord.name + ' project contributions'}`.toUpperCase();
+
         ModalExpertise.showModal({
-            'actionHeading': `${projectRecord['name']} . ${projectStartEndDateString(projectRecord)}`,
-            'topRowUserActions': [viewAddProjectContibutionColumn, levelView, budgetColumn, new PDFPrintButton('')],
-            'children': [],
+            'actionHeading': `${projectRecord['name']} . ${projectStartEndDateString(projectRecord)})`,
+            'topRowUserActions': [
+                viewAddProjectContibutionColumn,
+                levelView,
+                budgetColumn,
+                new PDFPrintButton(contributionsTableId)
+            ],
+            'children': [ProjectContributionViewTable(ProjectContributionData(projectRecord))],
             'fullScreen': true,
         });
     }
@@ -485,7 +629,6 @@ export async function showProjectReportView() {
         column.onclick = (_ev) => showProjectView(projectRecord);
         projectsColumn.appendChild(column);
     });
-
 
     ModalExpertise.showModal({
         'actionHeading': 'Select Project',

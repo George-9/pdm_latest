@@ -40,6 +40,7 @@ export function promptRegiterMember() {
             ev.preventDefault();
         },
     });
+
     StyleView(sccPicker, [{ 'display': 'none' }]);
 
     const categoryPicker = MondoSelect({});

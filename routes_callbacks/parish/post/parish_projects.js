@@ -28,7 +28,6 @@ export async function addProjectRecord(req, resp) {
     }
 }
 
-
 export async function addContributionToProjectRecord(req, resp) {
     const { parish_code, parish_password, contribution } = req.body;
     console.log(req.body);
@@ -56,12 +55,66 @@ export async function addContributionToProjectRecord(req, resp) {
             .connectedClient()
             .db(parish_code)
             .collection(DBDetails.projectsCollection)
-            .updateOne({ '_id': new ObjectId(id) },
-                {
-                    '$push': { 'contributions': contribution }
-                },
-                { 'upsert': false }
-            )
+            // .updateOne({ '_id': new ObjectId(id) },
+            //     {
+            //         '$push': { 'contributions': contribution }
+            //     },
+            //     { 'upsert': true }
+            // )
+            .updateOne(
+                { _id: new ObjectId(id) },
+                [
+                    {
+                        $set: {
+                            contributions: {
+                                $map: {
+                                    input: '$contributions',
+                                    as: 'contribution',
+                                    in: {
+                                        $cond: [
+                                            { $eq: ['$$contribution.contributor_id', ''] },
+                                            {
+                                                $mergeObjects: ['$$contribution',
+                                                    { amount: { $add: ['$$contribution.amount', contribution.contributor_id] } }]
+                                            },
+                                            '$$contribution'
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $set: {
+                            contributions: {
+                                $cond: [
+                                    { $in: ['', '$contributions.contributor_id'] },
+                                    '$contributions',
+                                    {
+                                        $concatArrays: ['$contributions',
+                                            [
+                                                {
+                                                    contributor_id: contribution.contributor_id,
+                                                    amount: contribution.amount
+                                                }
+                                            ]
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                { upsert: true }
+            );
+
+
+
+
+
+
+
+
 
         return resp.json({
             'response': ((update.modifiedCount + update.upsertedCount) > 0)
@@ -72,7 +125,6 @@ export async function addContributionToProjectRecord(req, resp) {
         return resp.json({ 'response': ['unauthorised request'] });
     }
 }
-
 
 export async function loadParishProjectRecords(req, resp) {
     const { parish_code, parish_password } = req.body;

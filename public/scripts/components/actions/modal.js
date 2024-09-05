@@ -53,7 +53,8 @@ export class ModalExpertise {
         StyleView(modalHeaderTopRow, modalHeadingStyles)
 
         if ((dismisible && dismisible === true) || (fullScreen && fullScreen === true)) {
-            addChildrenToView(modalHeaderTopRow, [modalCloseEl]);
+            // addChildrenToView(modalHeaderTopRow, [modalCloseEl]);
+            modalHeaderTopRow.insertBefore(modalCloseEl, modalChildHeading);
         }
 
         const userActionsRow = Row({

@@ -73,7 +73,7 @@
     }
 
     .drawer {
-        /* flex: 1; */
+        flex: 1;
         opacity: 1 !important;
         height: 100vh !important;
         overflow-y: hidden !important;
@@ -97,7 +97,7 @@
     }
 
     .content {
-        flex: 5;
+        flex: 4;
         height: 100% !important;
     }
 }
