@@ -90,24 +90,42 @@ export function viewSCCsPage() {
         </tr>
     `
     addChildrenToView(table, [thead, tbody, tfoot]);
+    const data = [];
+
     ParishDataHandle.parishSCCs.forEach(function (scc, i) {
         let outstation = ParishDataHandle.parishOutstations.find(function (o) {
             return o['_id'] === scc['outstation_id']
         }) || { 'name': 'EVERY OUTSTATION' };
 
-        let members = ParishDataHandle.parishMembers.filter(function (m) {
+        let membersCount = ParishDataHandle.parishMembers.filter(function (m) {
             return m['scc_id'] === scc['_id']
         }).length;
 
-        const row = domCreate('tr');
-        row.innerHTML = `
-            <td>${i + 1}</td>
-            <td>${scc['name']}</td>
-            <td>${outstation['name']}</td>
-            <td>${members}</td>
-        `
-        table.appendChild(row);
+        data.push({
+            scc_name: scc['name'],
+            outstation_name: outstation['name'],
+            members_count: membersCount
+        });
     });
+
+    let sortedData = data.sort(function (a, b) {
+        return `${b['outstation_name']}`.localeCompare(a['outstation_name']);
+    });
+
+    function loadView() {
+        sortedData.forEach(function (data, i) {
+            const row = domCreate('tr');
+            row.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${data['scc_name']}</td>
+            <td>${data['outstation_name']}</td>
+            <td>${data['members_count']}</td>
+            `
+            table.appendChild(row);
+        });
+    }
+
+    loadView()
 
     const lastRow = domCreate('tr');
     lastRow.innerHTML = `
@@ -123,7 +141,7 @@ export function viewSCCsPage() {
     });
 
     ModalExpertise.showModal({
-        'modalHeadingStyles': [{ 'background': 'gainsboro' }, { 'color': 'white' }],
+        'modalHeadingStyles': [{ 'background': '#4788fd' }, { 'color': 'white' }],
         'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
         'topRowUserActions': [new PDFPrintButton(tableId)],
         'children': [column],
