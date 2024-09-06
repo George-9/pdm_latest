@@ -35,7 +35,7 @@ export class ModalExpertise {
 
         var modalChildHeading = MondoText({
             text: actionHeading || '',
-            styles: [{ 'fontSize': '24px' }]
+            styles: [{ 'fontSize': '18px' }, { 'font-weight': '400' }]
         });
 
         const modalHeaderTopRow = Row({
@@ -53,9 +53,10 @@ export class ModalExpertise {
 
         StyleView(modalHeaderTopRow, modalHeadingStyles)
 
-        if ((dismisible && dismisible === true) || (fullScreen && fullScreen === true)) {
-            // addChildrenToView(modalHeaderTopRow, [modalCloseEl]);
+        if (fullScreen && fullScreen === true) {
             modalHeaderTopRow.insertBefore(modalCloseEl, modalChildHeading);
+        } else {
+            addChildrenToView(modalHeaderTopRow, [modalCloseEl]);
         }
 
         const userActionsRow = Row({

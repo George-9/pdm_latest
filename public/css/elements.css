@@ -141,6 +141,13 @@ select {
     margin-top: 10px;
 }
 
+
+/* REVISIT */
+select {
+    min-width: 300px;
+    max-width: 300px;
+}
+
 i {
     cursor: pointer;
     font-size: 22px !important;

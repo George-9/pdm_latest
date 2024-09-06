@@ -11,7 +11,7 @@ import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { addPriestCommunityOptionToPicker, OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { ExcelExportButton, PDFPrintButton } from "../tailored_ui/print_button.js";
-import { Column, MondoText, TextEdit, Button, Row, MondoSelect, VerticalScrollView } from "../UI/cool_tool_ui.js";
+import { Column, MondoText, TextEdit, Button, Row, MondoSelect, VerticalScrollView, HorizontalScrollView } from "../UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
@@ -184,7 +184,8 @@ export function showTitheReportsView() {
     const table = domCreate('table');
     table.id = tableId;
     StyleView(table, [{ 'width': '80%' }]);
-    addClasslist(table, ['txt-c'])
+    addClasslist(table, ['txt-c', 'f-w']);
+    StyleView(table, [{ 'width': 'max-content' }]);
 
     const tableHeader = domCreate('thead');
     const topRow = domCreate('tr');
@@ -304,14 +305,17 @@ export function showTitheReportsView() {
     const printButton = new PDFPrintButton(tableId)
 
     const containerColumn = Column({
-        'classlist': ['f-w', 'a-c', 'm-pad', 'scroll-y'],
-        'children': [outstationTotalTitheDispensor, table]
+        'classlist': ['f-w', 'a-c', 'scroll-y'],
+        'children': [
+            HorizontalScrollView({ 'classlist': ['a-c'], 'children': [table] }),
+            outstationTotalTitheDispensor,
+        ]
     });
 
     const mainColumn = Column({
         'children': [
-            Row({
-                'classlist': ['f-w', 'just-center'],
+            Column({
+                'classlist': ['f-w', 'just-center', 'a-c'],
                 'children': [
                     outstationPicker,
                     sccPicker,

@@ -6,7 +6,7 @@ export function MondoSelect({ styles = [], classlist = [], onChange = new Functi
     const selectEl = document.createElement('select');
 
     selectEl.style.padding = '10px';
-    selectEl.style.minWidth = '100px';
+    // selectEl.style.minWidth = '100px';
 
     StyleView(selectEl, styles);
     addClasslist(selectEl, classlist);

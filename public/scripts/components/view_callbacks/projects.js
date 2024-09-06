@@ -10,7 +10,7 @@ import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
-import { Column, Row, MondoText, TextEdit, Button, MondoSelect, VerticalScrollView, MondoBigH3Text } from "../UI/cool_tool_ui.js";
+import { Column, Row, MondoText, TextEdit, Button, MondoSelect, VerticalScrollView, MondoBigH3Text, HorizontalScrollView } from "../UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
@@ -632,7 +632,9 @@ export async function showProjectReportView() {
                 'styles': [{ 'margin': '30px' }],
                 'children': [
                     MondoText({ 'text': `${getProjectRemainingDays(projectRecord)}` }),
-                    table
+                    HorizontalScrollView({
+                        'children': [table]
+                    })
                 ]
             });
 

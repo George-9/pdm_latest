@@ -63,6 +63,12 @@
         overflow: hidden;
         cursor: default;
     }
+
+
+    /* FullCalendar */
+    .fc {
+        width: 98%;
+    }
 }
 
 @media screen and (min-width: 801px) {
@@ -71,7 +77,9 @@
     }
 
     .drawer {
-        flex: 1;
+        flex: auto;
+        flex-shrink: 1;
+        flex-grow: 0;
         opacity: 1 !important;
         height: 100vh !important;
         overflow-y: hidden !important;
@@ -102,12 +110,17 @@
     }
 
     .content {
-        flex: 4;
+        flex: 5;
         height: 100% !important;
     }
 
     .not-full-screen-modal-child {
         width: fit-content;
         height: fit-content;
+    }
+
+    /* FullCalendar */
+    .fc {
+        max-width: 70%;
     }
 }

@@ -155,6 +155,7 @@ export function promptRegiterMember() {
     });
 
     const column = Column({
+        'styles': [{ 'padding': '20px' }],
         'classlist': ['f-w', 'f-w', 'a-c', 'scroll-y'],
         'children': [
             nameI,
@@ -185,7 +186,7 @@ export function promptRegiterMember() {
     ModalExpertise.showModal({
         'actionHeading': 'member registration',
         'modalHeadingStyles': [{ 'background-color': 'azure' }],
-        'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': 'max-content' }, { 'padding': '20px' }],
+        'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': 'max-content' }],
         // 'topRowUserActions': [addFieldIconButton],
         'children': [column],
         'fullScreen': false,

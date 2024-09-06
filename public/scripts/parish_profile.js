@@ -8,7 +8,7 @@ import { promptAddOutstationView, viewOutstationsPage } from "./components/view_
 import { showParishEventsView } from "./components/view_callbacks/parish_events.js";
 import { promptAddProject, showProjectReportView } from "./components/view_callbacks/projects.js";
 import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
-import { promptAddSCCView, viewSCCsPage } from "./components/view_callbacks/scc.js";
+import { promptAddSCCView, showFilterebleSCCsPage, viewSCCsPage } from "./components/view_callbacks/scc.js";
 import { promptAddTitheView, showTitheReportsView } from "./components/view_callbacks/tithe.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
 import { getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishTitheRecords, parishEvents } from "./data_source/main.js";
@@ -65,6 +65,7 @@ const drawerMenus = [
             new Menu('tithe', 'bi-cash-coin', reportsClass, showTitheReportsView),
             new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
             new Menu('projects', 'bi-building-add', reportsClass, showProjectReportView),
+            new Menu('SCCs', 'bi-groups', reportsClass, showFilterebleSCCsPage),
         ],
         false
     ),
