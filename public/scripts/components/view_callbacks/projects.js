@@ -1,5 +1,5 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getSCCById, getOutstationSCCs, memberGetOutstation, memberGetSCC, getMemberById } from "../../data_pen/puppet.js";
+import { getSCCById, getOutstationSCCs, memberGetOutstation, memberGetSCC, getMemberById, getOutstationMembers } from "../../data_pen/puppet.js";
 import { getParishProjectsRecords } from "../../data_source/main.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate, domQueryById } from "../../dom/query.js";
@@ -39,6 +39,11 @@ export function promptAddProject() {
         'outstations': ParishDataHandle.parishOutstations,
     });
 
+    outstationPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
+        setProjectBudget();
+    })
+
     // const outstationOptionContributionMode = domCreate('option');
     // outstationOptionContributionMode.value = ProjectContributionModes.OUTSTATION;
 
@@ -56,15 +61,57 @@ export function promptAddProject() {
 
     const projectContributionModePicker = MondoSelect({});
 
-    const projectAmountPerMemberBudgetI = TextEdit({
+    const projectAmountPerModeBudgetI = TextEdit({
         'placeholder': 'IN KSH',
         'keyboardType': 'number'
     });
 
+    let projectBudget = 0;
+    // DISPLAYS THE AMOUNT EXPECTED PER CONTRIBUTION MODE
+    const projecBudgetDisp = MondoText({ 'text': 'amount expected' });
+
+    // DISPLAY THE DEFAULT SELECTION PROJECT BUDGET
+    setProjectBudget();
+
+    function setProjectBudget() {
+        switch (projectContributionModePicker.value) {
+            case ProjectContributionModes.MEMBER:
+                projectBudget = projectAmountPerModeBudgetI.value *
+                    (projectParishLevelCategoryPicker.value === projectLeveCategories[0]
+                        ? ParishDataHandle.parishMembers.length
+                        : getOutstationMembers(outstationPicker.value).length);
+                projecBudgetDisp.innerHTML = projectBudget;
+                break;
+
+            case ProjectContributionModes.SCC:
+                projectBudget = projectAmountPerModeBudgetI.value * (getOutstationSCCs(outstationPicker.value).length)
+                projecBudgetDisp.innerHTML = projectBudget;
+                break;
+
+            case ProjectContributionModes.OUTSTATION:
+                if (projectContributionModePicker.value === ProjectContributionModes.OUTSTATION) {
+                    projectBudget = projectAmountPerModeBudgetI.value * 1;
+                    projecBudgetDisp.innerHTML = projectBudget;
+                } else {
+                    projectBudget = projectAmountPerModeBudgetI.value * ParishDataHandle.parishOutstations.length;
+                    projecBudgetDisp.innerHTML = projectBudget;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    projectAmountPerModeBudgetI.addEventListener('input', function (ev) {
+        ev.preventDefault();
+        setProjectBudget();
+    });
+
+    const modeIdentityView = MondoText({ 'text': 'amount per member' });
     const amountEntryColumn = Column({
         'children': [
-            MondoText({ 'text': 'amount per member' }),
-            projectAmountPerMemberBudgetI
+            modeIdentityView,
+            projectAmountPerModeBudgetI
         ]
     })
 
@@ -77,6 +124,7 @@ export function promptAddProject() {
     });
 
     function resetViews(ev) {
+        setProjectBudget();
         if (projectParishLevelCategoryPicker.value === projectLeveCategories[0]) {
             StyleView(outstationPicker, [{ 'display': 'none' }]);
         } else {
@@ -96,25 +144,21 @@ export function promptAddProject() {
 
     projectContributionModePicker.addEventListener('change', function (ev) {
         setAmountPerContributor();
-        console.log(projectContributionModePicker.value);
     });
 
     function setAmountPerContributor() {
-        if (projectContributionModePicker.value === ProjectContributionModes.MEMBER) {
-            StyleView(projectAmountPerMemberBudgetI, [{ 'display': 'block' }]);
-            StyleView(amountEntryColumn, [{ 'display': 'block' }]);
-        } else {
-            StyleView(projectAmountPerMemberBudgetI, [{ 'display': 'none' }]);
-            StyleView(amountEntryColumn, [{ 'display': 'none' }]);
-        }
+        // if (projectContributionModePicker.value === ProjectContributionModes.MEMBER) {
+        //     StyleView(projectAmountPerModeBudgetI, [{ 'display': 'block' }]);
+        //     StyleView(amountEntryColumn, [{ 'display': 'block' }]);
+        // } else {
+        //     StyleView(projectAmountPerModeBudgetI, [{ 'display': 'none' }]);
+        //     StyleView(amountEntryColumn, [{ 'display': 'none' }]);
+        // }
+        setProjectBudget();
+        modeIdentityView.innerText = 'amount per ' + projectContributionModePicker.value;
     }
 
     setAmountPerContributor();
-
-    const projecBudgetI = TextEdit({
-        'placeholder': 'IN KSH',
-        'keyboardType': 'number'
-    });
 
     const button = Button({
         'styles': [{ 'margin-top': '20px' }],
@@ -123,25 +167,30 @@ export function promptAddProject() {
             try {
                 TextEditValueValidator.validate('start date', startDateI);
                 TextEditValueValidator.validate('end date', endDateI);
-                let projetcDuration = parseInt(new Date(`${endDateI.value}`) - new Date(`${startDateI.value}`));
-                console.log(projetcDuration, projetcDuration + 1);
 
+                let projetcDuration = parseInt(new Date(`${endDateI.value}`) - new Date(`${startDateI.value}`));
                 if (projetcDuration < 1) {
-                    return MessegePopup.showMessegePuppy([MondoText({ 'text': 'end date cannot be lower than the start date' })]);
+                    return MessegePopup.showMessegePuppy([
+                        MondoText({ 'text': 'end date cannot be lower than the start date' })
+                    ]);
+                }
+
+                console.log(projectBudget);
+                if (projectBudget <= 1000) {
+                    return MessegePopup.showMessegePuppy([MondoText({ 'text': 'please check the orject details again, the project has a very low budget' })])
                 }
 
                 TextEditValueValidator.validate('amount', projectNameI);
-                TextEditValueValidator.validate('budget', projecBudgetI);
                 TextEditValueValidator.validate('project category', projectParishLevelCategoryPicker);
                 const body = {
                     project: {
                         'name': projectNameI.value,
                         'level': projectParishLevelCategoryPicker.value,
                         'contribution_mode': projectContributionModePicker.value,
-                        'budget': parseFloat(projecBudgetI.value),
+                        'budget': parseFloat(projectBudget),
                         'start_date': startDateI.value,
                         'end_date': endDateI.value,
-                        'mode_amount': projectAmountPerMemberBudgetI.value,
+                        'mode_amount': projectAmountPerModeBudgetI.value,
 
                         // the selected level of the project
                         'host': (outstationPicker.style.display === 'block' && outstationPicker.value)
@@ -154,11 +203,11 @@ export function promptAddProject() {
                 }
 
                 if (projectContributionModePicker.value === ProjectContributionModes.MEMBER) {
-                    if (projectAmountPerMemberBudgetI.style.display === 'block') {
-                        if (!projectAmountPerMemberBudgetI.value) {
+                    if (projectAmountPerModeBudgetI.style.display === 'block') {
+                        if (!projectAmountPerModeBudgetI.value) {
                             return MessegePopup.showMessegePuppy([MondoText({ 'text': 'please enter amount per member to continue' })])
                         } else {
-                            body.project.mode_amount = parseFloat(projectAmountPerMemberBudgetI.value);
+                            body.project.mode_amount = parseFloat(projectAmountPerModeBudgetI.value);
                         }
                     }
                 }
@@ -170,7 +219,7 @@ export function promptAddProject() {
 
                 MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
                 if (msg.match('success') || msg.match('save')) {
-                    clearTextEdits([projectNameI, projecBudgetI, startDateI, endDateI]);
+                    clearTextEdits([projectNameI, projecBudgetDisp, startDateI, endDateI]);
                     ParishDataHandle.parishProjectsRecords = await getParishProjectsRecords();
                 }
             } catch (error) {
@@ -179,8 +228,9 @@ export function promptAddProject() {
         }
     })
 
-    const column = VerticalScrollView({
-        'classlist': ['f-w', 'f-h', 'a-c'],
+    const column = Column({
+        'styles': [{ 'min-width': '60%' }, { 'padding': '30px' }],
+        'classlist': ['f-h', 'a-c', 'scroll-y'],
         'children': [
             projectNameI,
             Column({
@@ -197,21 +247,25 @@ export function promptAddProject() {
                 ]
             }),
             amountEntryColumn,
-            startDateRow,
-            endDateRow,
             Column({
                 'children': [
                     MondoText({ 'text': 'project budget' }),
-                    projecBudgetI,
+                    projecBudgetDisp,
                 ]
             }),
+            startDateRow,
+            endDateRow,
             button
         ]
     });
+    // LOOKS GOOD WITHOUT DISPLAY FLEX
+    // column.classList.remove('fx-col');
 
     ModalExpertise.showModal({
+        'modalChildStyles': [{ 'min-width': '60%' }, { 'min-height': '500px' }],
         'actionHeading': 'add Project records',
-        'modalChildStyles': [{ 'height': '400px' }],
+        'fullScreen': false,
+        'modalChildStyles': [{ 'min-height': '600px' }, { 'min-width': '300px' }],
         'dismisible': true,
         'children': [column],
     });
@@ -591,7 +645,7 @@ export async function showProjectReportView() {
         }
 
         function getProjectRemainingDays(projectRecord) {
-            const dateDifferenceInDays = (new Date(projectRecord['end_date']) - new Date(projectRecord['start_date'])) / (1000 * 60 * 60 * 24);
+            const dateDifferenceInDays = ((new Date(projectRecord['end_date']) - new Date()) / (1000 * 60 * 60 * 24)).toFixed(0);
             return dateDifferenceInDays > 0 ? `${dateDifferenceInDays} days to go` : `past by ${dateDifferenceInDays} days`;
         }
 

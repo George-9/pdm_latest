@@ -28,7 +28,7 @@ const registryClass = 'registry',
     reportsClass = 'reports',
     overView = 'overview',
     dataEntry = 'data-entry',
-    admin = 'data-entry';
+    admin = 'admin';
 
 const drawerMenus = [
     new DrawerMenu('ADMIN',
@@ -110,12 +110,13 @@ async function Main() {
 }
 
 function showProfileView() {
-    let logOut = Row({
+    ``
+    let logOutView = Row({
         'styles': [
             { 'width': 'match-parent' },
             { 'margin-top': '20px' },
         ],
-        'classlist': ['f-w', 'a-c', 'txt-c', 'bi', 'c-p'],
+        'classlist': ['f-w', 'a-c', 'txt-c', 'bi', 'c-p', 'just-end'],
         'children': [
             MondoText({
                 'styles': { 'color': 'red' },
@@ -124,7 +125,7 @@ function showProfileView() {
         ]
     })
 
-    logOut.onclick = LogOut;
+    logOutView.onclick = LogOut;
     function LogOut() {
         localStorage.clear();
         window.location.reload()
@@ -146,7 +147,7 @@ function showProfileView() {
     });
 
     ModalExpertise.showModal({
-        'topRowUserActions': [logOut],
+        'topRowUserActions': [logOutView],
         'children': [column]
     });
 }
@@ -316,10 +317,15 @@ function showEventsCount() {
 function setAnchors() {
     domQueryById('profile-setting-view').onclick = showProfileView;
 
-    domQueryById('v-mode').onclick = function (ev) {
+    const fullscreenButton = domQueryById('v-mode');
+    fullscreenButton.title = 'enter fullscreen';
+
+    fullscreenButton.onclick = function (ev) {
         if (!window.document.fullscreenElement) {
+            fullscreenButton.title = 'enter fullscreen'
             window.document.documentElement.requestFullscreen();
         } else if (document.exitFullscreen) {
+            fullscreenButton.title = 'exit fullscreen'
             window.document.exitFullscreen();
         }
     };
