@@ -1,11 +1,11 @@
 import { ModalExpertise } from "./components/actions/modal.js";
 import { MessegePopup } from "./components/actions/pop_up.js";
 import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
-import { addClasslist } from "./components/utils/stylus.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
 import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember } from "./components/view_callbacks/member.js";
 import { promptAddOffering, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
+import { showParishEventsView } from "./components/view_callbacks/parish_events.js";
 import { promptAddProject, showProjectReportView } from "./components/view_callbacks/projects.js";
 import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { promptAddSCCView, viewSCCsPage } from "./components/view_callbacks/scc.js";
@@ -13,7 +13,7 @@ import { promptAddTitheView, showTitheReportsView } from "./components/view_call
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
 import { getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishTitheRecords, parishEvents } from "./data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "./data_source/other_sources.js";
-import { domCreate, domQuery, domQueryById } from "./dom/query.js";
+import { domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
 import { work } from "./dom/worker.js";
 import { Post } from "./net_tools.js";
@@ -27,9 +27,18 @@ work(Main);
 const registryClass = 'registry',
     reportsClass = 'reports',
     overView = 'overview',
-    dataEntry = 'data-entry';
+    dataEntry = 'data-entry',
+    admin = 'data-entry';
 
 const drawerMenus = [
+    new DrawerMenu('ADMIN',
+        admin,
+        [
+            new Menu('HISTORY', 'bi-history', admin),
+            new Menu('EVENTS', 'bi-calendar', admin, showParishEventsView),
+        ],
+        false
+    ),
     new DrawerMenu(
         'REGISTRY',
         registryClass,
@@ -100,31 +109,47 @@ async function Main() {
     }
 }
 
-// function setProfileView() {
-//     let logOut = Row({
-//         'styles': [{ 'width': 'match-parent', 'margin-top': '20px', }],
-//         'classlist': ['f-w', 'a-c', 'txt-c'],
-//         'children': [
-//             MondoText({ 'text': 'Log Out' })
-//         ]
-//     })
+function showProfileView() {
+    let logOut = Row({
+        'styles': [
+            { 'width': 'match-parent' },
+            { 'margin-top': '20px' },
+        ],
+        'classlist': ['f-w', 'a-c', 'txt-c', 'bi', 'c-p'],
+        'children': [
+            MondoText({
+                'styles': { 'color': 'red' },
+                'text': 'Log Out',
+            })
+        ]
+    })
 
-//     logOut.onclick = LogOut;
-//     function LogOut() {
-//         localStorage.clear();
-//         window.location.reload()
-//     }
+    logOut.onclick = LogOut;
+    function LogOut() {
+        localStorage.clear();
+        window.location.reload()
+    }
 
-//     const column = Column({
-//         'children': [
-//             logOut
-//         ]
-//     });
+    const column = Column({
+        'styles': [
+            { 'min-width': '60vw' },
+            { 'min-height': '300px' },
+            { 'padding': '10px' },
+        ],
+        'children': [
+            MondoBigH3Text({
+                'text': `${LocalStorageContract.parishName()} PARISH`.toUpperCase()
+            }),
+            MondoText({ 'text': `${ParishDataHandle.parishMembers.length} MEMBERS`.toUpperCase() }),
+            MondoText({ 'text': `${ParishDataHandle.parishOutstations.length} OUTSTATIONS`.toUpperCase() }),
+        ]
+    });
 
-//     ModalExpertise.showModal({
-//         'children': [column]
-//     });
-// }
+    ModalExpertise.showModal({
+        'topRowUserActions': [logOut],
+        'children': [column]
+    });
+}
 
 async function setCalendar() {
     var calendarEl = domQueryById('calendar');
@@ -250,6 +275,8 @@ function handleDateClick(calendar, info) {
 }
 
 function handleEventClick(info) {
+    console.log(info);
+
     let clickedEvent = (ParishDataHandle.allParishEvents.find(function (event) {
         return event._id === info.event.extendedProps._id
     }));
@@ -261,12 +288,6 @@ function handleEventClick(info) {
             MondoText({ 'text': clickedEvent.description }),
         ]
     })
-
-    let deleteIcon = domCreate('i');
-    addClasslist(deleteIcon, ['bi', 'bi-trash', 'bi-pad']);
-
-    let shareIcon = domCreate('i');
-    addClasslist(shareIcon, ['bi', 'bi-share', 'bi-pad']);
 
     ModalExpertise.showModal({
         'actionHeading': clickedEvent.start,
@@ -293,7 +314,15 @@ function showEventsCount() {
 }
 
 function setAnchors() {
-    // domQueryById('profile-setting-view').onclick = setProfileView;
+    domQueryById('profile-setting-view').onclick = showProfileView;
+
+    domQueryById('v-mode').onclick = function (ev) {
+        if (!window.document.fullscreenElement) {
+            window.document.documentElement.requestFullscreen();
+        } else if (document.exitFullscreen) {
+            window.document.exitFullscreen();
+        }
+    };
 }
 
 // function openRegistryActionsOptions() {

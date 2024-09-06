@@ -16,12 +16,11 @@ import { getOutstations } from './routes_callbacks/parish/post/get_outstations.j
 import { getSmallChristianCommunities } from './routes_callbacks/parish/post/get_sccs.js';
 import { getMembersFiltered } from './routes_callbacks/parish/post/get_members_filtered.js';
 import { addTitheRecord } from './routes_callbacks/parish/post/record_tithe.js';
-import { addOfferingRecord } from './routes_callbacks/parish/post/addOffering.js';
 import { updateMemberDetails } from './routes_callbacks/parish/post/update_member.js';
 import { loadAllOfferingRecords } from './routes_callbacks/parish/post/get_all_offering_records.js';
-import { getParishTitheRecords } from './public/scripts/data_source/main.js';
 import { loadAllTitheRecords } from './routes_callbacks/parish/post/get_tithe_records.js';
 import { addContributionToProjectRecord, addProjectRecord, loadParishProjectRecords } from './routes_callbacks/parish/post/parish_projects.js';
+import { addOfferingRecord } from './routes_callbacks/parish/post/add_offering.js';
 
 // __________________ADMIN
 
@@ -80,7 +79,6 @@ server.post('/parish/load/all/offering/records', loadAllOfferingRecords);
 server.post('/parish/add/event', addParishEvent);
 server.post('/parish/events', loadParishEvents);
 server.post('/parish/delete/event', deleteParishEvent);
-
 
 // PROJECTS
 server.post('/parish/add/project/record', addProjectRecord);

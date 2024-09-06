@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { DBDetails } from "../../../db_utils.js/db_parish_details.js";
 import { MongoDBContract } from "../../../db_utils.js/mongodatabase_contract.js";
 import { Logger } from "../../../debug_tools/Log.js";
@@ -29,15 +30,17 @@ export async function addParishEvent(req, resp) {
 }
 
 export async function deleteParishEvent(req, resp) {
-    const { parish_code, password, event_id } = req.body;
+    const { parish_code, parish_password: password, event_id } = req.body;
+    console.log(req.body);
+
     if (!parish_code || !password || !event_id) {
-        return resp.json({ 'response': 'event not saved' });
+        return resp.json({ 'response': 'bad request' });
     }
 
     let deletion = await MongoDBContract.deletedOneByFilterFromCollection(
         parish_code,
         DBDetails.eventsCollection,
-        { '_id': event_id }
+        { '_id': new ObjectId(event_id) }
     );
 
     return resp.json({ 'response': deletion ? 'deleted' : 'something went wrong deleting event' });
