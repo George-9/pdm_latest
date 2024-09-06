@@ -117,7 +117,7 @@ export function viewSCCsPage() {
     tfoot.appendChild(lastRow)
 
     const column = Column({
-        'classlist': ['f-w', 'a-c', 'just-center', 'scroll-y'],
+        'classlist': ['f-w', 'a-c', 'scroll-y'],
         'styles': [{ 'padding': '10px' }],
         'children': [table]
     });
