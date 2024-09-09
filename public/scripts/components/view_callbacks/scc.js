@@ -12,6 +12,7 @@ import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column, MondoText, TextEdit, Button, VerticalScrollView, MondoBigH3Text, Row, HorizontalScrollView } from "../UI/cool_tool_ui.js";
+import { StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
 export function promptAddSCCView() {
@@ -54,21 +55,23 @@ export function promptAddSCCView() {
 
     const column = Column({
         'styles': marginRuleStyles,
-        'classlist': ['f-w', 'f-c', 'a-c'],
+        'classlist': ['f-w', 'f-c', 'a-c', 'm-paad'],
         'children': [
             sccNameI,
             outstationPicker,
             button
         ]
     });
+    StyleView(column, [{ 'padding': '10px' }]);
 
     ModalExpertise.showModal({
         'actionHeading': 'add an SCC',
+        'modalHeadingStyles': [{ 'background-color': '#ff9999' }, { 'color': 'cornsilk' }],
         'modalChildStyles': [{ 'height': '300px' }],
         'children': [column],
         'fullScreen': false,
         'dismisible': true
-    })
+    });
 }
 
 export function viewSCCsPage() {
@@ -141,8 +144,8 @@ export function viewSCCsPage() {
     });
 
     ModalExpertise.showModal({
-        'modalHeadingStyles': [{ 'background': '#4788fd' }, { 'color': 'white' }],
         'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
+        'modalHeadingStyles': [{ 'background': '#4788fd' }, { 'color': 'white' }],
         'topRowUserActions': [new PDFPrintButton(tableId)],
         'children': [column],
         'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],
@@ -236,8 +239,8 @@ export function showFilterebleSCCsPage() {
     });
 
     ModalExpertise.showModal({
-        'modalHeadingStyles': [{ 'background': 'gainsboro' }, { 'color': 'white' }],
         'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
+        'modalHeadingStyles': [{ 'background': 'gainsboro' }, { 'color': 'white' }],
         'topRowUserActions': [new PDFPrintButton(tableId)],
         'children': [column],
         'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],
