@@ -139,3 +139,7 @@ a.e {
 .disp-none {
     display: none !important;
 }
+
+.f-a-w {
+    width: -webkit-fill-available;
+}

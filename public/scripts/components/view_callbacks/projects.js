@@ -68,7 +68,10 @@ export function promptAddProject() {
 
     let projectBudget = 0;
     // DISPLAYS THE AMOUNT EXPECTED PER CONTRIBUTION MODE
-    const projecBudgetDisp = MondoText({ 'text': 'amount expected' });
+    const projecBudgetDisp = MondoText({
+        'styles': [{ 'font-weight': '800' }],
+        'text': 'amount expected'
+    });
 
     // DISPLAY THE DEFAULT SELECTION PROJECT BUDGET
     setProjectBudget();
@@ -109,6 +112,7 @@ export function promptAddProject() {
 
     const modeIdentityView = MondoText({ 'text': 'amount per member' });
     const amountEntryColumn = Column({
+        'classlist': ['f-a-w', 'a-c'],
         'children': [
             modeIdentityView,
             projectAmountPerModeBudgetI
@@ -137,9 +141,16 @@ export function promptAddProject() {
 
     resetViews();
     const startDateI = TextEdit({ 'type': 'date' });
-    const startDateRow = Column({ 'children': [MondoText({ 'text': 'start date' }), startDateI,] })
+    const startDateRow = Column({
+        'classlist': ['f-a-w', 'a-c'],
+        'children': [MondoText({ 'text': 'start date' }), startDateI,]
+    })
+
     const endDateI = TextEdit({ 'type': 'date' });
-    const endDateRow = Column({ 'children': [MondoText({ 'text': 'end date' }), endDateI] });
+    const endDateRow = Column({
+        'classlist': ['f-a-w', 'a-c'],
+        'children': [MondoText({ 'text': 'end date' }), endDateI]
+    });
 
 
     projectContributionModePicker.addEventListener('change', function (ev) {
@@ -229,11 +240,12 @@ export function promptAddProject() {
     })
 
     const column = Column({
-        'styles': [{ 'min-width': '60%' }, { 'padding': '30px' }],
-        'classlist': ['f-h', 'a-c', 'scroll-y'],
+        'styles': [{ 'padding': '30px' }],
+        'classlist': ['f-h', 'f-a-w', 'a-c', 'just-center', 'scroll-y'],
         'children': [
             projectNameI,
             Column({
+                'classlist': ['f-a-w', 'a-c'],
                 'children': [
                     MondoText({ 'text': 'project level' }),
                     projectParishLevelCategoryPicker,
@@ -241,6 +253,7 @@ export function promptAddProject() {
             }),
             outstationPicker,
             Column({
+                'classlist': ['f-a-w', 'a-c'],
                 'children': [
                     MondoText({ 'text': 'contribution mode' }),
                     projectContributionModePicker,
@@ -248,6 +261,7 @@ export function promptAddProject() {
             }),
             amountEntryColumn,
             Column({
+                'classlist': ['f-a-w', 'a-c'],
                 'children': [
                     MondoText({ 'text': 'project budget' }),
                     projecBudgetDisp,

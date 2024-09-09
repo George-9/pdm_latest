@@ -39,7 +39,7 @@ export function promptAddOutstationView() {
         'children': [nameTextEdit, button],
         'classlist': ['f-w', 'a-c']
     });
-    column.style.paddingTop = '30px';
+    column.style.padding = '30px';
 
     ModalExpertise.showModal({
         'actionHeading': 'add outstations to your parish',

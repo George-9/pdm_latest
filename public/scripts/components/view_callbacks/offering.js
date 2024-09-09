@@ -53,10 +53,10 @@ export function promptAddOffering() {
                 ParishDataHandle.parishOfferingRecords = await getParishOfferingsRecords();
             }
         }
-    })
+    });
 
     const column = Column({
-        'classlist': ['f-w', 'f-h', 'a-c'],
+        'classlist': ['f-w', 'f-h', 'a-c', 'm-pad'],
         'children': [
             outstationPicker,
             sourceSelect,
@@ -67,13 +67,14 @@ export function promptAddOffering() {
     });
 
     ModalExpertise.showModal({
-        'modalHeadingStyles': [{ 'background-color': 'cornflowerblue' }],
+        'modalHeadingStyles': [{ 'background-color': 'cornflowerblue' }, { 'color': 'white' }],
         'actionHeading': 'add offering records',
         'modalChildStyles': [{ 'height': '400px' }],
         'dismisible': true,
         'children': [column],
     });
 }
+
 
 // OFFERING REPORTS
 export async function showOfferingReportView() {
