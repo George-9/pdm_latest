@@ -55,9 +55,13 @@
     color: white;
 }
 
-div a :hover,
-.drawer p {
-    text-decoration: underline dotted;
+div a:hover,
+.drawer p:hover {
+    text-decoration: underline dashed;
+}
+
+.drawer>p>a {
+    padding-right: 10px;
 }
 
 .drawer.heading {
