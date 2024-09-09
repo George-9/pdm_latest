@@ -12,34 +12,75 @@ import { MessegePopup } from "../actions/pop_up.js";
 import { addPriestCommunityOptionToPicker, OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { ExcelExportButton, PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column, MondoText, TextEdit, Button, Row, MondoSelect, VerticalScrollView, HorizontalScrollView } from "../UI/cool_tool_ui.js";
+import { HIDDEN_STYLE, VIEWING_STYLE } from "../UI/view_standards.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
-
+export const TitheCategory = { 'member': 'member', 'unknown_member': 'unkown_member' };
 export function promptAddTitheView() {
     let selectedMemberId, searchResultViewContainer;
     const dateId = 'date-el';
 
+
+    const titheCategoryPicker = MondoSelect({
+        'styles': [{
+            'margin-bottom': '4px'
+        }]
+    });
+    titheCategoryPicker.innerHTML = `
+        <option selected value=${TitheCategory.member}>${TitheCategory.member}</option>
+        <option  value=${TitheCategory.unknown_member}>${TitheCategory.unknown_member}</option>
+    `
+
     const memberSearchI = TextEdit({ 'placeholder': 'member name' });
+    const unRecognizedMemberNameI = TextEdit({ 'styles': [HIDDEN_STYLE], 'placeholder': 'name' });
+    const outstationPicker = OutstationPicker({ 'outstations': ParishDataHandle.parishOutstations });
+
+    titheCategoryPicker.addEventListener('change', function (ev) {
+        if (titheCategoryPicker.value === TitheCategory.unknown_member) {
+            StyleView(memberSearchI, [HIDDEN_STYLE]);
+            StyleView(unRecognizedMemberNameI, [VIEWING_STYLE]);
+            StyleView(outstationPicker, [VIEWING_STYLE]);
+        } else {
+            StyleView(memberSearchI, [VIEWING_STYLE]);
+            StyleView(unRecognizedMemberNameI, [HIDDEN_STYLE]);
+            StyleView(outstationPicker, [HIDDEN_STYLE]);
+        }
+    })
+
 
     const dateI = TextEdit({ 'type': 'date' });
     dateI.id = dateId;
 
     const amountI = TextEdit({ 'placeholder': 'amount', 'keyboardType': 'number' });
     async function saveTitheRecord() {
-        if (!selectedMemberId) {
-            return MessegePopup.showMessegePuppy([MondoText({ 'text': 'select a member to continue' })])
-        }
-
         try {
+            let body;
             TextEditValueValidator.validate('date', dateI);
             TextEditValueValidator.validate('amount', amountI);
-
-            const body = {
-                tithe: {
-                    'member_id': selectedMemberId,
-                    'date': dateI.value,
-                    'amount': parseFloat(amountI.value)
+            if (titheCategoryPicker.value === TitheCategory.member) {
+                if (!selectedMemberId) {
+                    return MessegePopup.showMessegePuppy([MondoText({ 'text': 'select a member to continue' })])
+                }
+                body = {
+                    tithe: {
+                        'member_id': selectedMemberId,
+                        'date': dateI.value,
+                        'amount': parseFloat(amountI.value),
+                        'category': TitheCategory.member
+                    }
+                }
+            } else {
+                TextEditValueValidator.validate('unknown member name', unRecognizedMemberNameI);
+                TextEditValueValidator.validate('unknown member name', outstationPicker.value);
+                body = {
+                    tithe: {
+                        'name': unRecognizedMemberNameI.value,
+                        'outstation_id': outstationPicker.value['id'],
+                        'date': dateI.value,
+                        'amount': parseFloat(amountI.value),
+                        'category': TitheCategory.unknown_member
+                    }
                 }
             }
 
@@ -60,17 +101,25 @@ export function promptAddTitheView() {
     searchResultViewContainer = Column({ 'classlist': ['f-h', 'f-w', 'scroll-y'], 'children': [] });
 
     const memberSearchView = Column({
-        'styles': [{ 'padding-top': '50px' }],
+        'styles': [{ 'padding-top': '50px' }, { 'min-width': '60vh' }],
         'classlist': ['f-w', 'a-c'],
-        'children': [memberSearchI, dateI, amountI, submitButton, searchResultViewContainer]
+        'children': [
+            titheCategoryPicker,
+            outstationPicker,
+            memberSearchI,
+            unRecognizedMemberNameI,
+            dateI,
+            amountI,
+            submitButton,
+            searchResultViewContainer
+        ]
     });
-
 
     ModalExpertise.showModal({
         'actionHeading': 'add tithe record',
         'fullScreen': false,
         'dismisible': true,
-        'modalChildStyles': [{ 'height': '400px' }],
+        'modalChildStyles': [{ 'min-height': '90vh' }],
         'modalHeadingStyles': [{ 'background-color': 'green' }, { 'color': 'white' }],
         'children': [memberSearchView]
     });
@@ -175,11 +224,6 @@ export function showTitheReportsView() {
     const outstationPicker = OutstationPicker({ 'outstations': ParishDataHandle.parishOutstations });
     const sccPicker = MondoSelect({});
 
-    let outstationTotalTitheDispensor = MondoText({
-        'text': '',
-        'styles': [{ 'font-weight': '700' },
-        { 'color': 'blue' }]
-    });
 
     const table = domCreate('table');
     table.id = tableId;
@@ -293,7 +337,7 @@ export function showTitheReportsView() {
                 }
             }
         }
-        outstationTotalTitheDispensor.innerText = `${(JSON.parse(outstationPicker.value))['name']} outstation total ${outstationTotalTithe}`.toUpperCase();
+        // outstationTotalTitheDispensor.innerText = `${(JSON.parse(outstationPicker.value))['name']} outstation total ${outstationTotalTithe}`.toUpperCase();
     }
 
     outstationPicker.addEventListener('change', function (ev) {
@@ -302,13 +346,16 @@ export function showTitheReportsView() {
         setViews();
     });
 
-    const printButton = new PDFPrintButton(tableId)
+    const printButton = new PDFPrintButton(tableId);
 
     const containerColumn = Column({
         'classlist': ['f-w', 'a-c', 'scroll-y'],
         'children': [
-            HorizontalScrollView({ 'classlist': ['a-c'], 'children': [table] }),
-            outstationTotalTitheDispensor,
+            HorizontalScrollView({
+                'classlist': ['a-c', 'just-center'],
+                'children': [table]
+            }),
+            // outstationTotalTitheDispensor,
         ]
     });
 
@@ -397,36 +444,79 @@ export function showTitheReportsView() {
         });
     }
 
+    const viewUrecognizedMembersTitheButton = domCreate('i');
+    viewUrecognizedMembersTitheButton.title = 'view for unrecognized members';
+    addClasslist(viewUrecognizedMembersTitheButton, ['bi', 'bi-incognito'])
+    viewUrecognizedMembersTitheButton.onclick = function (ev) {
+        const unkownMmebersTitheRecords = ParishDataHandle.parishTitheRecords.filter(function (titheRecord) {
+            return titheRecord['category'] === TitheCategory.unknown_member;
+        });
+        PDFPrintButton.printingHeading = LocalStorageContract.completeParishName() + ' outstations tithe records\''
+
+        const tableId = 'unrecognized-members-tithe-table';
+        const table = domCreate('table');
+        table.id = tableId;
+        const tableHeader = domCreate('thead');
+        tableHeader.appendChild(topRow);
+
+        const tbody = domCreate('tbody');
+        const tFooter = domCreate('tfoot');
+
+        addChildrenToView(table, [tableHeader, tbody, tFooter]);
+        const scrollView = VerticalScrollView({
+            'styles': [{ 'margin': '30px' }],
+            'children': [table]
+        });
+
+        tableHeader.innerHTML = `
+            <tr>
+                <td>NAME</td>
+                <td>DATE</td>
+                <td>AMOUNT</td>
+            </tr>    
+            `
+
+        let totalTitheForUnknownMembers = 0;
+        for (let i = 0; i < unkownMmebersTitheRecords.length; i++) {
+            const row = domCreate('tr');
+            const titheRecord = unkownMmebersTitheRecords[i];
+
+            const amount = parseFloat(titheRecord['amount'] || 0);
+
+            row.innerHTML = `
+            <td>${titheRecord['name']}</td>
+            <td>${titheRecord['date']}</td>
+            <td>${amount}</td>
+            `
+            tbody.appendChild(row)
+            totalTitheForUnknownMembers += amount;
+        }
+
+        tFooter.innerHTML = `
+            <tr>
+                <td colspan="2">TOTAL</td>
+                <td>${totalTitheForUnknownMembers}</td>
+            </tr>
+        `
+        const printIcon = new PDFPrintButton(tableId);
+        ModalExpertise.showModal({
+            'actionHeading': 'tithe records for Unrecognized Members',
+            'topRowUserActions': [printIcon],
+            'children': [scrollView]
+        })
+
+    }
+
+    viewTotalsForEachSCCButton.title = 'print whole parish';
+    printButton.title = 'print selection';
+    // MAIN MODAL/VIEW
     ModalExpertise.showModal({
         'actionHeading': 'tithe records',
         'fullScreen': true,
         'topRowUserActions': [
-            Column({
-                'styles': [{ 'width': '150px' }],
-                'classlist': ['f-x', 'txt-c'],
-                'children': [
-                    MondoText({
-                        'text': 'print whole parish', 'styles': [
-                            { 'color': 'grey' },
-                            { 'font-size': '12px' }
-                        ]
-                    }),
-                    viewTotalsForEachSCCButton,
-                ]
-            }),
-            Column({
-                'styles': [{ 'width': '150px' }],
-                'classlist': ['f-x', 'txt-c'],
-                'children': [
-                    MondoText({
-                        'text': 'print selection', 'styles': [
-                            { 'color': 'grey' },
-                            { 'font-size': '12px' }
-                        ]
-                    }),
-                    printButton
-                ]
-            }),
+            viewUrecognizedMembersTitheButton,
+            viewTotalsForEachSCCButton,
+            printButton
         ],
         'children': [mainColumn],
     })

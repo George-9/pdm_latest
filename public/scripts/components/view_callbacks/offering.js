@@ -173,18 +173,19 @@ export async function showOfferingReportView() {
     setRowsValue();
 
     const offeringColumn = Column({
-        'classlist': ['f-w', 'a-c', 'scroll-y'],
+        'classlist': ['f-w', 'a-c'],
         'children': [
             offeringTypeOption,
             outstationPicker,
             HorizontalScrollView({
+                'classlist': ['scroll-y', 'f-w', 'just-center', 'a-c'],
                 'children': [table]
             })
         ]
     });
 
     function showWholeParishOfferingRecords() {
-        PDFPrintButton.printingHeading = LocalStorageContract.completeParishName() + ' PARISH TITHE RECORDS'
+        PDFPrintButton.printingHeading = LocalStorageContract.completeParishName() + ' TITHE RECORDS'
 
         const tableId = 'all-outstations-offering';
         const table = domCreate('table');
@@ -202,7 +203,8 @@ export async function showOfferingReportView() {
         const tfoot = domCreate('tfoot');
         addChildrenToView(table, [tableHead, tbody, tfoot]);
 
-        const column = Column({
+        const column = HorizontalScrollView({
+            'classlist': ['f-w', 'a-c', 'just-center'],
             'styles': [{ 'margin': '20px' }],
             'children': [table],
         });
@@ -254,6 +256,7 @@ export async function showOfferingReportView() {
         ModalExpertise.showModal({
             'actionHeading': 'parish offering records',
             'modalHeadingStyles': bgStyles,
+            'modalChildStyles': [{ 'min-width': '50%' }],
             'topRowUserActions': [new PDFPrintButton(tableId)],
             'children': [column]
         });
@@ -274,7 +277,7 @@ export async function showOfferingReportView() {
 
     ModalExpertise.showModal({
         'actionHeading': 'offering reports',
-        'modalHeadingStyles': [{ 'background-color': '#9fffb4' }],
+        'modalHeadingStyles': [{ 'background-color': 'royablue' }],
         'children': [offeringColumn],
         'topRowUserActions': [showWholeParishOfferingRecordsButton, new PDFPrintButton(offeringTableId)],
         'fullScreen': true,
