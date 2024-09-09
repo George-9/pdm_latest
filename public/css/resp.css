@@ -97,13 +97,6 @@
         padding: 10px !important;
     }
 
-    .bi {
-        color: white;
-    }
-
-    .modal-child .bi {
-        color: blue !important;
-    }
 
     nav .bi {
         color: gray;

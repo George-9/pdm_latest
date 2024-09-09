@@ -30,8 +30,6 @@ export class ModalExpertise {
             addClasslist(modalCloseEl, ['bi-x'])
             modalCloseEl.title = 'close';
         }
-
-        modalCloseEl.style.color = 'black';
         modalCloseEl.onclick = ModalExpertise.#hideModal;
 
         var modalChildHeading = MondoText({

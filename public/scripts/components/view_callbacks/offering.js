@@ -67,6 +67,7 @@ export function promptAddOffering() {
     });
 
     ModalExpertise.showModal({
+        'modalHeadingStyles': [{ 'background-color': 'cornflowerblue' }],
         'actionHeading': 'add offering records',
         'modalChildStyles': [{ 'height': '400px' }],
         'dismisible': true,
@@ -254,6 +255,7 @@ export async function showOfferingReportView() {
         // #8000003d
         const bgStyles = [{ 'background-color': '#d5d3db' }]
         ModalExpertise.showModal({
+            'modalHeadingStyles': [{ 'background-color': 'conrflowerblue' }, { 'color': 'white' }],
             'actionHeading': 'parish offering records',
             'modalHeadingStyles': bgStyles,
             'modalChildStyles': [{ 'min-width': '50%' }],
@@ -277,7 +279,7 @@ export async function showOfferingReportView() {
 
     ModalExpertise.showModal({
         'actionHeading': 'offering reports',
-        'modalHeadingStyles': [{ 'background-color': 'royablue' }],
+        'modalHeadingStyles': [{ 'background-color': 'royalblue' }, { 'color': 'white' }],
         'children': [offeringColumn],
         'topRowUserActions': [showWholeParishOfferingRecordsButton, new PDFPrintButton(offeringTableId)],
         'fullScreen': true,
@@ -498,7 +500,7 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
 
     ModalExpertise.showModal({
         'actionHeading': 'offering reports',
-        'modalHeadingStyles': [{ 'background-color': 'gainsboro' }, { 'color': 'black' }],
+        'modalHeadingStyles': [{ 'background-color': 'royablue' }, { 'color': 'white' }],
         'topRowUserActions': [dateCheckersRow, new PDFPrintButton(offeringTableId)],
         'children': [
             GridView({
