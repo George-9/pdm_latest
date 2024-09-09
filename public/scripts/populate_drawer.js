@@ -34,11 +34,21 @@ export class Menu {
     action;
     groupClass;
 
-    constructor(text, icon, groupClass, action) {
+    subMenus;
+    /**
+     * 
+     * @param {string} text title of this main menu
+     * @param {string} icon bootstrap class of this menu's icon
+     * @param {string} groupClass class that helps collapse it's by the parent
+     * @param {Function} action the onclick property assgnable action 
+     * @param {SubMenu[]} subMenus a list of submenus that can appear beneath it
+     */
+    constructor(text, icon, groupClass, action, subMenus) {
         this.text = text;
         this.icon = icon;
         this.action = action;
         this.groupClass = groupClass;
+        this.subMenus = subMenus || []
     }
 
     get view() {
@@ -55,7 +65,41 @@ export class Menu {
         anchor.onclick = this.action;
 
         addClasslist(anchor, [this.groupClass, 'disp-none']);
-        return anchor;
+
+        const ref = this;
+        const column = Column({ 'children': [] });
+        for (let i = 0; i < ref.subMenus.length; i++) {
+            column.appendChild(ref.subMenus[i].view);
+        }
+
+        return { anchor: anchor, 'sub_menus': ref.subMenus };
+    }
+}
+
+export class SubMenu {
+    title;
+    viewClass;
+    callback;
+    constructor(title, viewClass, callback) {
+        this.title = title || new Function();
+        this.viewClass = viewClass;
+        this.callback = callback || new Function();
+    }
+
+    get view() {
+        const anchor = domCreate('a');
+        anchor.innerText = this.title;
+        anchor.onclick = this.callback;
+        StyleView(anchor, [{ 'fonst-size': '12px' }]);
+        addClasslist(anchor, [this.viewClass, 'c-p', 'disp-none']);
+
+        const row = Row({
+            'classlist': ['f-w', 'just-end'],
+            'styles': [{ 'width': 'max-content' }, { 'min-width': '200px' }],
+            'children': [anchor]
+        })
+
+        return row;
     }
 }
 
@@ -93,15 +137,15 @@ export function populateDrawer(drawer, drawerMenus) {
 
         menusCategoryTitle.onclick = function (ev) {
             ev.preventDefault();
-            const subMenus = domQueryAll(`.${drawerMainMenu.groupClass}`);
+            const mainSubMenus = domQueryAll(`.${drawerMainMenu.groupClass}`);
 
             if (drawerMainMenu.isShowingMenus) {
-                subMenus.forEach(function (m) { m.classList.add('disp-none'); });
+                mainSubMenus.forEach(function (m) { m.classList.add('disp-none'); });
                 indicatorIcon.classList.remove(openClassClass);
                 indicatorIcon.classList.add(closedClass);
                 drawerMainMenu.isShowingMenus = false;
             } else {
-                subMenus.forEach(function (m) { m.classList.remove('disp-none'); });
+                mainSubMenus.forEach(function (m) { m.classList.remove('disp-none'); });
                 indicatorIcon.classList.remove(closedClass);
                 indicatorIcon.classList.add(openClassClass);
                 drawerMainMenu.isShowingMenus = true;
@@ -111,9 +155,14 @@ export function populateDrawer(drawer, drawerMenus) {
 
         for (let j = 0; j < drawerMainMenu.subMenus.length; j++) {
             const subMenu = drawerMainMenu.subMenus[j];
-            column.appendChild(subMenu.view);
-        }
+            column.appendChild(subMenu.view.anchor);
 
+            // ADD SUBMENUS
+            for (let i = 0; i < subMenu.view.sub_menus.length; i++) {
+                const submenu = subMenu.view.sub_menus[i];
+                column.appendChild(submenu.view)
+            }
+        }
         drawer.appendChild(column);
     }
 }

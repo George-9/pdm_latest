@@ -33,6 +33,27 @@ export function TextEdit({
             input.showPicker();
         })
     }
+    else if (type === 'checkbox') {
+        console.log(input.checked);
+
+        input.addEventListener('change', function (ev) {
+            ev.preventDefault();
+            if (input.checked) {
+                input.checked = false;
+            } else {
+                input.checked = true;
+            }
+        })
+
+        input.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            if (input.checked) {
+                input.checked = false;
+            } else {
+                input.checked = true;
+            }
+        });
+    }
     else {
         input.addEventListener('input', function (ev) {
             ev.preventDefault();
@@ -55,7 +76,6 @@ export function TextEdit({
             }
             onType(ev);
         });
-
         input.addEventListener('submit', onSubmit ?? null);
     }
 

@@ -3,7 +3,7 @@ import { MessegePopup } from "./components/actions/pop_up.js";
 import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
 import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember } from "./components/view_callbacks/member.js";
-import { promptAddOffering, showOfferingReportView } from "./components/view_callbacks/offering.js";
+import { promptAddOffering, showOfferingReportsByDateAndTypeOutsationView, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
 import { showParishEventsView } from "./components/view_callbacks/parish_events.js";
 import { promptAddProject, showProjectReportView } from "./components/view_callbacks/projects.js";
@@ -13,11 +13,11 @@ import { promptAddTitheView, showTitheReportsView } from "./components/view_call
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
 import { getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishTitheRecords, parishEvents } from "./data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "./data_source/other_sources.js";
-import { domQuery, domQueryById } from "./dom/query.js";
+import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
 import { work } from "./dom/worker.js";
 import { Post } from "./net_tools.js";
-import { DrawerMenu, Menu, populateDrawer } from "./populate_drawer.js";
+import { DrawerMenu, Menu, populateDrawer, SubMenu } from "./populate_drawer.js";
 import { LocalStorageContract } from "./storage/LocalStorageContract.js";
 
 export const marginRuleStyles = [{ 'margin-top': '20px' }];
@@ -63,15 +63,24 @@ const drawerMenus = [
         reportsClass,
         [
             new Menu('tithe', 'bi-cash-coin', reportsClass, showTitheReportsView),
-            new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView),
+            new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView,
+                [
+                    new SubMenu('by outstation', reportsClass, showOfferingReportsByDateAndTypeOutsationView),
+                    new SubMenu('by date', reportsClass, null),
+                ],
+            ),
             new Menu('projects', 'bi-building-add', reportsClass, showProjectReportView),
-            new Menu('SCCs', 'bi-groups', reportsClass, showFilterebleSCCsPage),
+            new Menu('SCCs (grouped)', 'bi-people', reportsClass, showFilterebleSCCsPage),
         ],
         false
     ),
     new DrawerMenu('OVERVIEW', overView,
         [
-            new Menu('members', 'bi-people', overView, ShowMembersReportsView),
+            new Menu('members', 'bi-people', overView, ShowMembersReportsView,
+                [
+                    new SubMenu('by outstation', overView,)
+                ]
+            ),
             new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
             new Menu('SCCs', 'bi-justify-right', overView, viewSCCsPage),
         ],
@@ -115,12 +124,11 @@ function showProfileView() {
     let logOutView = Row({
         'styles': [
             { 'width': 'match-parent' },
-            { 'margin-top': '20px' },
         ],
         'classlist': ['f-w', 'a-c', 'txt-c', 'bi', 'c-p', 'just-end'],
         'children': [
             MondoText({
-                'styles': { 'color': 'red' },
+                'styles': [{ 'color': 'red' }],
                 'text': 'Log Out',
             })
         ]
@@ -132,22 +140,25 @@ function showProfileView() {
         window.location.reload()
     }
 
+    const emailAnchor = domCreate('a');
+    emailAnchor.innerText = `${LocalStorageContract.parishEmail()} MEMBERS`.toUpperCase();
+    emailAnchor.href = `mailto:${LocalStorageContract.parishEmail()}`;
+
     const column = Column({
         'styles': [
-            { 'min-width': '60vw' },
-            { 'min-height': '300px' },
+            { 'min-width': '60%' },
             { 'padding': '10px' },
         ],
+        'classlist': ['f-w', 'a-c', 'just-center'],
         'children': [
-            MondoBigH3Text({
-                'text': `${LocalStorageContract.parishName()} PARISH`.toUpperCase()
-            }),
-            MondoText({ 'text': `${ParishDataHandle.parishMembers.length} MEMBERS`.toUpperCase() }),
             MondoText({ 'text': `${ParishDataHandle.parishOutstations.length} OUTSTATIONS`.toUpperCase() }),
+            MondoText({ 'text': `${ParishDataHandle.parishMembers.length} MEMBERS`.toUpperCase() }),
+            emailAnchor
         ]
     });
 
     ModalExpertise.showModal({
+        'actionHeading': `${LocalStorageContract.parishName()} PARISH`.toUpperCase(),
         'topRowUserActions': [logOutView],
         'children': [column]
     });
@@ -265,7 +276,8 @@ function handleDateClick(calendar, info) {
         'children': [column],
         'topRowUserActions': [],
         'modalHeadingStyles': [
-            { 'background-color': 'goldenrod' },
+            // { 'background-color': 'goldenrod' },
+            { 'background-color': '#263e41' },
             { 'color': 'lightgoldenrodyellow' },
         ],
         'actionHeading': 'create new event for date: ' + date,
@@ -285,11 +297,12 @@ function handleEventClick(info) {
 
     const column = Column({
         'classlist': ['txt-c'],
-        children: [
+        'styles': [{ 'padding': '10px' }],
+        'children': [
             MondoBigH3Text({ 'text': clickedEvent.title }),
             MondoText({ 'text': clickedEvent.description }),
         ]
-    })
+    });
 
     ModalExpertise.showModal({
         'actionHeading': clickedEvent.start,
@@ -297,7 +310,7 @@ function handleEventClick(info) {
             { 'width': '300px' },
             { 'height': '300px' },
         ],
-        'topRowUserActions': [shareIcon, deleteIcon],
+        'topRowUserActions': [],
         'children': [column],
         'dismisible': true,
     });
@@ -323,11 +336,11 @@ function setAnchors() {
 
     fullscreenButton.onclick = function (ev) {
         if (!window.document.fullscreenElement) {
-            fullscreenButton.title = 'enter fullscreen'
             window.document.documentElement.requestFullscreen();
-        } else if (document.exitFullscreen) {
             fullscreenButton.title = 'exit fullscreen'
+        } else if (document.exitFullscreen) {
             window.document.exitFullscreen();
+            fullscreenButton.title = 'enter fullscreen'
         }
     };
 }

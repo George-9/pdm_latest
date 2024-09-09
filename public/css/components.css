@@ -50,6 +50,11 @@
     color: white;
 }
 
+div a :hover,
+.drawer p {
+    text-decoration: underline dotted;
+}
+
 .drawer.heading {
     width: 200px;
     text-align: start;

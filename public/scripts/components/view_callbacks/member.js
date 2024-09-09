@@ -310,10 +310,9 @@ export function showMembersReportsView() {
         'styles': [{ 'width': 'fit-content' }],
         'classlist': ['a-c'],
         'children': [
-            Row({
+            Column({
                 'children': [
-
-                    Column({
+                    Row({
                         'classlist': classlist,
                         'styles': rowStyle,
                         'children': [
@@ -321,7 +320,7 @@ export function showMembersReportsView() {
                             outstationPicker,
                         ]
                     }),
-                    Column({
+                    Row({
                         'classlist': classlist,
                         'styles': rowStyle,
                         'children': [
