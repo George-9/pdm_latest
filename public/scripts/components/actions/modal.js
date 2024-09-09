@@ -25,11 +25,12 @@ export class ModalExpertise {
 
         if (fullScreen && fullScreen === true) {
             addClasslist(modalCloseEl, ['bi-chevron-left'])
+            modalCloseEl.title = 'back';
         } else {
             addClasslist(modalCloseEl, ['bi-x'])
+            modalCloseEl.title = 'close';
         }
 
-        modalCloseEl.title = 'back';
         modalCloseEl.style.color = 'black';
         modalCloseEl.onclick = ModalExpertise.#hideModal;
 

@@ -672,19 +672,32 @@ export async function showProjectReportView() {
         return `Starts ${new Date(projectRecord['start_date']).toDateString()} . Ends ${new Date(projectRecord['end_date']).toDateString()}`
     }
 
-    ParishDataHandle.parishProjectsRecords.forEach(function (projectRecord) {
-        const column = Column({
-            'styles': [{ 'outline': '1px solid grey' }, { 'width': '100%' }, { 'margin-top': '3px' }],
-            'classlist': ['f-w', 'txt-c', 'a-c', 'highlightable', 'c-p'],
-            'children': [
-                MondoBigH3Text({ 'text': projectRecord['name'] }),
-                MondoText({ 'text': `budget ${projectRecord['budget']}` }),
-                Row({ 'children': [MondoText({ 'text': projectStartEndDateString(projectRecord) })] }),
-            ]
+    if (ParishDataHandle.parishProjectsRecords && ParishDataHandle.parishProjectsRecords.length > 0) {
+
+        ParishDataHandle.parishProjectsRecords.forEach(function (projectRecord) {
+            const column = Column({
+                'styles': [{ 'outline': '1px solid grey' }, { 'width': '100%' }, { 'margin-top': '3px' }],
+                'classlist': ['f-w', 'txt-c', 'a-c', 'highlightable', 'c-p'],
+                'children': [
+                    MondoBigH3Text({ 'text': projectRecord['name'] }),
+                    MondoText({ 'text': `budget ${projectRecord['budget']}` }),
+                    Row({ 'children': [MondoText({ 'text': projectStartEndDateString(projectRecord) })] }),
+                ]
+            });
+            column.onclick = (_ev) => showProjectView(projectRecord);
+            projectsColumn.appendChild(column);
         });
-        column.onclick = (_ev) => showProjectView(projectRecord);
-        projectsColumn.appendChild(column);
-    });
+    } else {
+        projectsColumn.appendChild(
+            Column({
+                'styles': [{ 'padding': '20px' }],
+                'children': [
+                    MondoText({
+                        'text': 'no added projects'
+                    })
+                ]
+            }));
+    }
 
     ModalExpertise.showModal({
         'actionHeading': 'Select Project',
