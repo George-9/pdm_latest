@@ -65,8 +65,7 @@ const drawerMenus = [
             new Menu('tithe', 'bi-cash-coin', reportsClass, showTitheReportsView),
             new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView,
                 [
-                    new SubMenu('by outstation', reportsClass, showOfferingReportsByDateAndTypeOutsationView),
-                    new SubMenu('by date', reportsClass, null),
+                    new SubMenu('advanced search', reportsClass, showOfferingReportsByDateAndTypeOutsationView)
                 ],
             ),
             new Menu('projects', 'bi-building-add', reportsClass, showProjectReportView),

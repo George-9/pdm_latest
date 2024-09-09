@@ -11,7 +11,7 @@ import { domCreate } from "../../dom/query.js";
  */
 export function HorizontalScrollView({ classlist = [], styles = {}, children = [], }) {
     const div = domCreate('div');
-    div.classList.add('fx-row', 'scroll-x');
+    div.classList.add('f-w', 'fx-row', 'scroll-x');
 
     addClasslist(div, classlist);
     StyleView(div, styles)

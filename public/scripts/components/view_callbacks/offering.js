@@ -11,6 +11,7 @@ import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column, Row, MondoText, TextEdit, Button, MondoSelect, HorizontalScrollView } from "../UI/cool_tool_ui.js";
+import { GridView } from "../UI/grid.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
@@ -288,26 +289,37 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
         'onchange': setRowsValue
     });
 
-    const equalDateChecker = TextEdit({ 'type': 'checkbox' }),
-        beforeDateChecker = TextEdit({ 'type': 'checkbox' }),
-        afterDateChecker = TextEdit({ 'type': 'checkbox' }),
-        betweenDateChecker = TextEdit({ 'type': 'checkbox' });
+    const dateSpanPicker = MondoSelect({ onChange: setRowsValue });
+    dateSpanPicker.innerHTML = `
+        <option selected value="equal">equal</option>
+        <option value="before">before</option>
+        <option value="after">after</option>
+        <option value="between">between</option>
+    `
 
     const viewing = { 'display': 'block' },
         notViewing = { 'display': 'none' };
 
+    const offeringTypeOptionPicker = MondoSelect({});
+
     const startDateSelect = TextEdit({ 'type': 'date' },);
     const endDateSelect = TextEdit({ 'type': 'date' });
-    const offeringTypeOptionPicker = MondoSelect({});
+
+    startDateSelect.addEventListener('change', setRowsValue);
+    startDateSelect.addEventListener('input', setRowsValue)
+
+    endDateSelect.addEventListener('change', setRowsValue);
+    endDateSelect.addEventListener('input', setRowsValue);
 
     offeringTypeOptionPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
         setRowsValue();
-    })
+    });
 
     offeringTypeOptionPicker.innerHTML = `
-    <option value="${OfferingTypes["SUNDAY OFFERING"]}" selected>Sunday Offering</option>
+    <option value="${OfferingTypes["SUNDAY OFFERING"]}">Sunday Offering</option>
     <option value="${OfferingTypes["OTHER OFFERING"]}">Other Offering</option>
+    <option value="ALL" selected>ALL</option>
     `
 
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
@@ -341,47 +353,61 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
 
         const outstation = JSON.parse(outstationPicker.value);
         const outstationId = outstation['_id'];
-        console.log(outstationId);
+
+        PDFPrintButton.printingHeading = `${outstation['name']} OUTSTATION OFFERING`;
 
         let selectedOutstationOfferings = ParishDataHandle.parishOfferingRecords.filter(function (offering) {
             return offering['outstation_id'] === outstationId;
         });
 
-        let filteredOfferings = selectedOutstationOfferings.filter(function (offering) {
-            console.log(offering);
-            return offering['source'] === offeringTypeOptionPicker.value;
-        });
+        let filteredOfferings = selectedOutstationOfferings;
+
+        if (offeringTypeOptionPicker.value !== 'ALL') {
+            filteredOfferings = selectedOutstationOfferings.filter(function (offering) {
+                return offering['source'] === offeringTypeOptionPicker.value;
+            });
+        }
 
         /**
          * APPLY DATE FILTERS
-         */
-        if (betweenDateChecker.checked) {
+        */
+
+        if (dateSpanPicker.value === "between") {
             StyleView(endDateSelect, [viewing]);
-            filteredOfferings.filter(function (offering) {
+            filteredOfferings = filteredOfferings.filter(function (offering) {
                 const date = new Date(offering['date']);
                 if (!endDateSelect.value) {
-                    return (date > new Date(startDateSelect.value));
+                    return (date > new Date(startDateSelect.value || new Date().toDateString()));
                 } else {
-                    return (date > new Date(startDateSelect.value))
+                    return (date > new Date(startDateSelect.value || new Date().toDateString()))
                         &&
-                        (date < new Date(endDateSelect.value));
+                        (date < new Date(endDateSelect.value || new Date().toDateString()));
                 }
             });
         } else {
             StyleView(endDateSelect, [notViewing]);
         }
 
-        if (startDateSelect.checked) {
-            filteredOfferings.filter(function (offering) {
+        if (dateSpanPicker.value === "before") {
+            filteredOfferings = filteredOfferings.filter(function (offering) {
                 const date = new Date(offering['date']);
-                return (date > new Date(startDateSelect.value));
+                const diff = (new Date(new Date(startDateSelect.value).toDateString() || new Date().toDateString()) - date);
+                console.log(`start${new Date(startDateSelect.value)} - date ${new Date(date)}`, new Date(date) - new Date(startDateSelect.value), '::', 'before diff', new Date(startDateSelect.value) > date);
+                return (new Date(startDateSelect.value) > date);
             });
         }
 
-        if (afterDateChecker.checked) {
-            filteredOfferings.filter(function (offering) {
+        if (dateSpanPicker.value === "after") {
+            filteredOfferings = filteredOfferings.filter(function (offering) {
                 const date = new Date(offering['date']);
-                return (date < new Date(startDateSelect.value));
+                return (date > new Date(startDateSelect.value || new Date().toDateString()));
+            });
+        }
+
+        if (dateSpanPicker.value === "equal") {
+            filteredOfferings = filteredOfferings.filter(function (offering) {
+                const date = new Date(offering['date']);
+                return (new Date(startDateSelect.value || new Date().toDateString()) - date === 0);
             });
         }
 
@@ -403,6 +429,7 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
             const emptyOfferingView = Row({
                 'children': [
                     MondoText({
+                        'styles': [{ 'width': 'max-content' }],
                         'text': 'no offering records matching your query were found in this outstation'
                     })
                 ]
@@ -423,7 +450,7 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
             outstationTotal = 0;
             let offeringAmount = offeringRecord['amount'],
                 source = offeringRecord['source'],
-                date = offeringRecord['date'];
+                date = new Date(offeringRecord['date']).toDateString();
 
             row.innerHTML = `
             <td> ${i + 1}</td>
@@ -439,8 +466,6 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
             outstationTotal += parseFloat(offeringAmount);
         }
 
-        PDFPrintButton.printingHeading = `${outstation['name']} OUTSTATION OFFERING`;
-
         tFooter.innerHTML = `
             <tr>
                 <td colspan="3">TOTAL</td>
@@ -453,130 +478,19 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
     setRowsValue();
 
     const offeringColumn = Column({
-        'classlist': ['f-w', 'a-c', 'scroll-y'],
+        'classlist': ['f-w', 'a-c', 'scroll-y', 'hide-scroll-x'],
         'children': [
-            offeringTypeOptionPicker,
-            outstationPicker,
+
             HorizontalScrollView({
+                'classlist': ['f-w', 'a-c', 'just-center'],
                 'children': [table]
             })
         ]
     });
 
-    // function showWholeParishOfferingRecords() {
-    //     PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' PARISH TITHE RECORDS'
-
-    //     const tableId = 'all-outstations-offering';
-    //     const table = domCreate('table');
-    //     table.id = tableId;
-
-    //     const tableHead = domCreate('thead');
-    //     tableHead.innerHTML = `
-    //         <tr>
-    //             <td>NO</td>
-    //             <td>OUTSTATION</td>
-    //             <td>AMOUNT</td>
-    //         </tr>
-    //     `
-    //     const tbody = domCreate('tbody');
-    //     const tfoot = domCreate('tfoot');
-    //     addChildrenToView(table, [tableHead, tbody, tfoot]);
-
-    //     const column = Column({
-    //         'styles': [{ 'margin': '20px' }],
-    //         'children': [table],
-    //     });
-
-    //     let mappedData = {};
-    //     for (let i = 0; i < ParishDataHandle.parishOutstations.length; i++) {
-    //         const outstation = ParishDataHandle.parishOutstations[i];
-    //         mappedData[outstation['_id']] = {
-    //             'name': outstation['name'],
-    //             '_id': outstation['_id'],
-    //             'amount': 0
-    //         }
-    //     }
-
-    //     let parishTotal = 0;
-    //     const keys = Object.keys(mappedData)
-    //     for (let i = 0; i < keys.length; i++) {
-    //         const outstationOfferingRecord = mappedData[keys[i]];
-    //         for (let i = 0; i < ParishDataHandle.parishOfferingRecords.length; i++) {
-    //             const offeringRecord = ParishDataHandle.parishOfferingRecords[i];
-    //             if (outstationOfferingRecord['_id'] === offeringRecord['outstation_id']) {
-    //                 parishTotal += outstationOfferingRecord['amount'] += parseFloat(offeringRecord['amount'])
-    //             }
-    //         }
-    //     }
-
-    //     for (let i = 0; i < keys.length; i++) {
-    //         const data = mappedData[keys[i]];
-
-    //         const row = domCreate('tr');
-    //         row.innerHTML = `
-    //             <td>${i + 1}</td>
-    //             <td>${data['name']}</td>
-    //             <td>${data['amount']}</td>
-    //             `
-    //         addChildrenToView(tbody, [row]);
-    //     }
-    //     const row = domCreate('tr');
-    //     row.innerHTML = `
-    //         <td colspan="2">TOTAL</td>
-    //         <td>${parishTotal}</td>
-    //         `
-    //     addChildrenToView(tfoot, [row]);
-    //     // VERY USEFUL REDISH PINKISH COLOR
-    //     // [{ 'background-color': '#ff9f9f' }]
-    //     // ALSO THIS
-    //     // #8000003d
-    //     const bgStyles = [{ 'background-color': '#9fffb4' }]
-    //     ModalExpertise.showModal({
-    //         'actionHeading': 'parish offering records',
-    //         'modalHeadingStyles': bgStyles,
-    //         'topRowUserActions': [new PDFPrintButton(tableId)],
-    //         'children': [column]
-    //     });
-    // }
-
-    // const showWholeParishOfferingRecordsButton = domCreate('i')
-    // showWholeParishOfferingRecordsButton.title = 'whole parish records'
-    // addClasslist(showWholeParishOfferingRecordsButton, ['bi', 'bi-wallet2'])
-    // showWholeParishOfferingRecordsButton.onclick = showWholeParishOfferingRecords;
-
-    // StyleView(showWholeParishOfferingRecordsButton,
-    //     [
-    //         { 'background-color': 'gainsboro' },
-    //         { 'color': 'black' },
-    //         { 'width': 'auto' },
-    //         { 'border-radius': '120px' },
-    //     ])
-
-
-    equalDateChecker.addEventListener('change', function (ev) {
-        ev.preventDefault();
-        setRowsValue();
-    })
-    beforeDateChecker.addEventListener('change', function (ev) {
-        ev.preventDefault();
-        setRowsValue();
-    })
-    afterDateChecker.addEventListener('change', function (ev) {
-        ev.preventDefault();
-        setRowsValue();
-    })
-    betweenDateChecker.addEventListener('change', function (ev) {
-        ev.preventDefault();
-        setRowsValue();
-    });
-
+    dateSpanPicker.addEventListener('change', setRowsValue);
     const dateCheckersRow = Row({
-        'children': [
-            Column({ 'children': [MondoText({ 'text': 'date equal' }), equalDateChecker,] }),
-            Column({ 'children': [MondoText({ 'text': 'before' }), beforeDateChecker,] }),
-            Column({ 'children': [MondoText({ 'text': 'after' }), afterDateChecker,] }),
-            Column({ 'children': [MondoText({ 'text': 'between' }), betweenDateChecker,] }),
-        ]
+        'children': [Column({ 'children': [MondoText({ 'text': 'date' }), dateSpanPicker] })]
     });
 
     ModalExpertise.showModal({
@@ -584,10 +498,108 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
         'modalHeadingStyles': [{ 'background-color': 'gainsboro' }, { 'color': 'black' }],
         'topRowUserActions': [dateCheckersRow, new PDFPrintButton(offeringTableId)],
         'children': [
-            Row({ 'children': [startDateSelect, endDateSelect,] }),
+            GridView({
+                'classlist': ['f-w', 'a-c', 'just-center'],
+                'children': [
+                    startDateSelect,
+                    endDateSelect,
+                    offeringTypeOptionPicker,
+                    outstationPicker,
+                ]
+            }),
             offeringColumn
         ],
         'fullScreen': true,
         'dismisible': true,
     });
 }
+
+
+// function showWholeParishOfferingRecords() {
+//     PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' PARISH TITHE RECORDS'
+
+//     const tableId = 'all-outstations-offering';
+//     const table = domCreate('table');
+//     table.id = tableId;
+
+//     const tableHead = domCreate('thead');
+//     tableHead.innerHTML = `
+//         <tr>
+//             <td>NO</td>
+//             <td>OUTSTATION</td>
+//             <td>AMOUNT</td>
+//         </tr>
+//     `
+//     const tbody = domCreate('tbody');
+//     const tfoot = domCreate('tfoot');
+//     addChildrenToView(table, [tableHead, tbody, tfoot]);
+
+//     const column = Column({
+//         'styles': [{ 'margin': '20px' }],
+//         'children': [table],
+//     });
+
+//     let mappedData = {};
+//     for (let i = 0; i < ParishDataHandle.parishOutstations.length; i++) {
+//         const outstation = ParishDataHandle.parishOutstations[i];
+//         mappedData[outstation['_id']] = {
+//             'name': outstation['name'],
+//             '_id': outstation['_id'],
+//             'amount': 0
+//         }
+//     }
+
+//     let parishTotal = 0;
+//     const keys = Object.keys(mappedData)
+//     for (let i = 0; i < keys.length; i++) {
+//         const outstationOfferingRecord = mappedData[keys[i]];
+//         for (let i = 0; i < ParishDataHandle.parishOfferingRecords.length; i++) {
+//             const offeringRecord = ParishDataHandle.parishOfferingRecords[i];
+//             if (outstationOfferingRecord['_id'] === offeringRecord['outstation_id']) {
+//                 parishTotal += outstationOfferingRecord['amount'] += parseFloat(offeringRecord['amount'])
+//             }
+//         }
+//     }
+
+//     for (let i = 0; i < keys.length; i++) {
+//         const data = mappedData[keys[i]];
+
+//         const row = domCreate('tr');
+//         row.innerHTML = `
+//             <td>${i + 1}</td>
+//             <td>${data['name']}</td>
+//             <td>${data['amount']}</td>
+//             `
+//         addChildrenToView(tbody, [row]);
+//     }
+//     const row = domCreate('tr');
+//     row.innerHTML = `
+//         <td colspan="2">TOTAL</td>
+//         <td>${parishTotal}</td>
+//         `
+//     addChildrenToView(tfoot, [row]);
+//     // VERY USEFUL REDISH PINKISH COLOR
+//     // [{ 'background-color': '#ff9f9f' }]
+//     // ALSO THIS
+//     // #8000003d
+//     const bgStyles = [{ 'background-color': '#9fffb4' }]
+//     ModalExpertise.showModal({
+//         'actionHeading': 'parish offering records',
+//         'modalHeadingStyles': bgStyles,
+//         'topRowUserActions': [new PDFPrintButton(tableId)],
+//         'children': [column]
+//     });
+// }
+
+// const showWholeParishOfferingRecordsButton = domCreate('i')
+// showWholeParishOfferingRecordsButton.title = 'whole parish records'
+// addClasslist(showWholeParishOfferingRecordsButton, ['bi', 'bi-wallet2'])
+// showWholeParishOfferingRecordsButton.onclick = showWholeParishOfferingRecords;
+
+// StyleView(showWholeParishOfferingRecordsButton,
+//     [
+//         { 'background-color': 'gainsboro' },
+//         { 'color': 'black' },
+//         { 'width': 'auto' },
+//         { 'border-radius': '120px' },
+//     ])

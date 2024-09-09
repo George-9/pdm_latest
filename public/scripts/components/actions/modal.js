@@ -24,12 +24,12 @@ export class ModalExpertise {
         modalCloseEl.classList.add('bi', 'fx-col', 'a-c', 'just-center');
 
         if (fullScreen && fullScreen === true) {
-            addClasslist(modalCloseEl, ['bi-backspace-reverse'])
+            addClasslist(modalCloseEl, ['bi-chevron-left'])
         } else {
             addClasslist(modalCloseEl, ['bi-x'])
         }
 
-        modalCloseEl.title = 'close';
+        modalCloseEl.title = 'back';
         modalCloseEl.style.color = 'black';
         modalCloseEl.onclick = ModalExpertise.#hideModal;
 
@@ -135,7 +135,6 @@ export class ModalExpertise {
                         case 'Escape':
                             if (dismisible && dismisible === true) {
                                 ModalExpertise.#hideModal();
-                                console.log('Escape');
                             }
                             break;
 

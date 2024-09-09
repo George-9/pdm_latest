@@ -23,38 +23,47 @@ export function TextEdit({
     input.style.padding = '10px';
     input.style.margin = '5px';
 
+    // null better than undefined, rule of the thumb
+    StyleView(input, styles);
+
     if (type) {
         input.setAttribute('type', `${type}`);
     }
+
+    // if (type === 'checkbox') {
+    //     input.style = 'none';
+
+    //     input.addEventListener('change', function (ev) {
+    //         if (input.checked) {
+    //             input.checked = false;
+    //             input.setAttribute('checked', false);
+    //         } else {
+    //             input.checked = true;
+    //             input.setAttribute('checked', false);
+    //         }
+    //     });
+
+    //     input.addEventListener('click', function (ev) {
+    //         ev.preventDefault();
+    //         if (input.checked) {
+    //             input.setAttribute('checked', false);
+    //         } else {
+    //             input.setAttribute('checked', true);
+    //         }
+    //         console.log(input.checked);
+    //     });
+
+    //     return input;
+    // }
 
     if (type === 'date' || input.getAttribute('type') === 'date') {
         input.addEventListener('click', function () {
             input.focus();
             input.showPicker();
-        })
-    }
-    else if (type === 'checkbox') {
-        console.log(input.checked);
-
-        input.addEventListener('change', function (ev) {
-            ev.preventDefault();
-            if (input.checked) {
-                input.checked = false;
-            } else {
-                input.checked = true;
-            }
-        })
-
-        input.addEventListener('click', function (ev) {
-            ev.preventDefault();
-            if (input.checked) {
-                input.checked = false;
-            } else {
-                input.checked = true;
-            }
         });
     }
-    else {
+
+    if (type === 'number') {
         input.addEventListener('input', function (ev) {
             ev.preventDefault();
             function reset() {
@@ -77,9 +86,8 @@ export function TextEdit({
             onType(ev);
         });
         input.addEventListener('submit', onSubmit ?? null);
+        return input;
     }
 
-    // null better than undefined, rule of the thumb
-    StyleView(input, styles);
     return input;
 }
