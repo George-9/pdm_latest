@@ -157,7 +157,7 @@ function showProfileView() {
     });
 
     ModalExpertise.showModal({
-        'actionHeading': `${LocalStorageContract.parishName()} PARISH`.toUpperCase(),
+        'actionHeading': `${LocalStorageContract.completeParishName()} PARISH`.toUpperCase(),
         'topRowUserActions': [logOutView],
         'children': [column]
     });
@@ -316,7 +316,7 @@ function handleEventClick(info) {
 }
 
 function showParishName() {
-    domQueryById('parish-name').innerText = `${LocalStorageContract.parishName()} parish`
+    domQueryById('parish-name').innerText = `${LocalStorageContract.completeParishName()} parish`
 }
 
 function showEventsCount() {

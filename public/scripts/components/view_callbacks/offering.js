@@ -184,7 +184,7 @@ export async function showOfferingReportView() {
     });
 
     function showWholeParishOfferingRecords() {
-        PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' PARISH TITHE RECORDS'
+        PDFPrintButton.printingHeading = LocalStorageContract.completeParishName() + ' PARISH TITHE RECORDS'
 
         const tableId = 'all-outstations-offering';
         const table = domCreate('table');

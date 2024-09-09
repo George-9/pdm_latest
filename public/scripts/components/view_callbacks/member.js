@@ -247,11 +247,11 @@ export function showMembersReportsView() {
 
         sccPicker.options[0].selected = true;
         // set the heading of the currently selected outstation
-        PDFPrintButton.printingHeading = `${LocalStorageContract.parishName()}
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
          ${JSON.parse(outstationPicker.value)['name']} Outstation . ${JSON.parse(sccPicker.value)['name']} SCC members`.toUpperCase();
 
         const setViews = function () {
-            PDFPrintButton.printingHeading = `${LocalStorageContract.parishName()}
+            PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
              ${JSON.parse(outstationPicker.value)['name']} Outstation . ${JSON.parse(sccPicker.value)['name']} SCC members`.toUpperCase();
 
             let outstationMembers = getOutstationMembers(outstationPicker.value);
@@ -405,11 +405,8 @@ export function showMembersByOutstationReportsView() {
 
         sccPicker.options[0].selected = true;
         // set the heading of the currently selected outstation
-        PDFPrintButton.printingHeading = `${LocalStorageContract.parishName()}
-         ${JSON.parse(outstationPicker.value)['name']} Outstation . ${JSON.parse(sccPicker.value)['name']} SCC members`.toUpperCase();
-
-        PDFPrintButton.printingHeading = `${LocalStorageContract.parishName()}
-                     ${JSON.parse(outstationPicker.value)['name']} Outstation members`.toUpperCase();
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
+         ${JSON.parse(outstationPicker.value)['name']} Outstation members`.toUpperCase();
 
         let outstationMembers = getOutstationMembers(outstationPicker.value);
 

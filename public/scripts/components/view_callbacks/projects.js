@@ -198,7 +198,7 @@ export function promptAddProject() {
                                 '_id': JSON.parse(outstationPicker.value)['_id'],
                                 'name': (JSON.parse(outstationPicker.value)['name']) + ' outstation'
                             }
-                            : { 'name': `${LocalStorageContract.parishName()} ${projectLeveCategories[0]}` }
+                            : { 'name': `${LocalStorageContract.completeParishName()} ${projectLeveCategories[0]}` }
                     }
                 }
 
@@ -652,7 +652,7 @@ export async function showProjectReportView() {
         }
 
         PDFPrintButton.printingHeading = `
-        ${LocalStorageContract.parishName()} parish
+        ${LocalStorageContract.completeParishName()} parish
         ${projectRecord.name + ' project contributions'}`.toUpperCase();
 
         ModalExpertise.showModal({

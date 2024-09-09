@@ -208,7 +208,7 @@ export function showTitheReportsView() {
     sccPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
 
-        PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' ' + (JSON.parse(sccPicker.value))['name'] + ' SCC tithe records'
+        PDFPrintButton.printingHeading = LocalStorageContract.completeParishName() + ' ' + (JSON.parse(sccPicker.value))['name'] + ' SCC tithe records'
 
         selectedSCCTotalTithe = 0;
         const thiSCCMembers = getSCCMembers(sccPicker.value, outstationPicker.value);
@@ -329,7 +329,7 @@ export function showTitheReportsView() {
         const sccInnerTbaleId = 'scc-inner-table-id';
         const printIcon = new PDFPrintButton(sccInnerTbaleId);
 
-        PDFPrintButton.printingHeading = LocalStorageContract.parishName() + ' outstations tithe records\''
+        PDFPrintButton.printingHeading = LocalStorageContract.completeParishName() + ' outstations tithe records\''
 
         const table = domCreate('table');
         table.id = sccInnerTbaleId;
