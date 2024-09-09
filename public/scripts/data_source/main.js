@@ -82,3 +82,16 @@ export async function getParishProjectsRecords() {
             'requiresParishDetails': true
         }))['response']
 }
+
+/**
+ * fetches the whole list of parish donations records
+ * @returns { object[] }
+ */
+export async function getParishDonationsRecords() {
+    return (await Post(
+        '/parish/load/all/donations/records',
+        {},
+        {
+            'requiresParishDetails': true
+        }))['response']
+}

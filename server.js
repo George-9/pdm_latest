@@ -21,6 +21,7 @@ import { loadAllOfferingRecords } from './routes_callbacks/parish/post/get_all_o
 import { loadAllTitheRecords } from './routes_callbacks/parish/post/get_tithe_records.js';
 import { addContributionToProjectRecord, addProjectRecord, loadParishProjectRecords } from './routes_callbacks/parish/post/parish_projects.js';
 import { addOfferingRecord } from './routes_callbacks/parish/post/add_offering.js';
+import { addDonationRecord, loadAllDonationsRecords } from './routes_callbacks/parish/post/donations.js';
 
 // __________________ADMIN
 
@@ -85,6 +86,9 @@ server.post('/parish/add/project/record', addProjectRecord);
 server.post('/parish/load/all/projects/records', loadParishProjectRecords);
 server.post('/parish/add/project/contribution', addContributionToProjectRecord);
 
+// DONATIONS
+server.post('/parish/add/donation/record', addDonationRecord);
+server.post('/parish/load/all/donations/records', loadAllDonationsRecords);
 
 /**
  * safely the start server

@@ -2,6 +2,7 @@ import { ModalExpertise } from "./components/actions/modal.js";
 import { MessegePopup } from "./components/actions/pop_up.js";
 import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
+import { promptAddDonationsView, showDonationsReportsView } from "./components/view_callbacks/donations.js";
 import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, showMembersByOutstationReportsView } from "./components/view_callbacks/member.js";
 import { promptAddOffering, showOfferingReportsByDateAndTypeOutsationView, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
@@ -11,7 +12,7 @@ import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { promptAddSCCView, showFilterebleSCCsPage, viewSCCsPage } from "./components/view_callbacks/scc.js";
 import { promptAddTitheView, showTitheReportsView } from "./components/view_callbacks/tithe.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
-import { getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishTitheRecords, parishEvents } from "./data_source/main.js";
+import { getParishDonationsRecords, getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishTitheRecords, parishEvents } from "./data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "./data_source/other_sources.js";
 import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
@@ -55,6 +56,7 @@ const drawerMenus = [
             new Menu('Offering', 'bi-cash', dataEntry, promptAddOffering),
             new Menu('Tithe', 'bi-gift', dataEntry, promptAddTitheView),
             new Menu('projects', 'bi-building-add', dataEntry, promptAddProject),
+            new Menu('donations', 'bi-heart', dataEntry, promptAddDonationsView),
         ],
         false
     ),
@@ -70,6 +72,7 @@ const drawerMenus = [
             ),
             new Menu('projects', 'bi-building-add', reportsClass, showProjectReportView),
             new Menu('SCCs (grouped)', 'bi-people', reportsClass, showFilterebleSCCsPage),
+            new Menu('donations', 'bi-heart', reportsClass, showDonationsReportsView),
         ],
         false
     ),
@@ -97,8 +100,9 @@ async function Main() {
         ParishDataHandle.parishSCCs.push(...(await getParishSCCs()));
         ParishDataHandle.parishMembers.push(...(await getParishMembers()))
         ParishDataHandle.parishOfferingRecords.push(...(await getParishOfferingsRecords()));
-        ParishDataHandle.parishTitheRecords.push(...(await getParishTitheRecords()))
-        ParishDataHandle.parishProjectsRecords.push(...(await getParishProjectsRecords()))
+        ParishDataHandle.parishTitheRecords.push(...(await getParishTitheRecords()));
+        ParishDataHandle.parishProjectsRecords.push(...(await getParishProjectsRecords()));
+        ParishDataHandle.parishDonationRecords.push(...(await getParishDonationsRecords()));
 
         ParishDataHandle.parishSCCs.push({
             '_id': PRIESTS_COMMUNITY_NAME,

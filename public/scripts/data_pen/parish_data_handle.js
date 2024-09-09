@@ -10,6 +10,7 @@ export class ParishDataHandle {
     static parishTitheRecords = [];
     static parishOfferingRecords = [];
     static parishProjectsRecords = [];
+    static parishDonationRecords = [];
 
     constructor() { }
 }
