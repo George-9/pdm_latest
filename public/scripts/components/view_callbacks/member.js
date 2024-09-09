@@ -419,7 +419,7 @@ export function showMembersByOutstationReportsView() {
             let telephoneNumber = member['telephone_number'];
             row.innerHTML = `
                             <td>${i + 1}</td>
-                            <td>${member['name']}</td>
+                            <td class="txt-s">${member['name']}</td>
                             <td><a href="${'tel:' + telephoneNumber}">${telephoneNumber}</a></td>
                         `;
             addClasslist(row, ['highlightable']);
