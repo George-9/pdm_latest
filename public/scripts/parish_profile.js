@@ -75,9 +75,9 @@ const drawerMenus = [
     ),
     new DrawerMenu('OVERVIEW', overView,
         [
-            new Menu('members', 'bi-people', overView, ShowMembersReportsView,
+            new Menu('members', 'bi-people', overView, showMembersByOutstationReportsView,
                 [
-                    new SubMenu('by outstation', overView, showMembersByOutstationReportsView)
+                    new SubMenu('by SCC', overView, ShowMembersReportsView)
                 ]
             ),
             new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
