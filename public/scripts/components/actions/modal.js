@@ -19,6 +19,8 @@ export class ModalExpertise {
         modalChildStyles = [],
         dismisible = true,
         modalHeadingStyles = [],
+        topRowStyles = [],
+        topRowClasses = [],
     }) {
         let modalCloseEl = domCreate('i');
         modalCloseEl.classList.add('bi', 'fx-col', 'a-c', 'just-center');
@@ -63,6 +65,9 @@ export class ModalExpertise {
             'styles': [{ 'background-color': 'whitesmoke' }],
             'children': topRowUserActions,
         });
+
+        addClasslist(userActionsRow, topRowClasses);
+        StyleView(userActionsRow, topRowStyles);
 
         var modalHeader = Column({
             'classlist': ['f-w', 'space-between'],

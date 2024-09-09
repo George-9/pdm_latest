@@ -28,6 +28,8 @@ tr,
 td {
     border: 1px solid grey;
     border-collapse: collapse;
+    flex-shrink: 0;
+    margin: 10px;
 }
 
 thead,
@@ -143,8 +145,7 @@ select {
 
 /* REVISIT */
 select {
-    min-width: 300px;
-    max-width: 300px;
+    min-width: fit-content;
 }
 
 i {

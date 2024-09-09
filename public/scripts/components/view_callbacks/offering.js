@@ -307,8 +307,9 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
 
     const offeringTypeOptionPicker = MondoSelect({});
 
-    const startDateSelect = TextEdit({ 'type': 'date' },);
-    const endDateSelect = TextEdit({ 'type': 'date' });
+    const dateEntryElStyles = [{ 'padding': '10px' }];
+    const startDateSelect = TextEdit({ 'type': 'date', 'styles': dateEntryElStyles },);
+    const endDateSelect = TextEdit({ 'type': 'date', 'styles': dateEntryElStyles });
 
     startDateSelect.addEventListener('change', setRowsValue);
     startDateSelect.addEventListener('input', setRowsValue)
@@ -495,19 +496,28 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
 
     dateSpanPicker.addEventListener('change', setRowsValue);
     const dateCheckersRow = Row({
-        'children': [Column({ 'children': [MondoText({ 'text': 'date' }), dateSpanPicker] })]
+        'styles': [{ 'align-items': 'baseline' }],
+        'classlist': ['a-c', 'just-center'],
+        'children': [
+            MondoText({ 'text': 'date' }),
+            dateSpanPicker,
+            endDateSelect,
+            startDateSelect,
+        ]
     });
 
     ModalExpertise.showModal({
         'actionHeading': 'offering reports',
-        'modalHeadingStyles': [{ 'background-color': 'royablue' }, { 'color': 'white' }],
-        'topRowUserActions': [dateCheckersRow, new PDFPrintButton(offeringTableId)],
+        'modalHeadingStyles': [{ 'background-color': 'royalblue' }, { 'color': 'white' }],
+        'topRowClasses': ['a-c', 'space-around', 'scroll-x'],
+        'topRowUserActions': [
+            dateCheckersRow,
+            new PDFPrintButton(offeringTableId)
+        ],
         'children': [
             GridView({
                 'classlist': ['f-w', 'a-c', 'just-center'],
                 'children': [
-                    startDateSelect,
-                    endDateSelect,
                     offeringTypeOptionPicker,
                     outstationPicker,
                 ]
