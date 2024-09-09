@@ -57,6 +57,7 @@ export function getSCCMembers(scc, outstation) {
     });
 }
 
+
 /**
  * Retrieves al the members of a given SCC from a specific list of members
  * 
@@ -70,6 +71,17 @@ export function getSCCMembersFromList(members = [], scc) {
     return members.filter(function (member) {
         return member['scc_id'] === SCCId;
     });
+}
+
+/**
+ * retrieves an outstation by it's id
+ * @param {string} id outstation id
+ * @returns {object} outstation
+ */
+export function getOutstationById(id = '') {
+    return ParishDataHandle.parishOutstations.find(function (outstation) {
+        return (outstation['_id'] || (JSON.parse(outstation))['_id']) === id;
+    })
 }
 
 /**

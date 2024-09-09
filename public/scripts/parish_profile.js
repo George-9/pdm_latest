@@ -2,7 +2,7 @@ import { ModalExpertise } from "./components/actions/modal.js";
 import { MessegePopup } from "./components/actions/pop_up.js";
 import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
-import { promptAddDonationsView, showDonationsReportsView } from "./components/view_callbacks/donations.js";
+import { promptAddDonationsView, showDonationsForUnrecognizedMembersReportsView, showDonationsWithOutstaionsReportsView } from "./components/view_callbacks/donations.js";
 import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, showMembersByOutstationReportsView } from "./components/view_callbacks/member.js";
 import { promptAddOffering, showOfferingReportsByDateAndTypeOutsationView, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
@@ -72,7 +72,12 @@ const drawerMenus = [
             ),
             new Menu('projects', 'bi-building-add', reportsClass, showProjectReportView),
             new Menu('SCCs (grouped)', 'bi-people', reportsClass, showFilterebleSCCsPage),
-            new Menu('donations', 'bi-heart', reportsClass, showDonationsReportsView),
+            new Menu('donations', 'bi-heart', reportsClass,
+                showDonationsWithOutstaionsReportsView,
+                [
+                    new SubMenu('from outside', reportsClass, showDonationsForUnrecognizedMembersReportsView)
+                ]
+            ),
         ],
         false
     ),
