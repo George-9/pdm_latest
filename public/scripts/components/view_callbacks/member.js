@@ -195,7 +195,6 @@ export function promptRegiterMember() {
 }
 
 export function showMembersReportsView() {
-    let selectedOutstationAndSCCMembers;
 
     const tableId = 'members-table';
     const printButton = new PDFPrintButton(tableId);
@@ -256,11 +255,11 @@ export function showMembersReportsView() {
              ${JSON.parse(outstationPicker.value)['name']} Outstation . ${JSON.parse(sccPicker.value)['name']} SCC members`.toUpperCase();
 
             let outstationMembers = getOutstationMembers(outstationPicker.value);
-            selectedOutstationAndSCCMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
+            outstationMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
             tbody.replaceChildren([]);
 
-            for (let i = 0; i < selectedOutstationAndSCCMembers.length; i++) {
-                const member = selectedOutstationAndSCCMembers[i];
+            for (let i = 0; i < outstationMembers.length; i++) {
+                const member = outstationMembers[i];
                 const row = domCreate('tr');
 
                 let telephoneNumber = member['telephone_number'];
@@ -327,6 +326,150 @@ export function showMembersReportsView() {
                             MondoText({ 'text': 'SCC', 'styles': styles }),
                             sccPicker
                         ],
+                    })
+                ]
+            })
+        ]
+    });
+
+    const membersColumn = Column({
+        children: ParishDataHandle.parishMembers.map(function (m) {
+            return Column({
+                'classlist': ['f-w', 'a-c', 'scroll-y'],
+                'children': [pickersRow, table]
+            })
+        })
+    });
+
+    ModalExpertise.showModal({
+        'actionHeading': 'members reports',
+        'modalHeadingStyles': [{ 'background-color': '#e2e1ef', }],
+        'children': [membersColumn],
+        'topRowUserActions': [printButton],
+        'fullScreen': true,
+    });
+}
+
+export function showMembersByOutstationReportsView() {
+    const tableId = 'members-table';
+    const printButton = new PDFPrintButton(tableId);
+    const outstationPicker = OutstationPicker({
+        'outstations': ParishDataHandle.parishOutstations,
+        'styles': marginRuleStyles
+    });
+
+    StyleView(outstationPicker, [{ 'padding': '10px' }]);
+
+    const sccPicker = MondoSelect({ 'styles': marginRuleStyles });
+    StyleView(sccPicker, [{ 'padding': '10px' }]);
+
+    const table = domCreate('table');
+    table.id = tableId;
+
+    StyleView(table, [{ 'margin': '20px' }, { 'width': '60%' }]);
+    addClasslist(table, ['txt-c']);
+
+    const tableHeader = domCreate('thead');
+    tableHeader.innerHTML = `
+        <tr>
+            <td>NO</td>
+            <td>NAME</td>
+            <td>TELEPHONE</td>
+        </tr>
+    `
+    const tbody = domCreate('tbody');
+    addChildrenToView(table, [tableHeader, tbody]);
+
+    outstationPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
+        setViews();
+    });
+
+    function setViews() {
+        const outstation = JSON.parse(outstationPicker.value);
+        let sccs = getOutstationSCCs(outstation);
+
+        sccPicker.replaceChildren([]);
+
+        for (let i = 0; i < sccs.length; i++) {
+            const scc = sccs[i];
+
+            let option = domCreate('option');
+            option.innerText = scc['name']
+            option.value = JSON.stringify(scc);
+
+            sccPicker.appendChild(option);
+        }
+
+        addPriestCommunityOptionToPicker(sccPicker);
+
+        sccPicker.options[0].selected = true;
+        // set the heading of the currently selected outstation
+        PDFPrintButton.printingHeading = `${LocalStorageContract.parishName()}
+         ${JSON.parse(outstationPicker.value)['name']} Outstation . ${JSON.parse(sccPicker.value)['name']} SCC members`.toUpperCase();
+
+        PDFPrintButton.printingHeading = `${LocalStorageContract.parishName()}
+                     ${JSON.parse(outstationPicker.value)['name']} Outstation members`.toUpperCase();
+
+        let outstationMembers = getOutstationMembers(outstationPicker.value);
+
+        tbody.replaceChildren([]);
+
+        for (let i = 0; i < outstationMembers.length; i++) {
+            const member = outstationMembers[i];
+            const row = domCreate('tr');
+
+            let telephoneNumber = member['telephone_number'];
+            row.innerHTML = `
+                            <td>${i + 1}</td>
+                            <td>${member['name']}</td>
+                            <td><a href="${'tel:' + telephoneNumber}">${telephoneNumber}</a></td>
+                        `;
+            addClasslist(row, ['highlightable']);
+            // const viewMemberTd = domCreate('td');
+            // const tdContent = domCreate('i');
+            // addClasslist(tdContent, ['bi', 'bi-arrows-angle-expand']);
+            row.onclick = function (ev) {
+                if (ev.target === row) {
+                    ModalExpertise.showModal({
+                        'actionHeading': `${member['name']}`.toUpperCase(),
+                        'modalHeadingStyles': [{ 'background-color': 'dodgerblue' }, { 'color': 'white' }],
+                        'modalChildStyles': [{ 'width': '60%' }],
+                        'children': [memberView(member)]
+                    });
+                }
+            };
+
+            // addChildrenToView(viewMemberTd, [tdContent]);
+            // const printMemberView = domCreate('td');
+            // const printTdContent = new PDFPrintButton('');
+            // addChildrenToView(printMemberView, [printTdContent]);
+            // addChildrenToView(row, [viewMemberTd]);
+            tbody.appendChild(row);
+        }
+    }
+
+    setViews();
+
+    const rowStyle = [{ 'width': '100%' }], classlist = ['a-c', 'space-between'],
+        styles = [
+            { 'font-size': '18px' },
+            { 'font-weight': '300' }
+        ]
+
+    const pickersRow = Column({
+        'styles': [{ 'width': 'fit-content' }],
+        'classlist': ['a-c'],
+        'children': [
+            Column({
+                'children': [
+                    Row({
+                        'classlist': classlist,
+                        'styles': rowStyle,
+                        'children': [
+                            MondoText({ 'text': 'OUTSTATION ', 'styles': styles }),
+                            outstationPicker,
+                        ]
                     })
                 ]
             })
