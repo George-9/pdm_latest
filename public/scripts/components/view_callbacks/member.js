@@ -474,12 +474,15 @@ export function showMembersByOutstationReportsView() {
     });
 
     const membersColumn = Column({
-        children: ParishDataHandle.parishMembers.map(function (m) {
-            return Column({
+        'classlist': ['f-w', 'a-c'],
+        'children': [
+            pickersRow,
+            Column({
+                'styles': [{ 'padding-bottom': '30px' }],
                 'classlist': ['f-w', 'a-c', 'scroll-y'],
-                'children': [pickersRow, table]
-            })
-        })
+                'children': [table],
+            }),
+        ]
     });
 
     ModalExpertise.showModal({
