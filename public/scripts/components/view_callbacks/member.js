@@ -478,7 +478,7 @@ export function showMembersByOutstationReportsView() {
         'children': [
             pickersRow,
             Column({
-                'styles': [{ 'padding-bottom': '30px' }],
+                'styles': [{ 'padding-bottom': '30px' }, { 'height': '80vh' }],
                 'classlist': ['f-w', 'a-c', 'scroll-y'],
                 'children': [table],
             }),
