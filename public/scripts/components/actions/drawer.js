@@ -17,24 +17,24 @@ function Main() {
 }
 
 const bgColor = 'gainsboro';
-function setUpDrawerAnchor(anchor) {
-    drawer = domQuery('.drawer');
-    if (!drawer) {
-        return
-    }
+// function setUpDrawerAnchor(anchor) {
+//     drawer = domQuery('.drawer');
+//     if (!drawer) {
+//         return
+//     }
 
-    var allDrawerAnchors = drawer.querySelectorAll('a');
-    anchor.onclick = function (ev) {
-        ev.preventDefault();
-        allDrawerAnchors.forEach(function (targetAnchor) {
-            if (targetAnchor !== ev.target) {
-                targetAnchor.style.backgroundColor = 'white';
-            } else {
-                targetAnchor.style.backgroundColor = bgColor;
-            }
-        });
-    }
-}
+//     var allDrawerAnchors = drawer.querySelectorAll('a');
+//     anchor.onclick = function (ev) {
+//         ev.preventDefault();
+//         allDrawerAnchors.forEach(function (targetAnchor) {
+//             if (targetAnchor !== ev.target) {
+//                 targetAnchor.style.backgroundColor = 'white';
+//             } else {
+//                 targetAnchor.style.backgroundColor = bgColor;
+//             }
+//         });
+//     }
+// }
 
 function toggleDrawer(ev) {
     drawer = domQuery('.drawer');
@@ -57,7 +57,6 @@ function toggleDrawer(ev) {
         drawer.style.display = 'grid';
         drawer.style.opacity = '1';
         drawer.style.height = '100%';
-        drawer.style.padding = '10px';
         drawer.style.zIndex = '5';
 
         drawerIsShowing = true;
