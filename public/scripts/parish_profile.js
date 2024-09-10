@@ -100,7 +100,7 @@ const drawerMenus = [
             new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
             new Menu('SCCs', 'bi-justify-right', overView, viewSCCsPage),
             new Menu('groups', 'bi-circle', overView, showGroupsOverview),
-            new Menu('members(edits)', 'bi-person-edit', overView, showMemberEditView),
+            new Menu('members(edits)', 'bi-person-up', overView, showMemberEditView),
         ],
         false
     )
