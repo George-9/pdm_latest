@@ -4,7 +4,7 @@ import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrol
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
 import { promptAddDonationsView, showDonationsForUnrecognizedMembersReportsView, showDonationsWithOutstaionsReportsView } from "./components/view_callbacks/donations.js";
 import { promptAddGroupView, showGroupsOverview } from "./components/view_callbacks/group.js";
-import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, showMembersByGroupView, showMembersByOutstationReportsView } from "./components/view_callbacks/member.js";
+import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, showMemberEditView, showMembersByGroupView, showMembersByOutstationReportsView } from "./components/view_callbacks/member.js";
 import { promptAddOffering, showOfferingReportsByDateAndTypeOutsationView, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
 import { showParishEventsView } from "./components/view_callbacks/parish_events.js";
@@ -100,6 +100,7 @@ const drawerMenus = [
             new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
             new Menu('SCCs', 'bi-justify-right', overView, viewSCCsPage),
             new Menu('groups', 'bi-circle', overView, showGroupsOverview),
+            new Menu('members(edits)', 'bi-person-edit', overView, showMemberEditView),
         ],
         false
     )

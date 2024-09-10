@@ -13,7 +13,7 @@ import { MessegePopup } from "../actions/pop_up.js";
 import { addPriestCommunityOptionToPicker, OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { Column } from "../UI/column.js";
-import { Button, MondoSelect, MondoText, Row, TextEdit } from "../UI/cool_tool_ui.js";
+import { Button, MondoSelect, MondoText, Row, TextEdit, VerticalScrollView } from "../UI/cool_tool_ui.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
@@ -504,8 +504,8 @@ export function memberView(member) {
     member['outstation'] = outstation['name'];
     member['scc'] = scc['name'];
 
-    return Column({
-        'classlist': ['f-w', 'a-c', 'scroll-y'],
+    return VerticalScrollView({
+        'classlist': ['f-w', 'a-c'],
         'children': Object.keys(member).map(function (key) {
             if (key !== '_id' && !`${key}`.match('_id')) {
                 const valueEditor = TextEdit({ 'placeholder': key })
@@ -513,10 +513,12 @@ export function memberView(member) {
 
                 valueEditor.addEventListener('input', function (ev) {
                     ev.preventDefault();
-
-                    member[key] = valueEditor.value;
+                    if (key === 'God_Parents') {
+                        member[key] = `${valueEditor.value}`.split(',');
+                    } else {
+                        member[key] = valueEditor.value;
+                    }
                 })
-
                 return Column({
                     'children': [
                         MondoText({ 'text': key.toUpperCase().split('_').join(' ') }),
@@ -524,7 +526,6 @@ export function memberView(member) {
                     ]
                 })
             }
-            return ''
         })
     });
 }
@@ -585,14 +586,15 @@ export function showMembersByGroupView() {
     addChildrenToView(table, [tableHeader, tbody])
 
     function setViews() {
-
-        const selectedOutstation = JSON.parse(outstationPicker.value)
-        const selectedOutstationMembers = getOutstationMembers(selectedOutstation);
+        const selectedOutstation = JSON.parse(outstationPicker.value);
+        const selectedGroup = JSON.parse(groupPicker.value);
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
+            ${selectedOutstation['name']} outstation . ${selectedGroup['name']} members
+        `.toUpperCase()
 
         if (tbody.children.length > 0) {
             tbody.replaceChildren([])
         }
-        const selectedGroup = JSON.parse(groupPicker.value);
         const selectedGroupMembers = getGroupMembers(selectedGroup);
         const outstationAndGroupMembers = selectedGroupMembers.filter(function (member) {
             return member['outstation_id'] === selectedOutstation['_id'];
@@ -605,7 +607,6 @@ export function showMembersByGroupView() {
         } else {
             for (let i = 0; i < outstationAndGroupMembers.length; i++) {
                 const member = outstationAndGroupMembers[i];
-                const dob = member['date_of_birth'];
 
                 const row = domCreate('tr');
                 row.innerHTML = `
@@ -632,3 +633,82 @@ export function showMembersByGroupView() {
         'children': [parent]
     })
 }
+
+export function showMemberEditView() {
+    const memberSearchEl = TextEdit({ 'placeholder': 'member name' });
+    const column = Column({ 'children': [] })
+
+    memberSearchEl.addEventListener('input', function (ev) {
+        column.replaceChildren([]);
+
+        const searchKey = memberSearchEl.value;
+        const matchMembers = ParishDataHandle.parishMembers.filter(function (member) {
+            return member['name'].match(searchKey);
+        });
+
+        for (let i = 0; i < matchMembers.length; i++) {
+            const member = matchMembers[i];
+            const memberName = member['name'];
+            const memberOutstationName = memberGetOutstation(member)['name'];
+            const membersccName = memberGetSCC(member['scc_id'])['name'];
+
+            const view = Column({
+                'styles': [{ 'margin': '3px' }, { 'pading': '3px' }, { 'border': '1px solid grey' }, { 'border-radius': '3px' }],
+                'classlist': ['c-p'],
+                'children': [
+                    MondoText({ 'text': memberName }),
+                    MondoText({ 'text': memberOutstationName }),
+                    MondoText({ 'text': membersccName }),
+                ]
+            });
+
+            const saveChangesButton = domCreate('i');
+            saveChangesButton.onclick = async function (ev) {
+                console.log(member);
+                let updateResult = await Post('/parish/update/member',
+                    { member: member },
+                    { 'requiresParishDetails': true });
+                const msg = updateResult['response'];
+                MessegePopup.showMessegePuppy([
+                    MondoText({ 'text': msg })
+                ]);
+                if (msg.match('success') || msg.match('save')) {
+                    //    remove the outdate member
+                    ParishDataHandle.parishMembers = ParishDataHandle.parishMembers.filter(function (oldDetailsMember) {
+                        return oldDetailsMember['_id'] !== member['_id'];
+                    });
+
+                    //insert to the DAO the update member
+                    ParishDataHandle.parishMembers.push(member);
+                    console.log(ParishDataHandle.parishMembers);
+                }
+            }
+            saveChangesButton.title = 'save changes';
+            addClasslist(saveChangesButton, ['bi', 'bi-save']);
+
+            view.onclick = function (ev) {
+                ModalExpertise.showModal({
+                    'topRowUserActions': [saveChangesButton],
+                    'actionHeading': `editing ${member['name']}`,
+                    'modalChildStyles': [{ 'min-width': '60%' }, { 'width': '60%' }],
+                    'children': [
+                        Column({
+                            'classlist': ['f-a-w'],
+                            'styles': [{ 'padding': '20px' }],
+                            'children': [memberView(member)]
+                        })
+                    ],
+                });
+            }
+
+            column.appendChild(view);
+        }
+    })
+
+    ModalExpertise.showModal({
+        'actionHeading': 'member edits',
+        'fullScreen': true,
+        'topRowUserActions': [memberSearchEl],
+        'children': [column],
+    })
+} 
