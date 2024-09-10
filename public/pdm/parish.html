@@ -117,15 +117,17 @@
         }
 
         .view1 {
-            border: 1px solid gray;
-            background-color: azure;
+            border: 1px solid #bacae7;
             padding-left: 20px;
+            border-radius: 10px;
         }
 
         .view2 {
-            border: 1px solid gray;
-            background-color: azure;
+            margin-left: 5px;
+            border: 1px solid #bacae7;
             padding-right: 20px;
+
+            border-radius: 10px;
         }
 
         /* custom FullCalendar buttons */
@@ -134,7 +136,8 @@
             justify-content: center;
             margin: 10px;
             margin-bottom: 10px;
-            background-color: #bae7c2;
+            background-color: #e4eaff;
+            /* #bacae7;*/
             border: none;
             border-radius: 3px;
             padding: 10px;
@@ -143,8 +146,13 @@
         }
 
         .view-buttons:hover {
-            border: 1px solid green;
             padding: 10px;
+        }
+
+        .fc .fc-toolbar.fc-header-toolbar {
+            width: max-content;
+            text-align: left;
+            color: blue;
         }
     </style>
 
@@ -152,7 +160,10 @@
 
 <body>
     <nav class="fx-row f-w space-between">
-        <h3 class="title">PDM</h3>
+        <div class="fx-col f-w">
+            <h3 class="title">PDM</h3>
+            <h3 id="parish-name" style="color: royalblue; font-weight: 900; text-transform: uppercase;"></h3>
+        </div>
 
         <div class="fx-row f-w f-h just-end txt-c">
             <!-- menu icon -->
@@ -189,7 +200,6 @@
 
         <div class="content centered-view just-start hide-scroll-x a-c f-w">
             <div class="full-width fx-col a-c" style="min-width: 98%">
-                <h3 id="parish-name" style="color: royalblue; font-weight: 900; text-transform: uppercase;"></h3>
                 <div class="fx-row just-start">
                     <h3 id="events-count"></h3>
                 </div>

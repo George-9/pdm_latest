@@ -55,7 +55,7 @@ export class Menu {
         const anchor = domCreate('a');
         addClasslist(anchor, ['cursor-pointer']);
 
-        const text = MondoText({ 'text': this.text });
+        const text = MondoText({ 'styles': [{ 'font-size': '16px' }], 'text': this.text.toLowerCase() });
         const icon = domCreate('i');
         addClasslist(icon, ['bi', this.icon]);
 
@@ -88,9 +88,9 @@ export class SubMenu {
 
     get view() {
         const anchor = domCreate('a');
-        anchor.innerText = this.title;
+        anchor.innerText = this.title.toLowerCase();
         anchor.onclick = this.callback;
-        StyleView(anchor, [{ 'fonst-size': '12px' }]);
+        StyleView(anchor, [{ 'fonst-size': '12px' }, { 'font-weight': 'bold' }, { 'color': 'darkgrey' }]);
         addClasslist(anchor, [this.viewClass, 'c-p', 'disp-none']);
 
         const row = Row({
@@ -121,8 +121,8 @@ export function populateDrawer(drawer, drawerMenus) {
             'children': [
                 indicatorIcon,
                 MondoBigH3Text({
-                    'text': drawerMainMenu.heading,
-                    'styles': [{ 'color': 'white' }, { 'font-weight': '800' }],
+                    'text': drawerMainMenu.heading.toLowerCase(),
+                    'styles': [{ 'font-weight': 'bold' }, { 'color': 'darkgrey' }],
                 })
             ],
         });

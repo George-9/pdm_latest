@@ -30,8 +30,8 @@
     text-align: center;
     align-items: center;
 
-    background-color: darkblue;
-    color: white;
+    background-color: rgb(255, 255, 255);
+    color: rgb(83, 76, 76);
 
     overflow-y: scroll;
 }
@@ -52,12 +52,15 @@
     text-align: center;
     text-decoration: none;
 
-    color: white;
+    /* color: white; */
+    color: rgb(83, 76, 76);
+    font-weight: 'bold';
+    color: 'darkgrey';
 }
 
 div a:hover,
 .drawer p:hover {
-    text-decoration: underline dashed;
+    text-decoration: underline dashed !important;
 }
 
 .drawer>p>a {
@@ -71,8 +74,11 @@ div a:hover,
 
 .drawer i,
 .drawer span {
-    color: white;
+    /* color: white; */
+    color: rgb(83, 76, 76);
     padding: 2px;
+    font-weight: 'bold';
+    color: 'darkgrey';
 }
 
 
