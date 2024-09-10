@@ -5,6 +5,7 @@ import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
+import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
@@ -120,10 +121,84 @@ export function promptAddStaffToParish() {
     })
 }
 
-export function ViewAllParishStaff() {
+export function ViewParishStaffByOutsation() {
     const outstationPicker = OutstationPicker({ 'outstations': ParishDataHandle.parishOutstations });
     outstationPicker.addEventListener('change', setView);
 
+    const table = domCreate('table');
+    const tableId = 'staff-table';
+    table.id = tableId;
+
+    const tableHeader = domCreate('thead');
+    const tbody = domCreate('tbody');
+    const tfooter = domCreate('tfoot');
+
+    tableHeader.innerHTML = `
+    <tr>
+    <td>NO</td>
+    <td>NAME</td>
+    <td>ID NUMBER</td>
+    <td>POSITION</td>
+    <td>TELEPHONE</td>
+    <td>KRA NUMBER</td>
+    </tr>
+    `
+
+    const printButton = new PDFPrintButton(tableId)
+    addChildrenToView(table, [tableHeader, tbody, tfooter]);
+
+    function setView() {
+        tbody.replaceChildren([]);
+
+        const selectedOutstation = outstationPicker.value;
+
+        let outstation = JSON.parse(selectedOutstation);
+        let selectedOutstationId = outstation['_id'];
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()} . ${outstation['name']} outstation staff`.toUpperCase()
+
+        let filteredStaffByOutstation = ParishDataHandle.parishStaff.filter(function (staff) { return staff['outstation_id'] === selectedOutstationId; });
+
+        for (let i = 0; i < filteredStaffByOutstation.length; i++) {
+            const staff = filteredStaffByOutstation[i];
+            const row = domCreate('tr');
+
+            row.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${staff['name']}</td>
+            <td>${staff['id_number']}</td>
+            <td>${staff['position']}</td>
+            <td>${staff['telephone']}</td>
+        <td>${staff['kra_number']}</td>
+        `
+            tbody.appendChild(row);
+        }
+    }
+
+    setView();
+
+    const parent = Column({
+        'classlist': ['f-w', 'a-c'],
+        'styles': [{ 'padding': '20px' }],
+        'children': [
+            HorizontalScrollView({
+                'classlist': ['a-c', 'just-center'],
+                'children': [table]
+            })
+        ]
+    });
+
+    ModalExpertise.showModal({
+        'modalHeadingStyles': [{ 'background-color': '#002079' }, { 'color': 'white' }],
+        'topRowStyles': [{ 'background-color': '#002079' }, { 'color': 'white' }],
+        'actionHeading': 'parish staff',
+        'topRowClasses': ['a-c'],
+        'topRowUserActions': [outstationPicker, printButton],
+        'children': [parent],
+        'fullScreen': true
+    })
+}
+
+export function ViewAllParishStaff() {
     const table = domCreate('table');
     const tableId = 'staff-table';
     table.id = tableId;
@@ -141,29 +216,24 @@ export function ViewAllParishStaff() {
             <td>POSITION</td>
             <td>TELEPHONE</td>
             <td>KRA NUMBER</td>
-        </tr>
-    `
+            </tr>
+            `
 
     const printButton = new PDFPrintButton(tableId)
     addChildrenToView(table, [tableHeader, tbody, tfooter]);
 
     function setView() {
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()} staff`.toUpperCase();
+
         tbody.replaceChildren([]);
-
-        const selectedOutstation = outstationPicker.value;
-        let selectedOutstationId = (JSON.parse(selectedOutstation))['_id'];
-
-        let filteredStaffByOutstation = ParishDataHandle.parishStaff.filter(function (staff) {
-            return staff['outstation_id'] === selectedOutstationId;
-        });
-
-        for (let i = 0; i < filteredStaffByOutstation.length; i++) {
-            const staff = filteredStaffByOutstation[i];
+        for (let i = 0; i < ParishDataHandle.parishStaff.length; i++) {
+            const staff = ParishDataHandle.parishStaff[i];
             const row = domCreate('tr');
 
             row.innerHTML = `
-        <td>${i + 1}</td>
-        <td>${staff['name']}</td>
+            <td>${i + 1}</td>
+            <td>${getOutstationById(staff['outstation_id'])['name']}</td>
+            <td>${staff['name']}</td>
         <td>${staff['id_number']}</td>
         <td>${staff['position']}</td>
         <td>${staff['telephone']}</td>
@@ -191,7 +261,7 @@ export function ViewAllParishStaff() {
         'topRowStyles': [{ 'background-color': '#002079' }, { 'color': 'white' }],
         'actionHeading': 'parish staff',
         'topRowClasses': ['a-c'],
-        'topRowUserActions': [outstationPicker, printButton],
+        'topRowUserActions': [printButton],
         'children': [parent],
         'fullScreen': true
     })

@@ -23,6 +23,7 @@ import { addContributionToProjectRecord, addProjectRecord, loadParishProjectReco
 import { addOfferingRecord } from './routes_callbacks/parish/post/add_offering.js';
 import { addDonationRecord, loadAllDonationsRecords } from './routes_callbacks/parish/post/donations.js';
 import { addParishStaff, loadAllParishStaff } from './routes_callbacks/parish/post/staff.js';
+import { addGroups, getParishGroups } from './routes_callbacks/parish/post/groups.js';
 
 // __________________ADMIN
 
@@ -66,6 +67,9 @@ server.post('/parish/load/all/staff', loadAllParishStaff);
 // OUTSTATIONS, SCCs and GROUPS
 server.post('/parish/add/outstation', addOutstation);
 server.post('/parish/load/all/outstations', getOutstations);
+
+server.post('/parish/register/group', addGroups);
+server.post('/parish/load/all/groups/records', getParishGroups);
 
 server.post('/parish/add/scc', addSCC);
 server.post('/parish/load/all/sccs', getSmallChristianCommunities);

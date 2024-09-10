@@ -3,17 +3,18 @@ import { MessegePopup } from "./components/actions/pop_up.js";
 import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
 import { promptAddDonationsView, showDonationsForUnrecognizedMembersReportsView, showDonationsWithOutstaionsReportsView } from "./components/view_callbacks/donations.js";
+import { promptAddGroupView, showGroupsOverview } from "./components/view_callbacks/group.js";
 import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, showMembersByOutstationReportsView } from "./components/view_callbacks/member.js";
 import { promptAddOffering, showOfferingReportsByDateAndTypeOutsationView, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
 import { showParishEventsView } from "./components/view_callbacks/parish_events.js";
-import { promptAddStaffToParish as promptAddParishStaff, ViewAllParishStaff } from "./components/view_callbacks/parish_staff.js";
+import { promptAddStaffToParish as promptAddParishStaff, ViewAllParishStaff, ViewParishStaffByOutsation } from "./components/view_callbacks/parish_staff.js";
 import { promptAddProject, showProjectReportView } from "./components/view_callbacks/projects.js";
 import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { promptAddSCCView, showFilterebleSCCsPage, viewSCCsPage } from "./components/view_callbacks/scc.js";
 import { promptAddTitheView, showTitheReportsView } from "./components/view_callbacks/tithe.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
-import { getParishDonationsRecords, getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishStaff, getParishTitheRecords, parishEvents } from "./data_source/main.js";
+import { getParishDonationsRecords, getParishGroupsRecords, getParishMembers, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishStaff, getParishTitheRecords, parishEvents } from "./data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "./data_source/other_sources.js";
 import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
@@ -23,7 +24,6 @@ import { DrawerMenu, Menu, populateDrawer, SubMenu } from "./populate_drawer.js"
 import { LocalStorageContract } from "./storage/LocalStorageContract.js";
 
 export const marginRuleStyles = [{ 'margin-top': '20px' }];
-
 work(Main);
 
 const registryClass = 'registry',
@@ -36,7 +36,7 @@ const drawerMenus = [
     new DrawerMenu('ADMIN',
         admin,
         [
-            new Menu('HISTORY', 'bi-history', admin),
+            new Menu('HISTORY', 'bi-trash', admin),
             new Menu('EVENTS', 'bi-calendar', admin, showParishEventsView),
         ],
         false
@@ -46,9 +46,10 @@ const drawerMenus = [
         registryClass,
         [
             new Menu('members', 'bi-people', registryClass, promptRegiterMember),
-            new Menu('Staff', 'bi-plus', registryClass, promptAddParishStaff),
-            new Menu('Outstation', 'bi-collection', registryClass, promptAddOutstationView),
-            new Menu('SCC', 'bi-people', registryClass, promptAddSCCView),
+            new Menu('Staff', 'bi-file-earmark-person', registryClass, promptAddParishStaff),
+            new Menu('Outstation', 'bi-opencollective', registryClass, promptAddOutstationView),
+            new Menu('SCC', 'bi-collection', registryClass, promptAddSCCView),
+            new Menu('Group', 'bi-plus-circle', registryClass, promptAddGroupView),
         ],
         false
     ),
@@ -90,9 +91,14 @@ const drawerMenus = [
                     new SubMenu('by SCC', overView, ShowMembersReportsView)
                 ]
             ),
-            new Menu('Staff', 'bi-people', overView, ViewAllParishStaff),
+            new Menu('Staff', 'bi-people', overView, ViewAllParishStaff,
+                [
+                    new SubMenu('by outstation', overView, ViewParishStaffByOutsation)
+                ]
+            ),
             new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
             new Menu('SCCs', 'bi-justify-right', overView, viewSCCsPage),
+            new Menu('groups', 'bi-circle', overView, showGroupsOverview),
         ],
         false
     )
@@ -104,9 +110,10 @@ async function Main() {
     } else {
         const drawer = domQuery('.drawer-container');
 
+        ParishDataHandle.parishMembers.push(...(await getParishMembers()))
         ParishDataHandle.parishOutstations.push(...(await getParishOutstations()));
         ParishDataHandle.parishSCCs.push(...(await getParishSCCs()));
-        ParishDataHandle.parishMembers.push(...(await getParishMembers()))
+        ParishDataHandle.parishGroups.push(...(await getParishGroupsRecords()));
         ParishDataHandle.parishOfferingRecords.push(...(await getParishOfferingsRecords()));
         ParishDataHandle.parishTitheRecords.push(...(await getParishTitheRecords()));
         ParishDataHandle.parishProjectsRecords.push(...(await getParishProjectsRecords()));

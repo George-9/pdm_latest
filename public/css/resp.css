@@ -25,7 +25,7 @@
         padding-inline-end: 10px;
 
         /* background-color: #060e2be3; */
-        background-color: darkblue;
+        background-color: white;
 
         transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
     }
@@ -85,6 +85,7 @@
         opacity: 1 !important;
         height: 100vh !important;
         overflow-y: hidden !important;
+        border-right: 1px solid #47474747;
     }
 
     .centered-view {

@@ -70,6 +70,20 @@ export async function getParishOfferingsRecords() {
 }
 
 /**
+ * fetches the whole list of parish offering records
+ * @returns { object[] }
+ */
+export async function getParishGroupsRecords() {
+    return (await Post(
+        '/parish/load/all/groups/records', {},
+        {
+            'requiresParishDetails': true
+        }))['response']
+}
+
+
+
+/**
  * fetches the whole list of parish tithe records
  * @returns { object[] }
  */

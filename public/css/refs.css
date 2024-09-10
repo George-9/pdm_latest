@@ -56,8 +56,12 @@
     align-items: center;
 }
 
-a.e {
+.a-e {
     align-items: end;
+}
+
+.a-bl {
+    align-items: baseline;
 }
 
 .txt-s {

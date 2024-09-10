@@ -114,7 +114,7 @@ export function populateDrawer(drawer, drawerMenus) {
     for (let i = 0; i < drawerMenus.length; i++) {
         const drawerMainMenu = drawerMenus[i];
         const indicatorIcon = domCreate('i');
-        let closedClass = 'bi-chevron-down', openClassClass = 'bi-chevron-up';
+        let closedClass = 'bi-caret-down', openClassClass = 'bi-caret-up';
         addClasslist(indicatorIcon, ['bi', closedClass]);
         const menusCategoryTitle = Row({
             'classlist': ['m-pad'],
@@ -134,6 +134,11 @@ export function populateDrawer(drawer, drawerMenus) {
             'styles': [{ 'padding-top': '10px' }],
             'children': [menusCategoryTitle],
         });
+
+        if ((i + 1) === drawerMenus.length) {
+            // pad the last menu
+            column.style.paddingBottom = '5vh';
+        }
 
         menusCategoryTitle.onclick = function (ev) {
             ev.preventDefault();

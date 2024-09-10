@@ -211,8 +211,8 @@ export function showMembersReportsView() {
     const table = domCreate('table');
     table.id = tableId;
 
-    StyleView(table, [{ 'margin': '20px' }, { 'width': '60%' }]);
-    addClasslist(table, ['txt-c']);
+    StyleView(table, [{ 'margin': '10px' }, { 'max-width': '440px' }]);
+    addClasslist(table, ['txt-c', 'f-a-w']);
 
     const tableHeader = domCreate('thead');
     tableHeader.innerHTML = `
@@ -301,18 +301,18 @@ export function showMembersReportsView() {
 
     const rowStyle = [{ 'width': '100%' }], classlist = ['a-c', 'space-between'],
         styles = [
-            { 'font-size': '18px' },
-            { 'font-weight': '300' }
+            { 'font-size': '12px' },
+            { 'font-weight': '800' }
         ]
 
     const pickersRow = Column({
         'styles': [{ 'width': 'fit-content' }],
-        'classlist': ['a-c'],
+        'classlist': ['a-c', 'a-bl'],
         'children': [
-            Column({
+            Row({
                 'children': [
                     Row({
-                        'classlist': classlist,
+                        'classlist': [...classlist, 'a-c', 'a-bl'],
                         'styles': rowStyle,
                         'children': [
                             MondoText({ 'text': 'OUTSTATION ', 'styles': styles }),
@@ -320,7 +320,7 @@ export function showMembersReportsView() {
                         ]
                     }),
                     Row({
-                        'classlist': classlist,
+                        'classlist': [...classlist, 'a-c', 'a-bl'],
                         'styles': rowStyle,
                         'children': [
                             MondoText({ 'text': 'SCC', 'styles': styles }),
@@ -336,7 +336,10 @@ export function showMembersReportsView() {
         children: ParishDataHandle.parishMembers.map(function (m) {
             return Column({
                 'classlist': ['f-w', 'a-c', 'scroll-y'],
-                'children': [pickersRow, table]
+                'children': [
+                    pickersRow,
+                    table
+                ]
             })
         })
     });
@@ -366,8 +369,8 @@ export function showMembersByOutstationReportsView() {
     const table = domCreate('table');
     table.id = tableId;
 
-    StyleView(table, [{ 'margin': '20px' }, { 'width': '60%' }]);
-    addClasslist(table, ['txt-c']);
+    StyleView(table, [{ 'margin': '10px' }, { 'max-width': '440px' }]);
+    addClasslist(table, ['txt-c', 'f-a-w']);
 
     const tableHeader = domCreate('thead');
     tableHeader.innerHTML = `
@@ -454,13 +457,13 @@ export function showMembersByOutstationReportsView() {
             { 'font-weight': '300' }
         ]
 
-    const pickersRow = Column({
+    const pickersRow = Row({
         'styles': [{ 'width': 'fit-content' }],
         'classlist': ['a-c'],
         'children': [
             Column({
                 'children': [
-                    Row({
+                    Column({
                         'classlist': classlist,
                         'styles': rowStyle,
                         'children': [
@@ -474,12 +477,12 @@ export function showMembersByOutstationReportsView() {
     });
 
     const membersColumn = Column({
-        'classlist': ['f-w', 'a-c'],
+        'classlist': ['f-w', 'a-c', 'f-a-w'],
         'children': [
             pickersRow,
             Column({
                 'styles': [{ 'padding-bottom': '30px' }, { 'height': '80vh' }],
-                'classlist': ['f-w', 'a-c', 'scroll-y'],
+                'classlist': ['f-w', 'f-a-w', 'a-c', 'scroll-y'],
                 'children': [table],
             }),
         ]
