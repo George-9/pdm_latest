@@ -692,7 +692,7 @@ export function showMemberEditView() {
                     'actionHeading': `editing ${member['name']}`,
                     'modalChildStyles': [{ 'min-width': '60%' }, { 'width': '60%' }],
                     'children': [
-                        Column({
+                        VerticalScrollView({
                             'classlist': ['f-a-w'],
                             'styles': [{ 'padding': '20px' }],
                             'children': [memberView(member)]
