@@ -535,7 +535,9 @@ export function showMembersByGroupView() {
         return MessegePopup.showMessegePuppy([MondoText({ 'text': 'this parish has not registered any groups, please register a group first' })])
     }
 
-    // const outstation = memberGetOutstation(member, ParishDataHandle.parishOutstations)
+    const outstationPicker = OutstationPicker({ 'outstations': ParishDataHandle.parishOutstations });
+    outstationPicker.addEventListener('change', setViews);
+
     // const scc = memberGetSCC(member, ParishDataHandle.parishSCCs);
     const tableId = 'members-by-groups';
     const groupPicker = MondoSelect({});
@@ -583,25 +585,37 @@ export function showMembersByGroupView() {
     addChildrenToView(table, [tableHeader, tbody])
 
     function setViews() {
-        const selectedGroup = JSON.parse(groupPicker.value);
-        const selectedGroupMembers = getGroupMembers(selectedGroup);
+
+        const selectedOutstation = JSON.parse(outstationPicker.value)
+        const selectedOutstationMembers = getOutstationMembers(selectedOutstation);
 
         if (tbody.children.length > 0) {
             tbody.replaceChildren([])
         }
+        const selectedGroup = JSON.parse(groupPicker.value);
+        const selectedGroupMembers = getGroupMembers(selectedGroup);
+        const outstationAndGroupMembers = selectedGroupMembers.filter(function (member) {
+            return member['outstation_id'] === selectedOutstation['_id'];
+        })
 
-        for (let i = 0; i < selectedGroupMembers.length; i++) {
-            const member = selectedGroupMembers[i];
-            const dob = member['date_of_birth'];
-
+        if (outstationAndGroupMembers.length < 1) {
             const row = domCreate('tr');
-            row.innerHTML = `
+            row.innerHTML = `<td colspan="4">no members match the current query</td>`;
+            tbody.appendChild(row);
+        } else {
+            for (let i = 0; i < outstationAndGroupMembers.length; i++) {
+                const member = outstationAndGroupMembers[i];
+                const dob = member['date_of_birth'];
+
+                const row = domCreate('tr');
+                row.innerHTML = `
                 <td>${i + 1}</td>
                 <td>${member['name']}</td>
                 <td>${getMemberAgeToday(member)}</td>
                 <td>${member['telephone_number']}</td>
             `
-            tbody.appendChild(row)
+                tbody.appendChild(row)
+            }
         }
 
         ageDisp.innerHTML = `
@@ -613,7 +627,7 @@ export function showMembersByGroupView() {
 
     ModalExpertise.showModal({
         'actionHeading': 'members by groups',
-        'topRowUserActions': [groupPicker, new PDFPrintButton(tableId)],
+        'topRowUserActions': [outstationPicker, groupPicker, new PDFPrintButton(tableId)],
         'fullScreen': true,
         'children': [parent]
     })
