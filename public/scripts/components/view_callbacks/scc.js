@@ -1,5 +1,5 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getAllMembersWithoutSCC, getOutstationMembers, getOutstationSCCs, getSCCMembers, getSCCMembersFromList } from "../../data_pen/puppet.js";
+import { getOutstationMembers, getOutstationSCCs, getSCCMembersFromList } from "../../data_pen/puppet.js";
 import { getParishSCCs } from "../../data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "../../data_source/other_sources.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
@@ -11,7 +11,7 @@ import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
-import { Column, MondoText, TextEdit, Button, VerticalScrollView, MondoBigH3Text, Row, HorizontalScrollView } from "../UI/cool_tool_ui.js";
+import { Column, MondoText, TextEdit, Button, HorizontalScrollView } from "../UI/cool_tool_ui.js";
 import { StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
@@ -67,7 +67,7 @@ export function promptAddSCCView() {
     ModalExpertise.showModal({
         'actionHeading': 'add an SCC',
         'modalHeadingStyles': [{ 'background-color': '#ff9999' }, { 'color': 'cornsilk' }],
-        'modalChildStyles': [{ 'height': '300px' }],
+        'modalChildStyles': [{ 'height': '300px' }, { 'mi-width': '60%' }],
         'children': [column],
         'fullScreen': false,
         'dismisible': true

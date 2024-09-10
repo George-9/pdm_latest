@@ -10,7 +10,7 @@ import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
-import { Button, Column, HorizontalScrollView, MondoSelect, MondoText, TextEdit, VerticalScrollView } from "../UI/cool_tool_ui.js";
+import { Button, Column, HorizontalScrollView, MondoSelect, MondoText, Row, TextEdit, VerticalScrollView } from "../UI/cool_tool_ui.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
 export function promptAddStaffToParish() {
@@ -39,6 +39,7 @@ export function promptAddStaffToParish() {
 
     const parent = VerticalScrollView({
         'styles': [{ 'padding': '20px' }],
+        'classlist': ['f-a-w', 'f-w', 'a-c', 'just-center'],
         'children': [
             outstationPicker,
             Column({
@@ -56,7 +57,12 @@ export function promptAddStaffToParish() {
             categoryPicker,
             positionEntry,
             commentEntry,
-            saveButton
+            Row({
+                'classlist': ['f-a-w', 'f-w', 'a-c', 'just-center'],
+                'children': [
+                    saveButton
+                ]
+            })
         ]
     });
 
