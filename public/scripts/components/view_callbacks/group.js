@@ -68,7 +68,7 @@ export function promptAddGroupView() {
     StyleView(column, [{ 'padding': '10px' }]);
 
     ModalExpertise.showModal({
-        'actionHeading': 'add an SCC',
+        'actionHeading': 'register a group',
         'modalHeadingStyles': [{ 'background-color': '#ff9999' }, { 'color': 'cornsilk' }],
         'modalChildStyles': [{ 'height': '300px' }],
         'children': [column],
@@ -77,85 +77,85 @@ export function promptAddGroupView() {
     });
 }
 
-export function viewSCCsPage() {
-    const tableId = 'sccs-table';
+// export function viewSCCsPage() {
+//     const tableId = 'sccs-table';
 
-    const table = domCreate('table');
-    table.id = tableId;
+//     const table = domCreate('table');
+//     table.id = tableId;
 
-    const thead = domCreate('thead');
-    const tbody = domCreate('tbody');
-    const tfoot = domCreate('tfoot');
+//     const thead = domCreate('thead');
+//     const tbody = domCreate('tbody');
+//     const tfoot = domCreate('tfoot');
 
-    thead.innerHTML = `
-        <tr>
-            <td>NO</td>
-            <td>SCC</td>
-            <td>OUTSTATION</td>
-            <td>MEMBER COUNT</td>
-        </tr>
-    `
-    addChildrenToView(table, [thead, tbody, tfoot]);
-    const data = [];
+//     thead.innerHTML = `
+//         <tr>
+//             <td>NO</td>
+//             <td>SCC</td>
+//             <td>OUTSTATION</td>
+//             <td>MEMBER COUNT</td>
+//         </tr>
+//     `
+//     addChildrenToView(table, [thead, tbody, tfoot]);
+//     const data = [];
 
-    ParishDataHandle.parishSCCs.forEach(function (scc, i) {
-        let outstation = ParishDataHandle.parishOutstations.find(function (o) {
-            return o['_id'] === scc['outstation_id']
-        }) || { 'name': 'EVERY OUTSTATION' };
+//     ParishDataHandle.parishSCCs.forEach(function (scc, i) {
+//         let outstation = ParishDataHandle.parishOutstations.find(function (o) {
+//             return o['_id'] === scc['outstation_id']
+//         }) || { 'name': 'EVERY OUTSTATION' };
 
-        let membersCount = ParishDataHandle.parishMembers.filter(function (m) {
-            return m['scc_id'] === scc['_id']
-        }).length;
+//         let membersCount = ParishDataHandle.parishMembers.filter(function (m) {
+//             return m['scc_id'] === scc['_id']
+//         }).length;
 
-        data.push({
-            scc_name: scc['name'],
-            outstation_name: outstation['name'],
-            members_count: membersCount
-        });
-    });
+//         data.push({
+//             scc_name: scc['name'],
+//             outstation_name: outstation['name'],
+//             members_count: membersCount
+//         });
+//     });
 
-    let sortedData = data.sort(function (a, b) {
-        return `${b['outstation_name']}`.localeCompare(a['outstation_name']);
-    });
+//     let sortedData = data.sort(function (a, b) {
+//         return `${b['outstation_name']}`.localeCompare(a['outstation_name']);
+//     });
 
-    function loadView() {
-        sortedData.forEach(function (data, i) {
-            const row = domCreate('tr');
-            row.innerHTML = `
-            <td>${i + 1}</td>
-            <td>${data['scc_name']}</td>
-            <td>${data['outstation_name']}</td>
-            <td>${data['members_count']}</td>
-            `
-            table.appendChild(row);
-        });
-    }
+//     function loadView() {
+//         sortedData.forEach(function (data, i) {
+//             const row = domCreate('tr');
+//             row.innerHTML = `
+//             <td>${i + 1}</td>
+//             <td>${data['scc_name']}</td>
+//             <td>${data['outstation_name']}</td>
+//             <td>${data['members_count']}</td>
+//             `
+//             table.appendChild(row);
+//         });
+//     }
 
-    loadView()
+//     loadView()
 
-    const lastRow = domCreate('tr');
-    lastRow.innerHTML = `
-        <td colspan="3">TOTAL</td>
-        <td>${ParishDataHandle.parishMembers.length}</td>
-    `
-    tfoot.appendChild(lastRow)
+//     const lastRow = domCreate('tr');
+//     lastRow.innerHTML = `
+//         <td colspan="3">TOTAL</td>
+//         <td>${ParishDataHandle.parishMembers.length}</td>
+//     `
+//     tfoot.appendChild(lastRow)
 
-    const column = Column({
-        'classlist': ['f-w', 'a-c', 'scroll-y'],
-        'styles': [{ 'padding': '10px' }],
-        'children': [table]
-    });
+//     const column = Column({
+//         'classlist': ['f-w', 'a-c', 'scroll-y'],
+//         'styles': [{ 'padding': '10px' }],
+//         'children': [table]
+//     });
 
-    ModalExpertise.showModal({
-        'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
-        'modalHeadingStyles': [{ 'background': '#4788fd' }, { 'color': 'white' }],
-        'topRowUserActions': [new PDFPrintButton(tableId)],
-        'children': [column],
-        'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],
-        'fullScreen': false,
-        'dismisible': true,
-    });
-}
+//     ModalExpertise.showModal({
+//         'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
+//         'modalHeadingStyles': [{ 'background': '#4788fd' }, { 'color': 'white' }],
+//         'topRowUserActions': [new PDFPrintButton(tableId)],
+//         'children': [column],
+//         'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],
+//         'fullScreen': false,
+//         'dismisible': true,
+//     });
+// }
 
 export function showGroupsOverview() {
     const tableId = 'sccs-table';
