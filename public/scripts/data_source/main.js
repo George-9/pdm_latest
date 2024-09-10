@@ -21,6 +21,18 @@ export async function getParishMembers() {
 }
 
 /**
+ * fetches the whole list of parish staff
+ * @returns { object[] }
+ */
+export async function getParishStaff() {
+    return (await Post(
+        '/parish/load/all/staff', {},
+        {
+            'requiresParishDetails': true
+        }))['response']
+}
+
+/**
  * fetches the whole list of parish outstation
  * @returns { object[] }
  */

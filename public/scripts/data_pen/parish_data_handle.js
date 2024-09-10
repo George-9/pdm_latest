@@ -5,6 +5,7 @@
 export class ParishDataHandle {
     static allParishEvents = [];
     static parishMembers = [];
+    static parishStaff = [];
     static parishOutstations = [];
     static parishSCCs = [];
     static parishTitheRecords = [];
