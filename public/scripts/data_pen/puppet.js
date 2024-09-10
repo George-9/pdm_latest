@@ -84,6 +84,41 @@ export function getOutstationById(id = '') {
     })
 }
 
+
+/**
+ * gets a member's age
+ * @param {object} member 
+ * @returns {number} age of the member
+ */
+export function getMemberAgeToday(member) {
+    const dob = member['date_of_birth'];
+    if (!dob) {
+        throw new Error("getting age for member without date of birth");
+    }
+
+    return (new Date().getFullYear() - new Date(`${dob}`).getFullYear());
+}
+
+
+/**
+ * retrieves a list of members from this group
+ * @returns {object} group
+ * @returns {object[]} list of members
+ */
+export function getGroupMembers(group = new Object({})) {
+    const groupMinAge = group['min_age'];
+    const groupMaxAge = group['max_age'];
+
+
+    return ParishDataHandle.parishMembers.filter(function (member) {
+        const dob = member['date_of_birth'] || new Date();
+        const memberAge = getMemberAgeToday(member)
+
+        return memberAge >= groupMinAge && memberAge <= groupMaxAge;
+    });
+}
+
+
 /**
  * Retrieves a member by a given id
  * 

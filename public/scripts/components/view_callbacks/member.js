@@ -1,5 +1,5 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
+import { getGroupMembers, getMemberAgeToday, getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
 import { getParishMembers } from "../../data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "../../data_source/other_sources.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
@@ -527,4 +527,94 @@ export function memberView(member) {
             return ''
         })
     });
+}
+
+
+export function showMembersByGroupView() {
+    if (ParishDataHandle.parishGroups.length < 1) {
+        return MessegePopup.showMessegePuppy([MondoText({ 'text': 'this parish has not registered any groups, please register a group first' })])
+    }
+
+    // const outstation = memberGetOutstation(member, ParishDataHandle.parishOutstations)
+    // const scc = memberGetSCC(member, ParishDataHandle.parishSCCs);
+    const tableId = 'members-by-groups';
+    const groupPicker = MondoSelect({});
+
+    groupPicker.addEventListener('change', setViews);
+
+    for (let i = 0; i < ParishDataHandle.parishGroups.length; i++) {
+        const group = ParishDataHandle.parishGroups[i];
+        const option = domCreate('option');
+        option.innerHTML = group['name'];
+        option.value = JSON.stringify(group);
+
+        groupPicker.appendChild(option)
+    }
+
+    groupPicker.options[0].selected = true;
+
+    const ageDisp = domCreate('p');
+
+    const table = domCreate('table');
+    table.id = tableId;
+
+    StyleView(table, [{ 'margin': '10px' }, { 'max-width': '440px' }]);
+    addClasslist(table, ['txt-c', 'f-a-w']);
+
+    const tableHeader = domCreate('thead');
+    tableHeader.innerHTML = `
+        <tr>
+            <td>NO</td>
+            <td>NAME</td>
+            <td>AGE</td>
+            <td>TELEPHONE</td>
+        </tr>
+    `
+
+    const parent = Column({
+        'classlist': ['f-w', 'a-c', 'scroll-y'],
+        'children': [
+            ageDisp,
+            table
+        ],
+    });
+
+    const tbody = domCreate('tbody');
+    addChildrenToView(table, [tableHeader, tbody])
+
+    function setViews() {
+        const selectedGroup = JSON.parse(groupPicker.value);
+        const selectedGroupMembers = getGroupMembers(selectedGroup);
+
+        if (tbody.children.length > 0) {
+            tbody.replaceChildren([])
+        }
+
+        for (let i = 0; i < selectedGroupMembers.length; i++) {
+            const member = selectedGroupMembers[i];
+            const dob = member['date_of_birth'];
+
+            const row = domCreate('tr');
+            row.innerHTML = `
+                <td>${i + 1}</td>
+                <td>${member['name']}</td>
+                <td>${getMemberAgeToday(member)}</td>
+                <td>${member['telephone_number']}</td>
+            `
+            tbody.appendChild(row)
+        }
+
+        ageDisp.innerHTML = `
+            age ${selectedGroup['min_age']}-${selectedGroup['max_age']}
+        `
+    }
+
+    setViews();
+
+    ModalExpertise.showModal({
+        'actionHeading': 'members by groups',
+        'topRowUserActions': [groupPicker, new PDFPrintButton(tableId)],
+        'fullScreen': true,
+        'children': [parent]
+    })
 }

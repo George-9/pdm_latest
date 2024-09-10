@@ -4,7 +4,7 @@ import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrol
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
 import { promptAddDonationsView, showDonationsForUnrecognizedMembersReportsView, showDonationsWithOutstaionsReportsView } from "./components/view_callbacks/donations.js";
 import { promptAddGroupView, showGroupsOverview } from "./components/view_callbacks/group.js";
-import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, showMembersByOutstationReportsView } from "./components/view_callbacks/member.js";
+import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, showMembersByGroupView, showMembersByOutstationReportsView } from "./components/view_callbacks/member.js";
 import { promptAddOffering, showOfferingReportsByDateAndTypeOutsationView, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
 import { showParishEventsView } from "./components/view_callbacks/parish_events.js";
@@ -88,7 +88,8 @@ const drawerMenus = [
         [
             new Menu('members', 'bi-people', overView, showMembersByOutstationReportsView,
                 [
-                    new SubMenu('by SCC', overView, ShowMembersReportsView)
+                    new SubMenu('by SCC', overView, ShowMembersReportsView),
+                    new SubMenu('by groups', overView, showMembersByGroupView),
                 ]
             ),
             new Menu('Staff', 'bi-people', overView, ViewAllParishStaff,
@@ -139,7 +140,6 @@ async function Main() {
 }
 
 function showProfileView() {
-    ``
     let logOutView = Row({
         'styles': [
             { 'width': 'match-parent' },

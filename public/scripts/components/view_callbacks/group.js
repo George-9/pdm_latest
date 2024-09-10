@@ -1,7 +1,5 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getOutstationMembers, getOutstationSCCs, getSCCMembersFromList } from "../../data_pen/puppet.js";
-import { getParishGroupsRecords, getParishSCCs } from "../../data_source/main.js";
-import { PRIESTS_COMMUNITY_NAME } from "../../data_source/other_sources.js";
+import { getParishGroupsRecords } from "../../data_source/main.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
@@ -9,9 +7,8 @@ import { Post } from "../../net_tools.js";
 import { marginRuleStyles } from "../../parish_profile.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
-import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
-import { Column, MondoText, TextEdit, Button, HorizontalScrollView, Row } from "../UI/cool_tool_ui.js";
+import { Column, MondoText, TextEdit, Button, HorizontalScrollView } from "../UI/cool_tool_ui.js";
 import { StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
@@ -180,28 +177,6 @@ export function showGroupsOverview() {
             `
     addChildrenToView(table, [thead, tbody, tfoot]);
 
-
-    function setGroups() {
-        tbody.replaceChildren([]);
-        tfoot.replaceChildren([]);
-
-        let count;
-        ParishDataHandle.parishGroups.forEach(function (group, i) {
-            const row = domCreate('tr');
-            row.innerHTML = `
-                <td>${i + 1}</td>
-                <td>${group['name']}</td>
-                <td>${group['min_age']}</td>
-                <td>${group['max_age']}</td>
-            `
-            tbody.appendChild(row);
-            count = i;
-        });
-    }
-
-    // set default Groups
-    setGroups();
-
     const column = Column({
         'classlist': ['f-w', 'a-c', 'just-center', 'scroll-y'],
         'styles': [{ 'padding': '10px' }],
@@ -209,11 +184,38 @@ export function showGroupsOverview() {
             Column({
                 'styles': [{ 'height': '20px' }]
             }),
-            HorizontalScrollView({
-                'children': [table]
-            }),
         ]
     });
+
+    function setGroups() {
+        if (ParishDataHandle.parishGroups.length > 1) {
+            tbody.replaceChildren([]);
+            tfoot.replaceChildren([]);
+
+            let count;
+            ParishDataHandle.parishGroups.forEach(function (group, i) {
+                const row = domCreate('tr');
+                row.innerHTML = `
+                <td>${i + 1}</td>
+                <td>${group['name']}</td>
+                <td>${group['min_age']}</td>
+                <td>${group['max_age']}</td>
+            `
+                tbody.appendChild(row);
+                count = i;
+            });
+
+            column.appendChild(
+                HorizontalScrollView({
+                    'children': [table]
+                }))
+        } else {
+            column.appendChild(MondoText({ 'text': 'no groups have been added to this parish' }));
+        }
+    }
+
+    // set default Groups
+    setGroups();
 
     ModalExpertise.showModal({
         'actionHeading': `PARISH GROUPS (${ParishDataHandle.parishGroups.length})`,
