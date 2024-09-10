@@ -37,7 +37,7 @@ export class MessegePopup {
             row.style.position = 'absolute';
             row.style.outline = '1px solid grey';
             row.style.zIndex = '100';
-            row.classList.add('fx-col', 'just-center', 'txt-c', 'a-e')
+            row.classList.add('fx-row', 'just-center', 'txt-c', 'a-e')
             row.style.left = `${(parseInt(window.innerWidth) / 2) - (parseFloat(row.style.width) / 2)}px`;
             row.style.bottom = `${(parseFloat(row.style.height) / 2)}px`;
 
