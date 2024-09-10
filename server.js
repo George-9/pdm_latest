@@ -24,6 +24,7 @@ import { addOfferingRecord } from './routes_callbacks/parish/post/add_offering.j
 import { addDonationRecord, loadAllDonationsRecords } from './routes_callbacks/parish/post/donations.js';
 import { addParishStaff, loadAllParishStaff } from './routes_callbacks/parish/post/staff.js';
 import { addGroups, getParishGroups } from './routes_callbacks/parish/post/groups.js';
+import { uploadMembers } from './routes_callbacks/parish/post/upload_members.js';
 
 // __________________ADMIN
 
@@ -58,6 +59,7 @@ server.post('/parish/details', parishGetCredentials);
 server.post('/parish/register/member', addMember);
 server.post('/parish/update/member/', updateMemberDetails);
 server.post('/parish/load/all/members', getAllParishMembers);
+server.post('/parish/upload/members', uploadMembers);
 server.post('/parish/load/members/filtered', getMembersFiltered);
 
 // STAFF

@@ -23,7 +23,7 @@ export async function addMember(req, resp) {
 
         let memberNumber = 1;
         if (existing && existing.length > 0) {
-            memberNumber = existing[0]['member_number'] + 1;
+            memberNumber = parseInt(existing[0]['member_number']) + 1;
         }
 
         let saveResult = await MongoDBContract

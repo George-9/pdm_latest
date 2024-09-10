@@ -30,31 +30,10 @@ export function TextEdit({
         input.setAttribute('type', `${type}`);
     }
 
-    // if (type === 'checkbox') {
-    //     input.style = 'none';
-
-    //     input.addEventListener('change', function (ev) {
-    //         if (input.checked) {
-    //             input.checked = false;
-    //             input.setAttribute('checked', false);
-    //         } else {
-    //             input.checked = true;
-    //             input.setAttribute('checked', false);
-    //         }
-    //     });
-
-    //     input.addEventListener('click', function (ev) {
-    //         ev.preventDefault();
-    //         if (input.checked) {
-    //             input.setAttribute('checked', false);
-    //         } else {
-    //             input.setAttribute('checked', true);
-    //         }
-    //         console.log(input.checked);
-    //     });
-
-    //     return input;
-    // }
+    if (type === 'file') {
+        input.click();
+        return input;
+    }
 
     if (type === 'date' || input.getAttribute('type') === 'date') {
         input.addEventListener('click', function () {
@@ -65,7 +44,6 @@ export function TextEdit({
 
     if (type === 'number') {
         input.addEventListener('input', function (ev) {
-            ev.preventDefault();
             function reset() {
                 if (!input.value && isNaN(parseFloat(input.value)) || input.value.length === 1) {
                     input.value = '';

@@ -311,8 +311,8 @@ export async function showProjectReportView() {
         contribution_mode: ProjectContributionModes.ALL_MODES[0],
         contributions: []
     }) {
-        const budgetColumn = Column({
-            // 'styles': [{ 'margin-right': '10px' }, { 'border': '1px solid grey' }],
+        const budgetView = Row({
+            'styles': [{ 'margin-right': '10px' }, { 'border': '1px solid grey' }, { 'font-weight': '700' }, { 'width': 'fit-content' }],
             'children': [
                 MondoText({ 'text': 'budget' }),
                 MondoText({ 'text': projectRecord['budget'] }),
@@ -325,7 +325,7 @@ export async function showProjectReportView() {
                 MondoText({ 'text': 'Level' }),
                 MondoText({ 'text': projectRecord['level'] }),
             ]
-        })
+        });
 
         const addProjectContributionButton = domCreate('i');
         addClasslist(addProjectContributionButton, ['bi', 'bi-plus']);
@@ -646,7 +646,9 @@ export async function showProjectReportView() {
                 'styles': [{ 'margin': '30px' }],
                 'children': [
                     MondoText({ 'text': `${getProjectRemainingDays(projectRecord)}` }),
+                    budgetView,
                     HorizontalScrollView({
+                        'classlist': ['just-center', 'a-c'],
                         'children': [table]
                     })
                 ]
@@ -674,7 +676,6 @@ export async function showProjectReportView() {
             'topRowUserActions': [
                 viewAddProjectContibutionColumn,
                 levelView,
-                budgetColumn,
                 new PDFPrintButton(contributionsTableId)
             ],
             'children': [ProjectContributionViewTable(ProjectContributionData(projectRecord))],

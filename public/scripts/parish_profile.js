@@ -2,6 +2,7 @@ import { ModalExpertise } from "./components/actions/modal.js";
 import { MessegePopup } from "./components/actions/pop_up.js";
 import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
+import { promptUploadMembers } from "./components/view_callbacks/dat_imports.js";
 import { promptAddDonationsView, showDonationsForUnrecognizedMembersReportsView, showDonationsWithOutstaionsReportsView } from "./components/view_callbacks/donations.js";
 import { promptAddGroupView, showGroupsOverview } from "./components/view_callbacks/group.js";
 import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, showMemberEditView, showMembersByGroupView, showMembersByOutstationReportsView } from "./components/view_callbacks/member.js";
@@ -45,7 +46,11 @@ const drawerMenus = [
         'REGISTRY',
         registryClass,
         [
-            new Menu('members', 'bi-people', registryClass, promptRegiterMember),
+            new Menu('members', 'bi-people', registryClass, promptRegiterMember,
+                [
+                    new SubMenu('upload members', registryClass, promptUploadMembers)
+                ]
+            ),
             new Menu('Staff', 'bi-file-earmark-person', registryClass, promptAddParishStaff),
             new Menu('Outstation', 'bi-opencollective', registryClass, promptAddOutstationView),
             new Menu('SCC', 'bi-collection', registryClass, promptAddSCCView),
