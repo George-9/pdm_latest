@@ -90,7 +90,7 @@ export class SubMenu {
         const anchor = domCreate('a');
         anchor.innerText = this.title.toLowerCase();
         anchor.onclick = this.callback;
-        StyleView(anchor, [{ 'fonst-size': '12px' }, { 'font-weight': 'bold' }, { 'color': 'darkgrey' }]);
+        StyleView(anchor, [{ 'fonst-size': '12px' }, { 'font-weight': 'bold' }, { 'color': 'white' }]);
         addClasslist(anchor, [this.viewClass, 'c-p', 'disp-none']);
 
         const row = Row({
@@ -122,7 +122,7 @@ export function populateDrawer(drawer, drawerMenus) {
                 indicatorIcon,
                 MondoBigH3Text({
                     'text': drawerMainMenu.heading.toLowerCase(),
-                    'styles': [{ 'font-weight': 'bold' }, { 'color': 'darkgrey' }],
+                    'styles': [{ 'font-weight': 'bold' }, { 'color': 'white' }],
                 })
             ],
         });
