@@ -342,7 +342,7 @@ function handleEventClick(info) {
 }
 
 function showParishName() {
-    domQueryById('parish-name').innerText = `${LocalStorageContract.completeParishName()} parish`
+    domQueryById('parish-name').innerText = `${LocalStorageContract.completeParishName()}`
 }
 
 function showEventsCount() {
