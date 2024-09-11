@@ -30,8 +30,8 @@
     text-align: center;
     align-items: center;
 
-    background-color: rgb(54, 108, 255);
-    color: rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255);
+    color: rgb(83, 76, 76);
 
     overflow-y: scroll;
 }
