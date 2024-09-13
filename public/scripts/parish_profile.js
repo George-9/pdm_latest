@@ -278,6 +278,10 @@ function handleDateClick(calendar, info) {
                         'description': eventAsBody.description
                     });
 
+                    ParishDataHandle.allParishEvents = await parishEvents();
+                    calendar.setEvents(ParishDataHandle.allParishEvents);
+                    calendar.render()
+
                     clearTextEdits([titleInput, descInput]);
                 }
             } catch (err) {
@@ -302,7 +306,7 @@ function handleDateClick(calendar, info) {
         'topRowUserActions': [],
         'modalHeadingStyles': [
             // { 'background-color': 'goldenrod' },
-            { 'background-color': '#263e41' },
+            { 'background-color': 'royalblue' },
             { 'color': 'lightgoldenrodyellow' },
         ],
         'actionHeading': 'create new event for date: ' + date,
@@ -320,8 +324,7 @@ function handleEventClick(info) {
         return event._id === info.event.extendedProps._id
     }));
 
-    const column = Column({
-        'classlist': ['txt-c'],
+    const column = VerticalScrollView({
         'styles': [{ 'padding': '10px' }],
         'children': [
             MondoBigH3Text({ 'text': clickedEvent.title }),
@@ -332,10 +335,9 @@ function handleEventClick(info) {
     ModalExpertise.showModal({
         'actionHeading': clickedEvent.start,
         'modalChildStyles': [
-            { 'width': '300px' },
+            { 'width': 'fit-content' },
             { 'height': '300px' },
         ],
-        'topRowUserActions': [],
         'children': [column],
         'dismisible': true,
     });

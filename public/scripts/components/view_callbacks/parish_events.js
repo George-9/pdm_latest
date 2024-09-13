@@ -45,15 +45,31 @@ export function showParishEventsView() {
 
                 let shareIcon = domCreate('i');
                 addClasslist(shareIcon, ['bi', 'bi-share', 'bi-pad']);
+                shareIcon.onclick = async function (ev) {
+                    if (navigator.canShare) {
+                        try {
+                            const data = {
+                                'title': `${event.title}`,
+                                'text': `${event.description} on ${event.start}`,
+                                'url': '',
+                            }
+                            await navigator.share(data);
+                        } catch (error) {
+                            MessegePopup.showMessegePuppy([MondoText({ 'text': `failed to share event ${error}` })]);
+                        }
+                    } else {
+                        MessegePopup.showMessegePuppy([MondoText({ 'text': 'your browser does not support share feature' })]);
+                    }
+                }
 
                 const column = Column({
-                    'styles': [{ 'border': '1px solid grey' }],
+                    'styles': [{ 'border': '1px solid grey' }, { 'padding': '10px' }],
                     'children': [
                         Row({ 'classlist': ['f-w', 'just-end'], 'children': [shareIcon, deleteIcon,] }),
                         MondoText({ 'text': event.title }),
                         MondoText({ 'text': event.description }),
                         MondoText({
-                            'styles': [{ 'font-size': '12px' }, { 'color': 'gainsboro' }],
+                            'styles': [{ 'font-size': '12px' }, { 'color': 'royalblue' }],
                             'text': event.start,
                         }),
                     ]
@@ -67,12 +83,8 @@ export function showParishEventsView() {
 
     ModalExpertise.showModal({
         'actionHeading': 'parish events',
-        'fullScreen': false,
-        'modalHeadingStyles': [{ 'background-color': '#263e41' }, { 'color': 'white' }],
-        'modalChildStyles': [
-            { 'min-width': '50%' },
-            { 'min-height': '400px' }
-        ],
+        'fullScreen': true,
+        'modalHeadingStyles': [{ 'background-color': 'royalblue' }, { 'color': 'white' }],
         'children': [parentView],
     })
 }
