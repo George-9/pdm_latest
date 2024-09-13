@@ -32,7 +32,8 @@ export function promptUploadMembers() {
     }
 
     const submitButton = domCreate('i');
-    addClasslist(submitButton, ['bi', 'bi-cloud-upload']);
+    submitButton.innerText = 'upload';
+    // addClasslist(submitButton, ['bi', 'bi-cloud-upload']);
     submitButton.onclick = function (ev) {
         const file = fileInput.files[0];
         if (!file) {

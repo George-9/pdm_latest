@@ -144,8 +144,8 @@ export function viewSCCsPage() {
     });
 
     ModalExpertise.showModal({
-        'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
-        'modalHeadingStyles': [{ 'background': '#4788fd' }, { 'color': 'white' }],
+        'actionHeading': `Small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
+        'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
         'topRowUserActions': [new PDFPrintButton(tableId)],
         'children': [column],
         'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],

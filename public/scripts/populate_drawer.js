@@ -110,7 +110,6 @@ export class SubMenu {
  * @param {DrawerMenu[]} drawerMenus array to populate the drawer
  */
 export function populateDrawer(drawer, drawerMenus) {
-
     for (let i = 0; i < drawerMenus.length; i++) {
         const drawerMainMenu = drawerMenus[i];
         const indicatorIcon = domCreate('i');

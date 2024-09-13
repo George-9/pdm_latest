@@ -34,14 +34,6 @@ const registryClass = 'registry',
     admin = 'admin';
 
 const drawerMenus = [
-    new DrawerMenu('ADMIN',
-        admin,
-        [
-            new Menu('HISTORY', 'bi-trash', admin),
-            new Menu('EVENTS', 'bi-calendar', admin, showParishEventsView),
-        ],
-        false
-    ),
     new DrawerMenu(
         'REGISTRY',
         registryClass,
@@ -108,7 +100,15 @@ const drawerMenus = [
             new Menu('members(edits)', 'bi-person-up', overView, showMemberEditView),
         ],
         false
-    )
+    ),
+    new DrawerMenu('ADMIN',
+        admin,
+        [
+            new Menu('HISTORY', 'bi-trash', admin),
+            new Menu('EVENTS', 'bi-calendar', admin, showParishEventsView),
+        ],
+        false
+    ),
 ]
 
 async function Main() {
@@ -183,7 +183,7 @@ function showProfileView() {
     });
 
     ModalExpertise.showModal({
-        'actionHeading': `${LocalStorageContract.completeParishName()} PARISH`.toUpperCase(),
+        'actionHeading': `${LocalStorageContract.completeParishName()}`.toUpperCase(),
         'topRowUserActions': [logOutView],
         'children': [column]
     });

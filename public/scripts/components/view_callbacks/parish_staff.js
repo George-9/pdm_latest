@@ -147,6 +147,7 @@ export function ViewParishStaffByOutsation() {
     <td>POSITION</td>
     <td>TELEPHONE</td>
     <td>KRA NUMBER</td>
+    <td>COMMENT</td>
     </tr>
     `
 
@@ -174,7 +175,8 @@ export function ViewParishStaffByOutsation() {
             <td>${staff['id_number']}</td>
             <td>${staff['position']}</td>
             <td>${staff['telephone']}</td>
-        <td>${staff['kra_number']}</td>
+            <td>${staff['kra_number']}</td>
+            <td>${staff['comment']}</td>
         `
             tbody.appendChild(row);
         }
@@ -222,13 +224,19 @@ export function ViewAllParishStaff() {
             <td>POSITION</td>
             <td>TELEPHONE</td>
             <td>KRA NUMBER</td>
-            </tr>
+            <td>COMMENT</td>
+        </tr>
             `
 
     const printButton = new PDFPrintButton(tableId)
     addChildrenToView(table, [tableHeader, tbody, tfooter]);
 
+
     function setView() {
+        /**
+         * @todo add the select option for staff by category
+         */
+
         PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()} staff`.toUpperCase();
 
         tbody.replaceChildren([]);
@@ -240,10 +248,11 @@ export function ViewAllParishStaff() {
             <td>${i + 1}</td>
             <td>${getOutstationById(staff['outstation_id'])['name']}</td>
             <td>${staff['name']}</td>
-        <td>${staff['id_number']}</td>
-        <td>${staff['position']}</td>
-        <td>${staff['telephone']}</td>
-        <td>${staff['kra_number']}</td>
+            <td>${staff['id_number']}</td>
+            <td>${staff['position']}</td>
+            <td>${staff['telephone']}</td>
+            <td>${staff['kra_number']}</td>
+            <td>${staff['comment']}</td>
         `
             tbody.appendChild(row);
         }

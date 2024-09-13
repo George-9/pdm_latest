@@ -530,7 +530,6 @@ export function memberView(member) {
     });
 }
 
-
 export function showMembersByGroupView() {
     if (ParishDataHandle.parishGroups.length < 1) {
         return MessegePopup.showMessegePuppy([MondoText({ 'text': 'this parish has not registered any groups, please register a group first' })])
@@ -663,6 +662,8 @@ export function showMemberEditView() {
             });
 
             const saveChangesButton = domCreate('i');
+            saveChangesButton.innerText = 'save changes';
+
             saveChangesButton.onclick = async function (ev) {
                 console.log(member);
                 let updateResult = await Post('/parish/update/member',
@@ -674,17 +675,16 @@ export function showMemberEditView() {
                 ]);
                 if (msg.match('success') || msg.match('save')) {
                     //    remove the outdate member
-                    ParishDataHandle.parishMembers = ParishDataHandle.parishMembers.filter(function (oldDetailsMember) {
-                        return oldDetailsMember['_id'] !== member['_id'];
-                    });
+                    ParishDataHandle.parishMembers = ParishDataHandle
+                        .parishMembers
+                        .filter(function (oldDetailsMember) {
+                            return oldDetailsMember['_id'] !== member['_id'];
+                        });
 
                     //insert to the DAO the update member
                     ParishDataHandle.parishMembers.push(member);
-                    console.log(ParishDataHandle.parishMembers);
                 }
             }
-            saveChangesButton.title = 'save changes';
-            addClasslist(saveChangesButton, ['bi', 'bi-save']);
 
             view.onclick = function (ev) {
                 ModalExpertise.showModal({
