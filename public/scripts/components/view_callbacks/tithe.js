@@ -101,7 +101,7 @@ export function promptAddTitheView() {
     searchResultViewContainer = Column({ 'classlist': ['f-h', 'f-w', 'scroll-y'], 'children': [] });
 
     const memberSearchView = Column({
-        'styles': [{ 'padding-top': '50px' }, { 'min-width': '60vh' }],
+        'styles': [{ 'padding-top': '50px' }, { 'padding': '20px' }],
         'classlist': ['f-w', 'a-c'],
         'children': [
             titheCategoryPicker,

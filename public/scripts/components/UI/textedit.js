@@ -19,7 +19,7 @@ export function TextEdit({
     const input = domCreate('input');
     input.setAttribute('type', type ?? 'text');
     input.placeholder = placeholder ?? '';
-    input.style.width = width || '-webkit-fill-available';
+    input.style.width = width || '40vw';
     input.style.padding = '10px';
     input.style.margin = '5px';
 

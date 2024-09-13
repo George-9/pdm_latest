@@ -147,7 +147,7 @@ select {
 input,
 select {
     min-width: fit-content;
-    width: -webkit-fill-available;
+    width: 40vh;
     padding: 30px;
 }
 

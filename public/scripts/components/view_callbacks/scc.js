@@ -145,7 +145,7 @@ export function viewSCCsPage() {
 
     ModalExpertise.showModal({
         'actionHeading': `Small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
-        'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
+        'modalHeadingStyles': [{ 'background-color': 'royalblue' }, { 'color': 'white' }],
         'topRowUserActions': [new PDFPrintButton(tableId)],
         'children': [column],
         'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],
@@ -240,7 +240,7 @@ export function showFilterebleSCCsPage() {
 
     ModalExpertise.showModal({
         'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
-        'modalHeadingStyles': [{ 'background': 'gainsboro' }, { 'color': 'white' }],
+        'modalHeadingStyles': [{ 'background': 'royablue' }, { 'color': 'white' }],
         'topRowUserActions': [new PDFPrintButton(tableId)],
         'children': [column],
         'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],

@@ -112,7 +112,7 @@ export function promptAddProject() {
 
     const modeIdentityView = MondoText({ 'text': 'amount per member' });
     const amountEntryColumn = Column({
-        'classlist': ['f-a-w', 'a-c'],
+        'classlist': ['f-a-w', 'just-center', 'a-c'],
         'children': [
             modeIdentityView,
             projectAmountPerModeBudgetI
@@ -239,9 +239,9 @@ export function promptAddProject() {
         }
     })
 
-    const column = Column({
+    const column = VerticalScrollView({
         'styles': [{ 'padding': '30px' }],
-        'classlist': ['f-h', 'f-a-w', 'a-c', 'just-center', 'scroll-y'],
+        'classlist': ['f-h', 'f-a-w', 'a-c', 'just-start', 'scroll-y'],
         'children': [
             projectNameI,
             Column({
