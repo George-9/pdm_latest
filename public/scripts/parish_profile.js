@@ -153,7 +153,10 @@ function showProfileView() {
         'classlist': ['f-w', 'a-c', 'txt-c', 'bi', 'c-p', 'just-end'],
         'children': [
             MondoText({
-                'styles': [{ 'color': 'red' }],
+                'styles': [
+                    { 'color': 'red' },
+                    { 'border': '1px solid grey' },
+                ],
                 'text': 'Log Out',
             })
         ]
