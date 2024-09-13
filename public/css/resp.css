@@ -3,6 +3,11 @@
         display: none;
     }
 
+    /* smaller heading for smaller devices */
+    #parish-name {
+        font-size: 16px;
+    }
+
     .drawer {
         display: none;
 
@@ -25,9 +30,21 @@
         padding-inline-end: 10px;
 
         /* background-color: #060e2be3; */
-        background-color: white;
+        background-color: blue;
 
         transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+
+    .drawer-toggle {
+        border-bottom: 2px solid white;
+        padding: 10px;
+        margin: 0px;
+    }
+
+
+
+    .drawer-container {
+        padding-top: 30px;
     }
 
     .drawer div {
