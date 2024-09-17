@@ -21,7 +21,7 @@ export function promptLogIn() {
     const column = Column({
         'children': [detail, passwordInput, button],
         'classlist': ['f-w', 'fx-col', 'a-c', 'just-center'],
-        styles: [{ 'padding': '20px' }, { 'min-width': '60%' }]
+        styles: [{ 'padding': '20px' }, { 'width': '100%' }]
     });
 
     async function doLogIn() {

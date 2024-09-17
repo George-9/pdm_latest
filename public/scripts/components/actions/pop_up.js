@@ -29,11 +29,13 @@ export class MessegePopup {
         } else {
             let row = Row({ 'children': children });
             row.id = popupId;
-            row.style.width = '300px'
+            row.style.width = 'fit-content';
+            row.style.maxWidth = '400px';
             row.style.height = '50px';
             row.style.backgroundColor = 'black';
             row.style.color = 'white';
             row.style.borderRadius = '12px';
+            row.style.padding = '8px';
             row.style.position = 'absolute';
             row.style.outline = '1px solid grey';
             row.style.zIndex = '100';

@@ -15,7 +15,8 @@ export function Button({ styles = [], classlist = {}, text = '', width, onclick 
 
     button.classList.add('fx-row', 'just-center', 'txt-c', 'a-e', 'button')
 
-    button.style.width = width ?? '300px';
+    button.style.minWidth = width ?? '300px';
+    button.style.width = width ?? 'fit-content';
     addClasslist(button, classlist);
     StyleView(button, styles);
 

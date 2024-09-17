@@ -1,9 +1,16 @@
 import { MongoClient } from "mongodb";
 import { DBDetails } from "./db_parish_details.js";
 
-export class MongoDBContract {
+const MONGODB_TEST_CONNECTION_LINK = 'mongodb+srv://GeorgeMuigai:m001-mongodb-basics@cluster0.syndm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+const MONGODB_PRODUCTION_CONNECTION_LINK = 'mongodb://127.0.0.1:27017';
 
-    static connectedClient() { return new MongoClient('mongodb://127.0.0.1:27017') }
+export class MongoDBContract {
+    static connectedClient() {
+        return new MongoClient(process.env['debug']
+            ? MONGODB_TEST_CONNECTION_LINK
+            : MONGODB_PRODUCTION_CONNECTION_LINK
+        )
+    }
     static adminDB() { return MongoDBContract.connectedClient().db('admin') }
     static dbInstance(dbName) { return MongoDBContract.connectedClient().db(dbName) }
 
