@@ -5,7 +5,6 @@ import { MessegePopup } from "../actions/pop_up.js";
 import { Column } from "../UI/column.js";
 import { MondoText } from "../UI/mondo_text.js";
 import { TextEdit } from "../UI/textedit.js";
-import { addClasslist } from "../utils/stylus.js";
 
 export function promptUploadMembers() {
     const fileInput = TextEdit({ 'type': 'file' });
@@ -33,6 +32,7 @@ export function promptUploadMembers() {
 
     const submitButton = domCreate('i');
     submitButton.innerText = 'upload';
+    submitButton.style.border = '1px solid grey';
     // addClasslist(submitButton, ['bi', 'bi-cloud-upload']);
     submitButton.onclick = function (ev) {
         const file = fileInput.files[0];
