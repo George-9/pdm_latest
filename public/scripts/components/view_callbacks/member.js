@@ -504,6 +504,68 @@ export function memberView(member) {
     member['outstation'] = outstation['name'];
     member['scc'] = scc['name'];
 
+    function GodParentView(member) {
+        const column = Column({
+            'children': []
+        })
+        const GodParents = member['God_Parents'];
+        for (let i = 0; i < GodParents.length; i++) {
+            const GodParent = GodParents[i];
+            column.appendChild(MondoText({ 'text': `${i + 1}. ${GodParent}` }));
+        }
+
+        return column;
+    }
+
+
+    function sacramentsView(member) {
+        const sacramentsIds = member['sacraments'];
+        const column = Column({
+            'classlist': ['f-w', 'a-c'],
+            'children': []
+        });
+
+        for (const key in ParishDataHandle.SACRAMENTS) {
+            const checkerInput = document.createElement('input');
+            checkerInput.type = 'checkbox';
+            checkerInput.id = key;
+            checkerInput.style.width = 'fit-content';
+
+            const label = document.createElement('label');
+            label.htmlFor = key;
+            label.appendChild(document.createTextNode(key.split('_')));
+
+            if (sacramentsIds && sacramentsIds.length && sacramentsIds.length > 0) {
+                checkerInput.checked = sacramentsIds.includes(key) ? true : false
+            }
+
+            function checkChange(ev) {
+                if (checkerInput.checked) {
+                    member['sacraments'] = member['sacraments'].filter(function (value) {
+                        return key !== value;
+                    })
+                    checkerInput.checked = false;
+                } else {
+                    member['sacraments'].push(key);
+                    checkerInput.checked = true;
+                }
+            }
+
+            const row = Row({
+                'classlist': ['a-c', 'f-w'],
+                'styles': [{ 'border': 'solid 1px grey', 'margin': '4px' }],
+                'children': [checkerInput, label]
+            });
+
+            checkerInput.addEventListener('click', checkChange);
+            row.addEventListener('click', checkChange);
+
+            addChildrenToView(column, [row]);
+        }
+
+        return column;
+    }
+
     return VerticalScrollView({
         'classlist': ['f-w', 'a-c'],
         'children': Object.keys(member).map(function (key) {
@@ -520,13 +582,24 @@ export function memberView(member) {
                     }
                 });
 
-                return Column({
+                return Row({
+                    'styles': [{ 'width': '100%' }],
+                    'classlist': ['a-c', 'space-between'],
                     'children': [
-                        MondoText({ 'text': key.toUpperCase().split('_').join(' ') }),
+                        MondoText({
+                            'styles': [{ 'font-weight': '900' }],
+                            'text': key.toUpperCase().split('_').join(' ')
+                        }),
                         (() => {
-                            return (member[key].some)
-                                ? MondoText({ 'text': `${member[key].length} ${key}s` })
-                                : valueEditor
+                            if (key.match('sacraments')) {
+                                return sacramentsView(member);
+                            }
+
+                            if (key.match('God_Parents')) {
+                                return GodParentView(member)
+                            }
+
+                            return valueEditor;
                         })()
                     ]
                 });
@@ -691,53 +764,6 @@ export function showMemberEditView() {
                 }
             }
 
-            function sacramentsView(member) {
-                const sacramentsIds = member['sacraments'];
-                const column = Column({
-                    'classlist': ['f-w', 'a-c'],
-                    'children': [MondoText({ 'text': 'SACRAMENTS' })]
-                });
-
-                for (const key in ParishDataHandle.SACRAMENTS) {
-                    const checkerInput = document.createElement('input');
-                    checkerInput.id = key;
-                    checkerInput.type = 'checkbox';
-                    checkerInput.removeAttribute('style');
-
-                    const label = document.createElement('label');
-                    label.htmlFor = key;
-                    label.appendChild(document.createTextNode(key.split('_')));
-
-                    if (sacramentsIds && sacramentsIds.length && sacramentsIds.length > 0) {
-                        checkerInput.checked = sacramentsIds.includes(key) ? true : false
-                    }
-
-                    function checkChange(ev) {
-                        if (checkerInput.checked) {
-                            member['sacraments'] = member['sacraments'].filter(function (value) {
-                                return key !== value;
-                            })
-                            checkerInput.checked = false;
-                        } else {
-                            member['sacraments'].push(key);
-                            checkerInput.checked = true;
-                        }
-                        console.log(`check: ${checkerInput.checked}`);
-                        console.log(member['sacraments']);
-                    }
-
-                    const row = Row({
-                        'classlist': ['a-c', 'f-w'],
-                        'children': [checkerInput, label]
-                    });
-
-                    row.addEventListener('click', checkChange);
-                    addChildrenToView(column, [row]);
-                }
-
-                return column;
-            }
-
             view.onclick = function (ev) {
                 ModalExpertise.showModal({
                     'topRowUserActions': [saveChangesButton],
@@ -747,10 +773,7 @@ export function showMemberEditView() {
                         Column({
                             'classlist': ['f-a-w', 'scroll-y'],
                             'styles': [{ 'padding': '20px' }],
-                            'children': [
-                                sacramentsView(member),
-                                memberView(member),
-                            ]
+                            'children': [memberView(member),]
                         })
                     ],
                 });
