@@ -30,7 +30,8 @@ export class MessegePopup {
             let row = Row({ 'children': children });
             row.id = popupId;
             row.style.width = 'fit-content';
-            row.style.maxWidth = '400px';
+            row.style.width = '70%';
+            row.style.width = '400px';
             row.style.height = '50px';
             row.style.backgroundColor = 'black';
             row.style.color = 'white';

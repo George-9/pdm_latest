@@ -14,5 +14,15 @@ export class ParishDataHandle {
     static parishProjectsRecords = [];
     static parishDonationRecords = [];
 
+    static SACRAMENTS = {
+        'baptism': 'BAPTISM',
+        'confirmation': 'CONFIRMATION',
+        'reconciliation': 'RECONCILIATION',
+        'eucharist': 'EUCHARIST',
+        // 'annointing_of_the_sick': 'ANOINTING OF THE SICK',
+        'ordination': 'ORDINATION',
+        'marriage': 'MARRIAGE',
+    }
+
     constructor() { }
 }

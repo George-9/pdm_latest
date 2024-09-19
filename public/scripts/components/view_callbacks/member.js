@@ -518,13 +518,18 @@ export function memberView(member) {
                     } else {
                         member[key] = valueEditor.value;
                     }
-                })
+                });
+
                 return Column({
                     'children': [
                         MondoText({ 'text': key.toUpperCase().split('_').join(' ') }),
-                        valueEditor
+                        (() => {
+                            return (member[key].some)
+                                ? MondoText({ 'text': `${member[key].length} ${key}s` })
+                                : valueEditor
+                        })()
                     ]
-                })
+                });
             }
         })
     });
@@ -661,18 +666,18 @@ export function showMemberEditView() {
                 ]
             });
 
-            const saveChangesButton = domCreate('i');
-            saveChangesButton.innerText = 'save changes';
+            const saveChangesButton = Button({
+                'text': 'save changes',
+                'onclick': saveChangesButtonClicked
+            });
 
-            saveChangesButton.onclick = async function (ev) {
+            async function saveChangesButtonClicked(ev) {
                 console.log(member);
                 let updateResult = await Post('/parish/update/member',
                     { member: member },
                     { 'requiresParishDetails': true });
                 const msg = updateResult['response'];
-                MessegePopup.showMessegePuppy([
-                    MondoText({ 'text': msg })
-                ]);
+                MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
                 if (msg.match('success') || msg.match('save')) {
                     //    remove the outdate member
                     ParishDataHandle.parishMembers = ParishDataHandle
@@ -686,21 +691,70 @@ export function showMemberEditView() {
                 }
             }
 
+            function sacramentsView(member) {
+                const sacramentsIds = member['sacraments'];
+                const column = Column({
+                    'classlist': ['f-w', 'a-c'],
+                    'children': [MondoText({ 'text': 'SACRAMENTS' })]
+                });
+
+                for (const key in ParishDataHandle.SACRAMENTS) {
+                    const checkerInput = document.createElement('input');
+                    checkerInput.id = key;
+                    checkerInput.type = 'checkbox';
+                    checkerInput.removeAttribute('style');
+
+                    const label = document.createElement('label');
+                    label.htmlFor = key;
+                    label.appendChild(document.createTextNode(key.split('_')));
+
+                    if (sacramentsIds && sacramentsIds.length && sacramentsIds.length > 0) {
+                        checkerInput.checked = sacramentsIds.includes(key) ? true : false
+                    }
+
+                    function checkChange(ev) {
+                        if (checkerInput.checked) {
+                            member['sacraments'] = member['sacraments'].filter(function (value) {
+                                return key !== value;
+                            })
+                            checkerInput.checked = false;
+                        } else {
+                            member['sacraments'].push(key);
+                            checkerInput.checked = true;
+                        }
+                        console.log(`check: ${checkerInput.checked}`);
+                        console.log(member['sacraments']);
+                    }
+
+                    const row = Row({
+                        'classlist': ['a-c', 'f-w'],
+                        'children': [checkerInput, label]
+                    });
+
+                    row.addEventListener('click', checkChange);
+                    addChildrenToView(column, [row]);
+                }
+
+                return column;
+            }
+
             view.onclick = function (ev) {
                 ModalExpertise.showModal({
                     'topRowUserActions': [saveChangesButton],
                     'actionHeading': `editing ${member['name']}`,
                     'modalChildStyles': [{ 'min-width': '60%' }, { 'width': '60%' }],
                     'children': [
-                        VerticalScrollView({
-                            'classlist': ['f-a-w'],
+                        Column({
+                            'classlist': ['f-a-w', 'scroll-y'],
                             'styles': [{ 'padding': '20px' }],
-                            'children': [memberView(member)]
+                            'children': [
+                                sacramentsView(member),
+                                memberView(member),
+                            ]
                         })
                     ],
                 });
             }
-
             column.appendChild(view);
         }
     })
