@@ -26,5 +26,3 @@ export function MondoBigH3Text({ text = '', styles = [] }) {
 
     return par;
 }
-
-

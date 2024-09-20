@@ -22,4 +22,5 @@ export class DBDetails {
     static projectsCollection = 'projects';
     static eventsCollection = 'parish_events';
     static parishDonationsCollection = 'donations';
+    static parishMembersVolumesCollection = 'members_volumes';
 }

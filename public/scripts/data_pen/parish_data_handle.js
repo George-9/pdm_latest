@@ -13,6 +13,7 @@ export class ParishDataHandle {
     static parishOfferingRecords = [];
     static parishProjectsRecords = [];
     static parishDonationRecords = [];
+    static parishMembersVolumes = [];
 
     static SACRAMENTS = {
         'baptism': 'BAPTISM',

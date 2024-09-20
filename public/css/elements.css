@@ -14,47 +14,11 @@ body {
     height: 100%;
     max-width: 100%;
     max-height: 100%;
-
     margin: 0px;
-
     overflow: hidden;
-
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: gainsboro;
 }
-
-table,
-tr,
-td {
-    border: 1px solid grey;
-    border-collapse: collapse;
-    flex-shrink: 0;
-    margin: 10px;
-}
-
-thead,
-tfoot {
-    font-weight: 600;
-    width: max-content;
-}
-
-
-nav {
-    margin: 0px;
-    padding: 3px;
-    padding-left: 15px;
-    background-color: rgb(255, 251, 236);
-    border-bottom: 1px grey;
-
-    margin: 1px;
-
-    z-index: 10;
-}
-
-td {
-    padding: 5px;
-}
-
 
 table {
     border-collapse: collapse;
@@ -62,23 +26,33 @@ table {
     font-family: sans-serif;
     font-size: 0.8rem;
     letter-spacing: 1px;
+    width: 100%;
+    /* Make tables responsive */
+    max-width: 100%;
+    /* Prevent overflow on smaller screens */
+    table-layout: fixed;
+    /* For even column distribution */
 }
 
-caption {
-    caption-side: bottom;
-    padding: 10px;
-    font-weight: bold;
+tr,
+td {
+    border: 1px solid grey;
+    padding: 8px 10px;
+    /* Consistent padding for table cells */
+    word-wrap: break-word;
+    /* Allow text to wrap within cells */
 }
 
 thead,
 tfoot {
     background-color: #ffffff;
+    font-weight: 600;
 }
 
-th,
-td {
-    border: 1px solid rgb(160 160 160);
+th {
     padding: 8px 10px;
+    text-align: left;
+    /* Default alignment for table headers */
 }
 
 td:last-of-type {
@@ -97,15 +71,22 @@ tfoot td {
     font-weight: bold;
 }
 
+nav {
+    margin: 1px;
+    padding: 3px 15px;
+    /* Adjusted padding for better spacing */
+    background-color: rgb(255, 251, 236);
+    border-bottom: 1px solid grey;
+    z-index: 10;
+}
+
 nav div p {
     padding-right: 30px;
 }
 
-
 h3 {
     margin: 10px;
 }
-
 
 nav a,
 nav a:visited {
@@ -114,7 +95,6 @@ nav a:visited {
     cursor: pointer;
     text-align: center;
 }
-
 
 nav a:hover {
     text-decoration: underline;
@@ -126,41 +106,36 @@ nav a i {
 
 nav p {
     display: flex;
-    align-items: normal;
+    align-items: center;
+    /* Align items to the center vertically */
 }
 
 .bi,
 i {
     padding: 5px;
+    cursor: pointer;
+    /* Apply cursor to all icons */
+    font-size: 22px !important;
+    /* Consistent icon size */
 }
 
+/* REVISIT: Consider using media queries for better responsiveness */
 input[type=text],
 select {
     outline: none;
-    border: 1px solid;
-    border-color: gainsboro;
+    border: 1px solid gainsboro;
     margin-top: 10px;
-}
-
-
-/* REVISIT */
-input,
-select {
     min-width: fit-content;
     width: 40vh;
-    padding: 30px;
+    padding: 10px;
+    /* Adjusted padding for input fields */
 }
 
-i {
-    cursor: pointer;
-    font-size: 22px !important;
-}
-
-p i {
+/* Remove redundant rule */
+/* p i {
     font-weight: bolder;
     font-size: 30px;
-}
-
+} */
 
 @supports (scrollbar-color: auto) {
     * {

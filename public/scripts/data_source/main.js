@@ -21,6 +21,19 @@ export async function getParishMembers() {
 }
 
 /**
+ * fetches all members' volumes
+ * @returns {string[]}
+ */
+export async function getParishMembersVolumes() {
+    return (await Post(
+        '/parish/load/all/members/volumes', {},
+        {
+            'requiresParishDetails': true
+        }))['response']
+}
+
+
+/**
  * fetches the whole list of parish staff
  * @returns { object[] }
  */

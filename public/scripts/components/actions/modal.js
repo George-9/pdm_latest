@@ -32,7 +32,7 @@ export class ModalExpertise {
             addClasslist(modalCloseEl, ['bi-x'])
             modalCloseEl.title = 'close';
         }
-        modalCloseEl.onclick = ModalExpertise.#hideModal;
+        modalCloseEl.onclick = ModalExpertise.hideModal;
 
         var modalChildHeading = MondoText({
             text: actionHeading || '',
@@ -73,9 +73,11 @@ export class ModalExpertise {
             'classlist': ['f-w', 'space-between'],
             'children': [
                 modalHeaderTopRow,
-                (topRowUserActions
+                (
+                    topRowUserActions
                     && topRowUserActions.length
-                    && topRowUserActions.length > 0)
+                    && topRowUserActions.length > 0
+                )
                     ? userActionsRow
                     : ''
             ]
@@ -89,7 +91,6 @@ export class ModalExpertise {
                 ...((fullScreen && fullScreen === true)
                     ? ['f-w', 'f-h']
                     : ['not-full-screen-modal-child']),
-
                 'modal-child'
             ]
         });
@@ -111,7 +112,7 @@ export class ModalExpertise {
 
             if (dismisible === true) {
                 if (ev.target && ev.target === modal) {
-                    ModalExpertise.#hideModal()
+                    ModalExpertise.hideModal()
                 }
             }
         }
@@ -125,7 +126,7 @@ export class ModalExpertise {
         modal.style.zIndex = '100';
 
         if (ModalExpertise.modalIsShowing) {
-            ModalExpertise.#hideModal()
+            ModalExpertise.hideModal()
             if (modal) {
                 if (document.body.appendChild(modal)) {
                     ModalExpertise.modalIsShowing = false;
@@ -138,7 +139,7 @@ export class ModalExpertise {
                     switch (ev.key) {
                         case 'Escape':
                             if (dismisible && dismisible === true) {
-                                ModalExpertise.#hideModal();
+                                ModalExpertise.hideModal();
                             }
                             break;
 
@@ -150,7 +151,7 @@ export class ModalExpertise {
         }
     }
 
-    static #hideModal() {
+    static hideModal() {
         const modal = domQueryById(ModalExpertise.modalElId);
 
         if (modal) {
