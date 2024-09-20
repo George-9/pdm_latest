@@ -125,8 +125,8 @@ select {
     outline: none;
     border: 1px solid gainsboro;
     margin-top: 10px;
-    min-width: fit-content;
-    width: 40vh;
+    min-width: 200px;
+    width: fit-content;
     padding: 10px;
     /* Adjusted padding for input fields */
 }
