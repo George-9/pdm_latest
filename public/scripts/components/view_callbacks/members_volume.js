@@ -191,7 +191,6 @@ export function viewMembersInVolume() {
             <td>TELEPHONE</td>
             <td>SCC</td>
             <td>OUTSTATION</td>
-            <td>VOLUME</td>
         </tr>
     `;
     addChildrenToView(table, [thead, tbody, tfoot]);
@@ -228,7 +227,6 @@ export function viewMembersInVolume() {
                 <td>${member['telephone_number']}</td>
                 <td>${scc['name']}</td>
                 <td>${outstation['name']}</td>
-                <td>${volumeName.split('_').join(' ')}</td> 
             `;
             tbody.appendChild(row);
         });
