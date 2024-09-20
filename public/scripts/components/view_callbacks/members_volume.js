@@ -7,6 +7,7 @@ import { addChildrenToView } from "../../dom/addChildren.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { domCreate } from "../../dom/query.js";
 import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
+import { getParishMembersVolumes } from "../../data_source/main.js";
 
 export async function promptMembersAddVolume() {
     const newVolButton = Button({ 'text': 'new volume' });
@@ -43,8 +44,7 @@ export async function promptMembersAddVolume() {
         MessegePopup.showMessegePuppy([MondoText({ 'text': response })]);
 
         if (response.match('success')) {
-            // ParishDataHandle.parishMembersVolumes = await getParishMembersVolumes();
-            ParishDataHandle.parishMembersVolumes.push(newVolume);
+            ParishDataHandle.parishMembersVolumes = await getParishMembersVolumes();
             ModalExpertise.hideModal();
         } else {
             MessegePopup.showMessegePuppy([MondoText({ 'text': response })]);
