@@ -22,7 +22,7 @@ import { loadAllTitheRecords } from './routes_callbacks/parish/post/get_tithe_re
 import { addContributionToProjectRecord, addProjectRecord, loadParishProjectRecords } from './routes_callbacks/parish/post/parish_projects.js';
 import { addOfferingRecord } from './routes_callbacks/parish/post/add_offering.js';
 import { addDonationRecord, loadAllDonationsRecords } from './routes_callbacks/parish/post/donations.js';
-import { addParishStaff, loadAllParishStaff } from './routes_callbacks/parish/post/staff.js';
+import { addParishStaff, loadAllParishStaff, updateStaff } from './routes_callbacks/parish/post/staff.js';
 import { addGroups, getParishGroups } from './routes_callbacks/parish/post/groups.js';
 import { uploadMembers } from './routes_callbacks/parish/post/upload_members.js';
 import { addVolume as addMembersVolume, getVolumes as getMembersVolumes } from './routes_callbacks/parish/post/members_volumes.js';
@@ -71,6 +71,8 @@ server.post('/parish/load/all/members/volumes', getMembersVolumes);
 // STAFF
 server.post('/parish/register/staff', addParishStaff);
 server.post('/parish/load/all/staff', loadAllParishStaff);
+server.post('/parish/update/staff', updateStaff);
+
 
 // OUTSTATIONS, SCCs and GROUPS
 server.post('/parish/add/outstation', addOutstation);
