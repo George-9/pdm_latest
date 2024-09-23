@@ -14,6 +14,7 @@ export async function loadAllTitheRecords(req, resp) {
             DBDetails.titheCollection,
             {}
         );
+
         return resp.json({ 'response': offeringRecords || [] });
     } else {
         return resp.json({ 'response': 'unauthorised request' });

@@ -23,6 +23,8 @@ export function promptAddSCCView() {
         },
         'outstations': ParishDataHandle.parishOutstations
     });
+    // Feast date picker
+    const feastDateI = TextEdit({ 'type': 'date' });
 
     const button = Button({
         'styles': marginRuleStyles,
@@ -32,10 +34,13 @@ export function promptAddSCCView() {
                 const outstationId = JSON.parse(outstationPicker.value)['_id'];
 
                 TextEditValueValidator.validate('SCC name', sccNameI);
+                TextEditValueValidator.validate('Feast date', feastDateI);
+
                 const body = {
                     'scc': {
                         'name': sccNameI.value,
-                        'outstation_id': outstationId
+                        'outstation_id': outstationId,
+                        'feast_date': feastDateI.value
                     }
                 };
 
@@ -59,11 +64,13 @@ export function promptAddSCCView() {
         'children': [
             sccNameI,
             outstationPicker,
+            MondoText({ 'text': 'feast date' }),
+            feastDateI,
             button
         ]
     });
-    StyleView(column, [{ 'padding': '10px' }]);
 
+    StyleView(column, [{ 'padding': '10px' }]);
     ModalExpertise.showModal({
         'actionHeading': 'add an SCC',
         'modalHeadingStyles': [{ 'background-color': '#ff9999' }, { 'color': 'cornsilk' }],
@@ -89,7 +96,9 @@ export function viewSCCsPage() {
             <td>NO</td>
             <td>SCC</td>
             <td>OUTSTATION</td>
+            <td>Feast Date</td>
             <td>MEMBER COUNT</td>
+            <td>VIEW</td>
         </tr>
     `
     addChildrenToView(table, [thead, tbody, tfoot]);
@@ -105,9 +114,11 @@ export function viewSCCsPage() {
         }).length;
 
         data.push({
-            scc_name: scc['name'],
-            outstation_name: outstation['name'],
-            members_count: membersCount
+            '_id': scc['_id'],
+            'scc_name': scc['name'],
+            'feast_date': scc['feast_date'],
+            'outstation_name': outstation['name'],
+            'members_count': membersCount
         });
     });
 
@@ -122,8 +133,20 @@ export function viewSCCsPage() {
             <td>${i + 1}</td>
             <td>${data['scc_name']}</td>
             <td>${data['outstation_name']}</td>
+            <td>${data['feast_date'] ?? 'not set'}</td>
             <td>${data['members_count']}</td>
             `
+            const editView = domCreate('td');
+            editView.innerHTML = `
+            <i class="bi bi-pencil-square"></i>
+            `
+            editView.onclick = function (ev) {
+                ModalExpertise.hideModal();
+                ViewSCC(data);
+            }
+
+            row.appendChild(editView);
+
             table.appendChild(row);
         });
     }
@@ -132,7 +155,7 @@ export function viewSCCsPage() {
 
     const lastRow = domCreate('tr');
     lastRow.innerHTML = `
-        <td colspan="3">TOTAL</td>
+        <td colspan="4">TOTAL</td>
         <td>${ParishDataHandle.parishMembers.length}</td>
     `
     tfoot.appendChild(lastRow)
@@ -168,6 +191,7 @@ export function showFilterebleSCCsPage() {
         <tr>
             <td>NO</td>
             <td>SCC</td>
+            <td>Feast Date</td>
             <td>MEMBER COUNT</td>
             </tr>
             `
@@ -197,6 +221,7 @@ export function showFilterebleSCCsPage() {
             row.innerHTML = `
                 <td>${i + 1}</td>
                 <td>${scc['name']}</td>
+                <td>${scc['feast_date']}</td>
                 <td>${members}</td>
             `
             tbody.appendChild(row);
@@ -246,5 +271,81 @@ export function showFilterebleSCCsPage() {
         'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],
         'fullScreen': false,
         'dismisible': true,
+    });
+}
+
+
+// View one SCC with save changes
+function ViewSCC(SCC) {
+    console.log(SCC);
+
+    const sccNameI = TextEdit({ 'placeholder': 'scc name' });
+    sccNameI.value = SCC['scc_name'];
+
+    // Feast date picker
+    const feastDateI = TextEdit({ 'type': 'date', 'value': SCC['feast_date'] });
+
+    const button = Button({
+        'styles': marginRuleStyles,
+        'text': 'save changes',
+        'onclick': async function (ev) {
+            try {
+                TextEditValueValidator.validate('SCC name', sccNameI);
+                TextEditValueValidator.validate('Feast date', feastDateI);
+
+                // pick only month and date of the month
+                const pickedDate = new Date(feastDateI.value);
+                let feastDate = `${pickedDate.getMonth()}/${pickedDate.getDate()}`
+                feastDate = (new Date(feastDate).toDateString().split(' ').slice(1, 3).join('/'));
+
+                const body = {
+                    'scc': {
+                        '_id': SCC['_id'],
+                        'name': sccNameI.value,
+                        'feast_date': feastDate
+                    }
+                };
+
+                console.log(SCC);
+                console.log(body);
+
+                let result = await Post('/parish/update/scc', body, { 'requiresParishDetails': true });
+                let msg = result['response'];
+
+                MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
+                if (msg.match('success' || msg.match('save'))) {
+                    clearTextEdits([sccNameI]);
+                    ParishDataHandle.parishSCCs = ParishDataHandle
+                        .parishSCCs
+                        .filter(function (foundSCC) {
+                            return foundSCC['_id'] !== SCC['_id'];
+                        });
+                    ModalExpertise.hideModal();
+                }
+            } catch (error) {
+                MessegePopup.showMessegePuppy([MondoText({ 'text': error })]);
+            }
+        }
+    })
+
+    const column = Column({
+        'styles': marginRuleStyles,
+        'classlist': ['f-w', 'f-c', 'a-c', 'm-paad'],
+        'children': [
+            sccNameI,
+            MondoText({ 'text': 'feast date' }),
+            feastDateI,
+            button
+        ]
+    });
+
+    StyleView(column, [{ 'padding': '10px' }]);
+    ModalExpertise.showModal({
+        'actionHeading': 'edit an SCC',
+        'modalHeadingStyles': [{ 'background-color': '#ff9999' }, { 'color': 'cornsilk' }],
+        'modalChildStyles': [{ 'height': '300px' }, { 'mi-width': '60%' }],
+        'children': [column],
+        'fullScreen': false,
+        'dismisible': true
     });
 }

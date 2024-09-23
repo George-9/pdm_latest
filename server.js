@@ -11,7 +11,7 @@ import { addParishEvent, deleteParishEvent, loadParishEvents } from './routes_ca
 import { getAllParishMembers } from './routes_callbacks/parish/post/get_parish_members.js';
 import { addMember } from './routes_callbacks/parish/post/add_member.js';
 import { addOutstation } from './routes_callbacks/parish/post/add_outstation.js';
-import { addSCC } from './routes_callbacks/parish/post/add_scc.js';
+import { addSCC, updateSCC } from './routes_callbacks/parish/post/add_scc.js';
 import { getOutstations } from './routes_callbacks/parish/post/get_outstations.js';
 import { getSmallChristianCommunities } from './routes_callbacks/parish/post/get_sccs.js';
 import { getMembersFiltered } from './routes_callbacks/parish/post/get_members_filtered.js';
@@ -82,6 +82,7 @@ server.post('/parish/register/group', addGroups);
 server.post('/parish/load/all/groups/records', getParishGroups);
 
 server.post('/parish/add/scc', addSCC);
+server.post('/parish/update/scc', updateSCC);
 server.post('/parish/load/all/sccs', getSmallChristianCommunities);
 
 
