@@ -804,7 +804,13 @@ export function ViewAllAssociations() {
                 'styles': [{ 'border': '1px solid grey' }, { 'padding': '10px' }],
                 'children': [
                     MondoText({ 'text': association.name }),
-                    Row({ 'classlist': ['f-w', 'just-end'], 'children': [updateIcon, deleteIcon,] }),
+                    Row({
+                        'classlist': ['f-w', 'just-end'],
+                        'children': [
+                            updateIcon,
+                            // deleteIcon
+                        ]
+                    }),
                 ]
             });
 
@@ -995,6 +1001,11 @@ export function ViewAllAssociations() {
 
 // // view association leaders
 export function ViewAssociationLeaders(association) {
+    const leadersTableId = 'leaders-table';
+    const pdfPrintButton = new PDFPrintButton(leadersTableId);
+
+    PDFPrintButton.printingHeading = `${association['name']} leaders`
+
     const parentView = Column({
         'styles': [{ 'padding': '20px' }],
         'children': []
@@ -1006,12 +1017,38 @@ export function ViewAssociationLeaders(association) {
                 MondoText({ 'text': 'no leaders added to this association yet' }),
             ]);
     } else {
-        association['leaders'].forEach(function (leader) {
+        const table = domCreate('table');
+        table.id = leadersTableId;
+        const thead = domCreate('thead');
+        const tbody = domCreate('tbody');
+        const tfoot = domCreate('tfoot');
+
+        thead.innerHTML = `
+            <tr>
+                <td>NO</td>
+                <td>NAME</td>
+                <td>TELEPHONE</td>
+                <td>POSITION</td>
+                <td>SCC</td>
+                <td>OUTSTATION</td>
+            </tr>
+        `
+        addChildrenToView(table, [thead, tbody, tfoot]);
+
+        association['leaders'].forEach(function (leader, i) {
             let member = ParishDataHandle.parishMembers.find(function (member) {
                 return member['_id'] === leader['member_id'];
             });
 
             if (member) {
+                let scc = ParishDataHandle.parishSCCs.find(function (scc) {
+                    return scc['_id'] === member['scc_id']
+                }) || { 'name': 'EVERY SCC' };
+
+                let outstation = ParishDataHandle.parishOutstations.find(function (o) {
+                    return o['_id'] === member['outstation_id']
+                }) || { 'name': 'EVERY OUTSTATION' };
+
                 let deleteIcon = domCreate('i');
                 addClasslist(deleteIcon, ['bi', 'bi-trash', 'bi-pad']);
 
@@ -1032,26 +1069,121 @@ export function ViewAssociationLeaders(association) {
                     });
                 }
 
-                const column = Column({
-                    'styles': [{ 'border': '1px solid grey' }, { 'padding': '10px' }],
-                    'children': [
-                        Row({ 'classlist': ['f-w', 'just-end'], 'children': [deleteIcon,] }),
-                        MondoText({ 'text': member.name }),
-                        MondoText({ 'text': leader.position }),
-                    ]
-                });
-                parentView.appendChild(column);
+                const row = domCreate('tr');
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${member['name']}</td>
+                    <td>${member['telephone_number']}</td>
+                     <td>${leader['position']}</td>
+                     <td>${scc['name']}</td>
+                     <td>${outstation['name']}</td>`;
+                tbody.appendChild(row);
             }
         });
+
+        parentView.appendChild(table);
     }
 
     ModalExpertise.showModal({
         'actionHeading': `leaders in ${association.name}`,
         'fullScreen': true,
+        'topRowUserActions': [pdfPrintButton],
         'modalHeadingStyles': [{ 'background-color': 'royalblue' }, { 'color': 'white' }],
         'children': [parentView],
     })
 }
+
+// // // view association leaders
+// // export function ViewAssociationLeaders(association) {
+// //     const parentView = Column({
+// //         'styles': [{ 'padding': '20px' }],
+// //         'children': []
+// //     });
+
+// //     if (association['leaders'].length < 1) {
+// //         addChildrenToView(parentView,
+// //             [
+// //                 MondoText({ 'text': 'no leaders added to this association yet' }),
+// //             ]);
+// //     } else {
+// //         association['leaders'].forEach(function (leader) {
+// //             let member = ParishDataHandle.parishMembers.find(function (member) {
+// //                 return member['_id'] === leader['member_id'];
+// //             });
+
+// //             if (member) {
+// //                 let deleteIcon = domCreate('i');
+// //                 addClasslist(deleteIcon, ['bi', 'bi-trash', 'bi-pad']);
+
+// //                 deleteIcon.onclick = async function (ev) {
+// //                     ev.preventDefault();
+// //                     const result = await Post('/parish/delete/association/leader',
+// //                         { 'association_id': association['_id'], 'leader_id': leader['_id'] },
+// //                         { 'requiresParishDetails': true }
+// //                     );
+
+// //                     let msg = result['response'];
+// //                     if (msg.match('success') || msg.match('delete')) {
+// //                         MessegePopup.showMessegePuppy([MondoText({ 'text': 'leader deleted' })]);
+// //                         ModalExpertise.hideModal();
+// //                     }
+// //                     ParishDataHandle.parishAssociations = ParishDataHandle.parishAssociations.filter
+//                 tbody.appendChild(row);
+//             }
+//         });
+
+//         parentView.appendChild(table);
+//     }
+
+//     ModalExpertise.showModal({
+//         'actionHeading': `leaders in ${association.name}`,
+//         'fullScreen': true,
+//         'topRowUserActions': [pdfPrintButton],
+//         'modalHeadingStyles': [{ 'background-color': 'royalblue' }, { 'color': 'white' }],
+//         'children': [parentView],
+//     })
+// }
+
+// // // view association members
+// // export function ViewAssociationMembers(association) {
+// //     const parentView = Column({
+// //         'styles': [{ 'padding': '20px' }],
+// //         'children': []
+// //     });
+
+// //     if (association['members_id'].length < 1) {
+// //         addChildrenToView(parentView,
+// //             [
+// //                 MondoText({ 'text': 'no members added to this association yet' }),
+// //             ]);
+// //     } else {
+// //         association['members_id'].forEach(function (memberId) {
+// //             let member = ParishDataHandle.parishMembers.find(function (member) {
+// //                 return member['_id'] === memberId;
+// //             });
+
+// //             if (member) {
+// //                 let deleteIcon = domCreate('i');
+// //                 addClasslist(deleteIcon, ['bi', 'bi-trash', 'bi-pad']);
+
+// //                 deleteIcon.onclick = async function (ev) {
+// //                     ev.preventDefault();
+// //                     const result = await Post('/parish/delete/association/member',
+// //                         { 'association_id': association['_id'], 'member_id': memberId },
+// //                         { 'requiresParishDetails': true }
+// //                     );
+
+// //                     let msg = result['response'];
+// //                     if (msg.match('success') || msg.match('delete')) {
+// //                         MessegePopup.showMessege
+
+
+// ModalExpertise.showModal({
+//     'actionHeading': `leaders in ${association.name}`,
+//     'fullScreen': true,
+//     'modalHeadingStyles': [{ 'background-color': 'royalblue' }, { 'color': 'white' }],
+//     'children': [parentView],
+// })
 
 // // // view association members
 // // export function ViewAssociationMembers(association) {

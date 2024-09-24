@@ -28,6 +28,7 @@ import { uploadMembers } from './routes_callbacks/parish/post/upload_members.js'
 import { addVolume as addMembersVolume, getVolumes as getMembersVolumes } from './routes_callbacks/parish/post/members_volumes.js';
 import { addAssociation, deleteAssociation, getAssociations, updateAssociation } from './routes_callbacks/parish/post/association.js';
 import { addAssociationLeader, addAssociationMember } from './routes_callbacks/parish/post/association.js';
+import { addOutstationLeader, getOutstationLeaders, removeOutstationLeader } from './routes_callbacks/parish/post/outstation_leaders.js';
 
 
 // __________________ADMIN
@@ -57,6 +58,11 @@ server.get('/favicon.ico', faviconCallBack);
  */
 server.post('/parish/log/in', parishLogInCallback);
 server.post('/parish/details', parishGetCredentials);
+
+// outstation leadership
+server.post('/parish/add/outstation/leader', addOutstationLeader);
+server.post('/parish/remove/outstation/leader', removeOutstationLeader);
+server.post('/parish/load/outstation/leaders', getOutstationLeaders);
 
 
 // MEMBERS
@@ -98,7 +104,6 @@ server.post('/parish/add/association/leader', addAssociationLeader);
 server.post('/parish/add/association/member', addAssociationMember);
 server.post('/parish/update/association', updateAssociation);
 server.post('/parish/delete/association', deleteAssociation);
-
 
 
 /** FINANCE */

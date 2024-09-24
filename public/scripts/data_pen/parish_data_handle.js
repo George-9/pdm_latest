@@ -16,6 +16,8 @@ export class ParishDataHandle {
     static parishProjectsRecords = [];
     static parishDonationRecords = [];
     static parishMembersVolumes = [];
+    static parishLevelLeaders = [];
+    static outstationLevelLeaders = [];
 
     static SACRAMENTS = {
         'baptism': 'BAPTISM',

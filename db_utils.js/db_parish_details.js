@@ -13,6 +13,7 @@ export class DBDetails {
      */
     static parishDetailsCollection = 'details';
     static membersCollection = 'members';
+    static parishLeadersCollection = 'parish_leaders';
     static parishStaffCollection = 'parish_staff';
     static parishAssociationsCollection = 'asscoiations';
     static smallChritianCommunitiesCollection = 'small_christian_communties';

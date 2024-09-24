@@ -9,7 +9,7 @@ import { promptAddGroupView, showGroupsOverview } from "./components/view_callba
 import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, showMemberEditView, showMembersByGroupView, showMembersByOutstationReportsView } from "./components/view_callbacks/member.js";
 import { promptMembersAddVolume as promptAddMembersVolume, viewMembersInVolume, viewVolumesPage } from "./components/view_callbacks/members_volume.js";
 import { promptAddOffering, showOfferingReportsByDateAndTypeOutsationView, showOfferingReportView } from "./components/view_callbacks/offering.js";
-import { promptAddOutstationView, viewOutstationsPage } from "./components/view_callbacks/outstation.js";
+import { promptAddOutstationView, viewOutstationsPage, viewOutstationsTable } from "./components/view_callbacks/outstation.js";
 import { showParishEventsView } from "./components/view_callbacks/parish_events.js";
 import { promptAddStaffToParish as promptAddParishStaff, ViewAllParishStaff, ViewParishStaffByOutsation } from "./components/view_callbacks/parish_staff.js";
 import { promptAddProject, showProjectReportView } from "./components/view_callbacks/projects.js";
@@ -99,7 +99,11 @@ const drawerMenus = [
                     new SubMenu('by outstation', overView, ViewParishStaffByOutsation)
                 ]
             ),
-            new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
+            new Menu('Outstations', 'bi-collection', overView, viewOutstationsTable,
+                [
+                    new SubMenu('advanced', overView, viewOutstationsPage)
+                ]
+            ),
             new Menu('Members Volumes', 'bi-collection', overView, viewVolumesPage),
             new Menu('Association', 'bi-collection', overView, ViewParishAssociations, []),
             new Menu('SCCs', 'bi-justify-right', overView, viewSCCsPage,
