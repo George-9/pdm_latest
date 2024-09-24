@@ -1,3 +1,4 @@
+import { mapValuesToUppercase } from "../../global_tools/objects_tools.js";
 import { ModalExpertise } from "../../scripts/components/actions/modal.js";
 import { MessegePopup } from "../../scripts/components/actions/pop_up.js";
 import { Button, Column, MondoText, TextEdit } from "../../scripts/components/UI/cool_tool_ui.js";
@@ -46,7 +47,7 @@ function RegisterParish() {
 
                 column.replaceChildren(...[MondoText({ 'text': 'on it' })]);
 
-                let result = await Post('/register/parish', body, { 'requiresParishDetails': false });
+                let result = await Post('/register/parish', mapValuesToUppercase(body), { 'requiresParishDetails': false });
                 setTimeout(() => {
                     column.replaceChildren([]);
                     column.append(...children);

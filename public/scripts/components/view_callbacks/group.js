@@ -1,3 +1,4 @@
+import { mapValuesToUppercase } from "../../../global_tools/objects_tools.js";
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getParishGroupsRecords } from "../../data_source/main.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
@@ -41,7 +42,7 @@ export function promptAddGroupView() {
                     }
                 };
 
-                let result = await Post('/parish/register/group', body, { 'requiresParishDetails': true });
+                let result = await Post('/parish/register/group', mapValuesToUppercase(body), { 'requiresParishDetails': true });
                 let msg = result['response'];
 
                 MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);

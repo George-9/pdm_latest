@@ -10,7 +10,7 @@ export async function getParishEvents() {
 
 /**
  * fetches the whole list of parish members
- * @returns { object[] }
+ * @returns { Promise<object[]> }
  */
 export async function getParishMembers() {
     return (await Post(
@@ -22,7 +22,7 @@ export async function getParishMembers() {
 
 /**
  * fetches all members' volumes
- * @returns {string[]}
+ * @returns {Promise<string[]>}
  */
 export async function getParishMembersVolumes() {
     return (await Post(

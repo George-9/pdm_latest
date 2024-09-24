@@ -1,3 +1,4 @@
+import { mapValuesToUppercase } from "../../../global_tools/objects_tools.js";
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getParishOutstations } from "../../data_source/main.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
@@ -21,7 +22,7 @@ export function promptAddOutstationView() {
             TextEditValueValidator.validate('outstation name', nameTextEdit);
 
             let result = await Post('/parish/add/outstation',
-                { outstation: { 'name': nameTextEdit.value } },
+                mapValuesToUppercase({ outstation: { 'name': nameTextEdit.value } }),
                 { 'requiresParishDetails': true });
             let msg = result['response'];
 

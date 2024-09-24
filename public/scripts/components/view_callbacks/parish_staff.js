@@ -1,3 +1,4 @@
+import { mapValuesToUppercase } from "../../../global_tools/objects_tools.js";
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getOutstationById } from "../../data_pen/puppet.js";
 import { getParishStaff } from "../../data_source/main.js";
@@ -96,7 +97,7 @@ export function promptAddStaffToParish() {
 
             const result = await Post(
                 '/parish/register/staff',
-                body,
+                mapValuesToUppercase(body),
                 { 'requiresParishDetails': true }
             );
 
@@ -456,7 +457,7 @@ async function viewParishStaff(staff) {
 
             const result = await Post(
                 '/parish/update/staff',
-                body,
+                mapValuesToUppercase(body),
                 { 'requiresParishDetails': true }
             );
 

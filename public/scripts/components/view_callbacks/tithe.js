@@ -75,7 +75,7 @@ export function promptAddTitheView() {
                 TextEditValueValidator.validate('unknown member name', outstationPicker);
                 body = {
                     tithe: {
-                        'name': unRecognizedMemberNameI.value,
+                        'name': `${unRecognizedMemberNameI.value}`.trim().toUpperCase(),
                         'outstation_id': outstationPicker.value['id'],
                         'date': dateI.value,
                         'amount': parseFloat(amountI.value),

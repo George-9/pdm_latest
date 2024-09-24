@@ -1,3 +1,4 @@
+import { mapValuesToUppercase } from "../../../global_tools/objects_tools.js";
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getGroupMembers, getMemberAgeToday, getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
 import { getParishMembers } from "../../data_source/main.js";
@@ -152,7 +153,7 @@ export function promptRegiterMember() {
                 }
 
                 const body = {
-                    member: {
+                    member: mapValuesToUppercase({
                         'name': `${nameI.value}`.trim(),
                         'gender': genderPicker.value,
                         'date_of_birth': `${dobI.value}`.trim(),
@@ -166,7 +167,7 @@ export function promptRegiterMember() {
                         'associations': [],
                         'telephone_number': telephoneNumberI.value,
                         'volume': selectedVolumeId, // Add selected volume _id
-                    }
+                    })
                 };
 
                 Object.keys(body.member).forEach(function (key) {
@@ -175,7 +176,10 @@ export function promptRegiterMember() {
                     }
                 });
 
-                let result = await Post('/parish/register/member', body, { 'requiresParishDetails': true });
+                let result = await Post('/parish/register/member',
+                    body,
+                    { 'requiresParishDetails': true }
+                );
 
                 const msg = result['response'];
                 MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);

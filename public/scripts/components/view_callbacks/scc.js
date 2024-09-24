@@ -1,3 +1,4 @@
+import { mapValuesToUppercase } from "../../../global_tools/objects_tools.js";
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getOutstationMembers, getOutstationSCCs, getSCCMembersFromList } from "../../data_pen/puppet.js";
 import { getParishSCCs } from "../../data_source/main.js";
@@ -44,7 +45,9 @@ export function promptAddSCCView() {
                     }
                 };
 
-                let result = await Post('/parish/add/scc', body, { 'requiresParishDetails': true });
+                let result = await Post('/parish/add/scc',
+                    mapValuesToUppercase(body),
+                    { 'requiresParishDetails': true });
                 let msg = result['response'];
 
                 MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);

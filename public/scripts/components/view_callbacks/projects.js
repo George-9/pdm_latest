@@ -1,3 +1,4 @@
+import { mapValuesToUppercase } from "../../../global_tools/objects_tools.js";
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getSCCById, getOutstationSCCs, memberGetOutstation, memberGetSCC, getMemberById, getOutstationMembers } from "../../data_pen/puppet.js";
 import { getParishProjectsRecords } from "../../data_source/main.js";
@@ -224,7 +225,7 @@ export function promptAddProject() {
                 }
 
                 let result = await Post('/parish/add/project/record',
-                    body,
+                    mapValuesToUppercase(body),
                     { 'requiresParishDetails': true })
                 let msg = result['response'];
 
