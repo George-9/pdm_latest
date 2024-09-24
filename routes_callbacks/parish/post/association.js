@@ -49,21 +49,22 @@ export async function getAssociations(req, resp) {
         return resp.json({ 'response': 'unauthorised request' });
     }
 }
-
-// add leader to association if the leader by the position does not exist and
-// if the member_id(that member) is not in another position
 export async function addAssociationLeader(req, resp) {
     const { parish_code, parish_password, association } = req.body;
     if (!parish_code || !parish_password || !association) {
         return resp.json({ 'response': 'empty details' });
     }
 
-    console.log(association);
+    association['member_id'] = association['leader']['member_id'];
+    association['position'] = association['leader']['position'];
 
+    // add leader to association.
+    // if position does not exist insert new position and leader and the member_id(that member) is not in another position
+    // in that association.
+    // if the position exists, update the leader of that position
+    // if the position exists and the member_id is in another position, update the leader of that position
+    // and remove the member_id from the other position
     if (parishExists(parish_code, parish_password)) {
-        // add new association {name, leaders: [], members_ids: []} if and only if the association by id (_id) does not exist,
-        // if it exists insert a new position if a position by the name does not exist else 
-        // update position leader (member_id) else insert new position and it's leader(member_id)
         const associationId = new ObjectId(association['_id']);
         const associationExists = await MongoDBContract
             .findOneByFilterFromCollection(
@@ -74,12 +75,12 @@ export async function addAssociationLeader(req, resp) {
 
         if (associationExists && associationExists._id && associationExists._id.id) {
             // check if position exists
-            const positionExists = associationExists['leaders'].find(
+            const positionExists = (associationExists['leaders'] || []).find(
                 (leader) => leader['position'] === association['position']
             );
 
             if (positionExists) {
-                // update position leader
+                // update leader
                 const result = await MongoDBContract
                     .collectionInstance(
                         parish_code,
@@ -87,16 +88,18 @@ export async function addAssociationLeader(req, resp) {
                     ).updateOne({ '_id': associationId },
                         {
                             '$set': {
-                                'leaders': (associationExists['leaders'] || []).map((leader) => {
-                                    if (leader['position'] === association['leader']['position']) {
-                                        return {
-                                            'position': association['leader']['position'],
-                                            'member_id': association['leader']['member_id']
-                                        };
-                                    } else {
-                                        return leader;
+                                'leaders': associationExists['leaders'].map(
+                                    (leader) => {
+                                        if (leader['position'] === association['position']) {
+                                            return {
+                                                'member_id': association['member_id'],
+                                                'position': association['position']
+                                            };
+                                        } else {
+                                            return leader;
+                                        }
                                     }
-                                })
+                                )
                             }
                         });
 
@@ -106,7 +109,7 @@ export async function addAssociationLeader(req, resp) {
                         : 'could not save updates'
                 });
             } else {
-                // insert new position and it's leader
+                // insert new leader
                 const result = await MongoDBContract
                     .collectionInstance(
                         parish_code,
@@ -115,8 +118,8 @@ export async function addAssociationLeader(req, resp) {
                         {
                             '$push': {
                                 'leaders': {
-                                    'position': association['leader']['position'],
-                                    'member_id': association['leader']['member_id']
+                                    'member_id': association['member_id'],
+                                    'position': association['position']
                                 }
                             }
                         });
@@ -124,32 +127,12 @@ export async function addAssociationLeader(req, resp) {
                 resp.json({
                     'response': ((result.modifiedCount + result.upsertedCount) > 0)
                         ? 'success'
-                        : 'could not save updates'
+                        : 'something went wrong'
                 });
             }
-
         } else {
-            // add new association
-            const result = await MongoDBContract
-                .insertIntoCollection(
-                    {
-                        'name': association['name'],
-                        'leaders': [
-                            {
-                                'position': association['leader']['position'],
-                                'member_id': association['leader']['member_id']
-                            }
-                        ],
-                        'members_id': []
-                    },
-                    parish_code,
-                    DBDetails.parishAssociationsCollection
-                );
-
             resp.json({
-                'response': result
-                    ? 'success'
-                    : 'something went wrong'
+                'response': 'association does not exist'
             });
         }
     } else {
@@ -256,29 +239,58 @@ export async function removeAssociationMember(req, resp) {
     }
 }
 
-// add member
+// add member if and only if the member_id does not exist in the members_ids
 export async function addAssociationMember(req, resp) {
     const { parish_code, parish_password, association } = req.body;
     if (!parish_code || !parish_password || !association) {
         return resp.json({ 'response': 'empty details' });
     }
+    console.log(association);
 
     if (parishExists(parish_code, parish_password)) {
-        const result = await MongoDBContract
-            .collectionInstance(
+        const associationId = new ObjectId(association['_id']);
+        const associationExists = await MongoDBContract
+            .findOneByFilterFromCollection(
                 parish_code,
-                DBDetails.parishAssociationsCollection
-            ).updateOne({ '_id': association['_id'] },
-                {
-                    '$push': { 'members_id': association['member_id'] }
+                DBDetails.parishAssociationsCollection,
+                { '_id': associationId }
+            );
+
+        if (associationExists && associationExists._id && associationExists._id.id) {
+            // check if member exists
+            const memberExists = (associationExists['members_id'] || []).find(
+                (memberId) => memberId === association['member_id']
+            );
+
+            if (!memberExists) {
+                // insert new member
+                const result = await MongoDBContract
+                    .collectionInstance(
+                        parish_code,
+                        DBDetails.parishAssociationsCollection
+                    ).updateOne({ '_id': associationId },
+                        {
+                            '$push': {
+                                'members_id': association['member_id']
+                            }
+                        });
+
+                resp.json({
+                    'response': ((result.modifiedCount + result.upsertedCount) > 0)
+                        ? 'success'
+                        : 'could not save updates'
                 });
+            } else {
+                resp.json({
+                    'response': 'member already exists in the association'
+                });
+            }
 
-        resp.json({
-            'response': ((result.modifiedCount + result.upsertedCount) > 0)
-                ? 'success'
-                : 'could not save updates'
-        });
-
+        } else {
+            resp.json({
+                'response': 'association does not exist'
+            });
+        }
     } else {
         return resp.json({ 'response': 'unauthorised request' });
     }

@@ -2,7 +2,7 @@ import { ModalExpertise } from "./components/actions/modal.js";
 import { MessegePopup } from "./components/actions/pop_up.js";
 import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
-import { PromptAddAssociation, ViewParishAssociations } from "./components/view_callbacks/association.js";
+import { PromptAddAssociation, ViewAssociationMembersFilterableByOutstationAndSCC, ViewParishAssociations } from "./components/view_callbacks/association.js";
 import { promptUploadMembers } from "./components/view_callbacks/dat_imports.js";
 import { promptAddDonationsView, showDonationsForUnrecognizedMembersReportsView, showDonationsWithOutstaionsReportsView } from "./components/view_callbacks/donations.js";
 import { promptAddGroupView, showGroupsOverview } from "./components/view_callbacks/group.js";
@@ -101,7 +101,7 @@ const drawerMenus = [
             ),
             new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
             new Menu('Members Volumes', 'bi-collection', overView, viewVolumesPage),
-            new Menu('Association', 'bi-collection', overView, ViewParishAssociations),
+            new Menu('Association', 'bi-collection', overView, ViewParishAssociations, []),
             new Menu('SCCs', 'bi-justify-right', overView, viewSCCsPage,
                 [
                     new SubMenu('advanced', overView, showFilterebleSCCsPage)
