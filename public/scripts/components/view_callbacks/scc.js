@@ -99,7 +99,7 @@ export function viewSCCsPage() {
             <td>NO</td>
             <td>SCC</td>
             <td>OUTSTATION</td>
-            <td>Feast Date</td>
+            <td>FEAST DATE</td>
             <td>MEMBER COUNT</td>
             <td>VIEW</td>
         </tr>
@@ -119,7 +119,7 @@ export function viewSCCsPage() {
         data.push({
             '_id': scc['_id'],
             'scc_name': scc['name'],
-            'feast_date': scc['feast_date'],
+            'feast_date': scc['feast_date'] ?? 'not set',
             'outstation_name': outstation['name'],
             'members_count': membersCount
         });
@@ -194,7 +194,7 @@ export function showFilterebleSCCsPage() {
         <tr>
             <td>NO</td>
             <td>SCC</td>
-            <td>Feast Date</td>
+            <td>FEAST DATE</td>
             <td>MEMBER COUNT</td>
             </tr>
             `
@@ -224,7 +224,7 @@ export function showFilterebleSCCsPage() {
             row.innerHTML = `
                 <td>${i + 1}</td>
                 <td>${scc['name']}</td>
-                <td>${scc['feast_date']}</td>
+                <td>${scc['feast_date'] ?? 'not set'}</td>
                 <td>${members}</td>
             `
             tbody.appendChild(row);
@@ -236,7 +236,6 @@ export function showFilterebleSCCsPage() {
             <td>${count + 2}</td>
             <td>${PRIESTS_COMMUNITY_NAME}</td>
             <td>${getOutstationMembers(selectedOutstation).filter(function (member) {
-            console.log(member);
             return member['scc_id'] === PRIESTS_COMMUNITY_NAME
         }).length}</td>
         `
@@ -304,13 +303,10 @@ function ViewSCC(SCC) {
                 const body = {
                     'scc': {
                         '_id': SCC['_id'],
-                        'name': sccNameI.value,
+                        'name': `${sccNameI.value}`.toUpperCase(),
                         'feast_date': feastDate
                     }
                 };
-
-                console.log(SCC);
-                console.log(body);
 
                 let result = await Post('/parish/update/scc', body, { 'requiresParishDetails': true });
                 let msg = result['response'];
