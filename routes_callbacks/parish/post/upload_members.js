@@ -3,6 +3,7 @@ import { DBDetails } from "../../../db_utils.js/db_parish_details.js";
 import { MongoDBContract } from "../../../db_utils.js/mongodatabase_contract.js";
 import { parishExists } from "../../../server_app/callback_utils.js";
 import { Logger } from "../../../debug_tools/Log.js";
+import { mapValuesToUppercase } from "../../../public/global_tools/objects_tools.js";
 
 export async function serverPost(
     url,
@@ -37,7 +38,7 @@ export async function uploadMembers(req, resp) {
         let insertCount = 0, skipped = 0;
 
         for (let i = 0; i < members.length; i++) {
-            const member = members[i];
+            const member = mapValuesToUppercase(members[i]);
             Logger.log(member);
 
             try {
@@ -49,7 +50,7 @@ export async function uploadMembers(req, resp) {
                     const outstationExists = await MongoDBContract.findOneByFilterFromCollection(
                         parish_code,
                         DBDetails.outstationsCollection,
-                        { '_id': outstationId }
+                        { '_id': new ObjectId(outstationId) }
                     );
 
                     const sccExists = await MongoDBContract.findOneByFilterFromCollection(
