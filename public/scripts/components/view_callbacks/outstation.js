@@ -98,8 +98,8 @@ export function viewOutstationsTable() {
     });
 
     const column = Column({
-        'styles': [{ 'margin': '10px' }, { 'padding': '10px' }],
-        'classlist': ['f-w', 'a-c', 'just-center', 'scroll-y'],
+        'styles': [{ 'padding': '10px' }],
+        'classlist': ['f-w', 'scroll-y'],
         'children': [table]
     });
 
