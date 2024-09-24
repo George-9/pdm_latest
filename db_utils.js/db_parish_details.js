@@ -14,6 +14,7 @@ export class DBDetails {
     static parishDetailsCollection = 'details';
     static membersCollection = 'members';
     static parishStaffCollection = 'parish_staff';
+    static parishAssociationsCollection = 'asscoiations';
     static smallChritianCommunitiesCollection = 'small_christian_communties';
     static parishGroupsCollection = 'groups';
     static titheCollection = 'tithe';

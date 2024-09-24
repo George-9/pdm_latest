@@ -2,6 +2,7 @@ import { ModalExpertise } from "./components/actions/modal.js";
 import { MessegePopup } from "./components/actions/pop_up.js";
 import { Button, Column, MondoBigH3Text, MondoText, Row, TextEdit, VerticalScrollView } from "./components/UI/cool_tool_ui.js";
 import { TextEditError, TextEditValueValidator } from "./components/utils/textedit_value_validator.js";
+import { PromptAddAssociation, ViewParishAssociations } from "./components/view_callbacks/association.js";
 import { promptUploadMembers } from "./components/view_callbacks/dat_imports.js";
 import { promptAddDonationsView, showDonationsForUnrecognizedMembersReportsView, showDonationsWithOutstaionsReportsView } from "./components/view_callbacks/donations.js";
 import { promptAddGroupView, showGroupsOverview } from "./components/view_callbacks/group.js";
@@ -16,7 +17,7 @@ import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { promptAddSCCView, showFilterebleSCCsPage, viewSCCsPage } from "./components/view_callbacks/scc.js";
 import { promptAddTitheView, showTitheReportsView } from "./components/view_callbacks/tithe.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
-import { getParishDonationsRecords, getParishGroupsRecords, getParishMembers, getParishMembersVolumes, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishStaff, getParishTitheRecords, parishEvents } from "./data_source/main.js";
+import { getParishDonationsRecords, getParishGroupsRecords, getParishMembers, getParishMembersVolumes, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishStaff, getParishTitheRecords, getParishEvents, getParishAssociations } from "./data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "./data_source/other_sources.js";
 import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
@@ -46,6 +47,7 @@ const drawerMenus = [
             ),
             new Menu('Staff', 'bi-file-earmark-person', registryClass, promptAddParishStaff),
             new Menu('Volumes', 'bi-file-earmark', registryClass, promptAddMembersVolume),
+            new Menu('Associations', 'bi-file-earmark', registryClass, PromptAddAssociation),
             new Menu('Outstation', 'bi-opencollective', registryClass, promptAddOutstationView),
             new Menu('SCC', 'bi-collection', registryClass, promptAddSCCView),
             new Menu('Group', 'bi-plus-circle', registryClass, promptAddGroupView),
@@ -99,6 +101,7 @@ const drawerMenus = [
             ),
             new Menu('Outstations', 'bi-collection', overView, viewOutstationsPage),
             new Menu('Members Volumes', 'bi-collection', overView, viewVolumesPage),
+            new Menu('Association', 'bi-collection', overView, ViewParishAssociations),
             new Menu('SCCs', 'bi-justify-right', overView, viewSCCsPage,
                 [
                     new SubMenu('advanced', overView, showFilterebleSCCsPage)
@@ -135,7 +138,9 @@ async function Main() {
         ParishDataHandle.parishDonationRecords.push(...(await getParishDonationsRecords()));
         ParishDataHandle.parishStaff.push(...(await getParishStaff()));
         ParishDataHandle.parishMembersVolumes.push(...(await getParishMembersVolumes()));
+        ParishDataHandle.parishAssociations.push(...(await getParishAssociations()));
 
+        // ADD PRIESTS COMMUNITY AS AN SCC)
         ParishDataHandle.parishSCCs.push({
             '_id': PRIESTS_COMMUNITY_NAME,
             'name': PRIESTS_COMMUNITY_NAME
@@ -204,7 +209,7 @@ function showProfileView() {
 async function setCalendar() {
     var calendarEl = domQueryById('calendar');
 
-    let savedParishEvents = await parishEvents();
+    let savedParishEvents = await getParishEvents();
     ParishDataHandle.allParishEvents.push(...savedParishEvents);
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -290,7 +295,7 @@ function handleDateClick(calendar, info) {
                         'description': eventAsBody.description
                     });
 
-                    ParishDataHandle.allParishEvents = await parishEvents();
+                    ParishDataHandle.allParishEvents = await getParishEvents();
                     calendar.setEvents(ParishDataHandle.allParishEvents);
                     calendar.render()
 
@@ -360,7 +365,7 @@ function showParishName() {
 }
 
 function showEventsCount() {
-    parishEvents().then(function (events) {
+    getParishEvents().then(function (events) {
         domQueryById('events-count').innerText = (!events || !events.length || events.length < 1)
             ? 'no events have been added'
             : `${events.length} events`

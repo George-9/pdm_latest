@@ -1,7 +1,7 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
 import { getParishOfferingsRecords } from "../../data_source/main.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
-import { domCreate } from "../../dom/query.js";
+import { domCreate, domQuery } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
 import { marginRuleStyles } from "../../parish_profile.js";
@@ -15,7 +15,18 @@ import { GridView } from "../UI/grid.js";
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
-export const OfferingTypes = { 'SUNDAY OFFERING': 'sunday_offering', 'OTHER OFFERING': 'other_offering' }
+export const OfferingTypes = {
+    'SUNDAY OFFERING': 'sunday_offering',
+    'OTHER OFFERING': 'other_offering',
+    // CATHOLIC COLLECTIONS
+    'PETER\' PENCE': 'peter_pence',
+    'MISSION SUNDAY': 'mission_sunday',
+    'EPIPHANY': 'epiphany',
+    'HOLY SEPUCHZE': 'holy_sepuchze',
+    'VOCATION SUNDAY': 'vocation_sunday',
+    'KENDNA': 'kendna'
+}
+
 
 // ADD OFFERING REPORTS
 export function promptAddOffering() {
@@ -24,10 +35,15 @@ export function promptAddOffering() {
     const amountI = TextEdit({ 'placeholder': 'amount', 'keyboardType': 'number' });
 
     const sourceSelect = MondoSelect({});
-    sourceSelect.innerHTML = `
-        <option value="${OfferingTypes["SUNDAY OFFERING"]}" selected>Sunday Offering</option>
-        <option value="${OfferingTypes["OTHER OFFERING"]}">Other Offering</option>
-    `
+
+    const keys = Object.keys(OfferingTypes);
+    for (let i = 0; i < keys.length; i++) {
+        const offeringType = keys[i];
+        const optionEl = domCreate('option');
+        optionEl.innerText = offeringType;
+        optionEl.value = OfferingTypes[offeringType];
+        sourceSelect.appendChild(optionEl);
+    }
 
     const button = Button({
         'text': 'submit', 'onclick': async function () {
@@ -80,11 +96,19 @@ export function promptAddOffering() {
 export async function showOfferingReportView() {
     let outstationTotal = 0;
 
-    const offeringTypeOption = MondoSelect({});
-    offeringTypeOption.innerHTML = `
-        <option value="${OfferingTypes["SUNDAY OFFERING"]}" selected>Sunday Offering</option>
-        <option value="${OfferingTypes["OTHER OFFERING"]}">Other Offering</option>
-    `
+    const offeringTypeOption = MondoSelect({ 'onChange': setRowsValue });
+    offeringTypeOption.addEventListener('change', setRowsValue)
+
+    const keys = Object.keys(OfferingTypes);
+    for (let i = 0; i < keys.length; i++) {
+        const offeringType = keys[i];
+        const optionEl = domCreate('option');
+        optionEl.innerText = offeringType;
+        optionEl.value = OfferingTypes[offeringType];
+        offeringTypeOption.appendChild(optionEl);
+    }
+
+
     const outstationPicker = OutstationPicker({
         'outstations': ParishDataHandle.parishOutstations,
         'styles': marginRuleStyles,
@@ -116,6 +140,10 @@ export async function showOfferingReportView() {
 
     function setRowsValue() {
         tbody.replaceChildren([]);
+        const footer = table.querySelector('tfoot');
+        if (footer) {
+            table.removeChild(footer);
+        }
 
         outstationTotal = 0;
         const existingFooter = table.querySelector('tfoot');
@@ -126,6 +154,10 @@ export async function showOfferingReportView() {
         const outstation = JSON.parse(outstationPicker.value);
         let outstationsOfferings = ParishDataHandle.parishOfferingRecords.filter(function (offering) {
             return outstation['_id'] === offering['outstation_id'];
+        });
+
+        outstationsOfferings = outstationsOfferings.filter(function (offering) {
+            return offering['source'] === offeringTypeOption.value;
         });
 
         if (outstationsOfferings && outstationsOfferings.length < 1) {
@@ -323,11 +355,14 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
         setRowsValue();
     });
 
-    offeringTypeOptionPicker.innerHTML = `
-    <option value="${OfferingTypes["SUNDAY OFFERING"]}">Sunday Offering</option>
-    <option value="${OfferingTypes["OTHER OFFERING"]}">Other Offering</option>
-    <option value="ALL" selected>ALL</option>
-    `
+    const keys = Object.keys(OfferingTypes);
+    for (let i = 0; i < keys.length; i++) {
+        const offeringType = keys[i];
+        const optionEl = domCreate('option');
+        optionEl.innerText = offeringType;
+        optionEl.value = OfferingTypes[offeringType];
+        offeringTypeOptionPicker.appendChild(optionEl);
+    }
 
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 

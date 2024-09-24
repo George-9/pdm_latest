@@ -26,6 +26,9 @@ import { addParishStaff, loadAllParishStaff, updateStaff } from './routes_callba
 import { addGroups, getParishGroups } from './routes_callbacks/parish/post/groups.js';
 import { uploadMembers } from './routes_callbacks/parish/post/upload_members.js';
 import { addVolume as addMembersVolume, getVolumes as getMembersVolumes } from './routes_callbacks/parish/post/members_volumes.js';
+import { addAssociation, deleteAssociation, getAssociations, updateAssociation } from './routes_callbacks/parish/post/association.js';
+import { addAssociationLeader, addAssociationMember } from './routes_callbacks/parish/post/association.js';
+
 
 // __________________ADMIN
 
@@ -73,18 +76,32 @@ server.post('/parish/register/staff', addParishStaff);
 server.post('/parish/load/all/staff', loadAllParishStaff);
 server.post('/parish/update/staff', updateStaff);
 
-
-// OUTSTATIONS, SCCs and GROUPS
+// OUTSTATIONS, SCCs, GROUPS and ASSOCIATIONS
 server.post('/parish/add/outstation', addOutstation);
 server.post('/parish/load/all/outstations', getOutstations);
 
+// GROUP
 server.post('/parish/register/group', addGroups);
 server.post('/parish/load/all/groups/records', getParishGroups);
 
+// SCC
 server.post('/parish/add/scc', addSCC);
 server.post('/parish/update/scc', updateSCC);
 server.post('/parish/load/all/sccs', getSmallChristianCommunities);
 
+// ASSCOIATIONS
+server.post('/parish/add/association', addAssociation);
+server.post('/parish/load/all/associations', getAssociations);
+server.post('/parish/update/association', updateAssociation);
+server.post('/parish/delete/association', deleteAssociation);
+server.post('/parish/add/association/leader', addAssociationLeader);
+server.post('/parish/add/association/member', addAssociationMember);
+server.post('/parish/update/association', updateAssociation);
+server.post('/parish/delete/association', deleteAssociation);
+
+
+
+/** FINANCE */
 
 // TITHE
 server.post('/parish/record/tithe', addTitheRecord);

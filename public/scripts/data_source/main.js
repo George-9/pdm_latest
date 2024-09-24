@@ -3,7 +3,7 @@ import { Post } from "../net_tools.js"
 /**
  * all parish events
  */
-export async function parishEvents() {
+export async function getParishEvents() {
     let parishEvents = await Post('/parish/events', null, { 'requiresParishDetails': true });
     return parishEvents['response'];
 }
@@ -40,6 +40,31 @@ export async function getParishMembersVolumes() {
 export async function getParishStaff() {
     return (await Post(
         '/parish/load/all/staff', {},
+        {
+            'requiresParishDetails': true
+        }))['response']
+}
+
+
+/**
+ * fetches the whole list of parish groups
+ * @returns { object[] }
+ */
+export async function getParishGroups() {
+    return (await Post(
+        '/parish/load/all/groups', {},
+        {
+            'requiresParishDetails': true
+        }))['response']
+}
+
+/**
+ * fetches the whole list of parish associations
+ * @returns { object[] }
+ */
+export async function getParishAssociations() {
+    return (await Post(
+        '/parish/load/all/associations', {},
         {
             'requiresParishDetails': true
         }))['response']

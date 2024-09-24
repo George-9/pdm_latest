@@ -9,6 +9,8 @@ export class ParishDataHandle {
     static parishGroups = [];
     static parishOutstations = [];
     static parishSCCs = [];
+    /**@type {object[]} */
+    static parishAssociations = [];
     static parishTitheRecords = [];
     static parishOfferingRecords = [];
     static parishProjectsRecords = [];
