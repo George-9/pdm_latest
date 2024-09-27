@@ -11,13 +11,14 @@ import { promptMembersAddVolume as promptAddMembersVolume, viewMembersInVolume, 
 import { promptAddOffering, showOfferingReportsByDateAndTypeOutsationView, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage, viewOutstationsTable } from "./components/view_callbacks/outstation.js";
 import { showParishEventsView } from "./components/view_callbacks/parish_events.js";
+import { promptAddParishAddLeaders, showParishLeadersReport, showParishLeadersView } from "./components/view_callbacks/parish_leaders.js";
 import { promptAddStaffToParish as promptAddParishStaff, ViewAllParishStaff, ViewParishStaffByOutsation } from "./components/view_callbacks/parish_staff.js";
 import { promptAddProject, showProjectReportView } from "./components/view_callbacks/projects.js";
 import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { promptAddSCCView, showFilterebleSCCsPage, viewSCCsPage } from "./components/view_callbacks/scc.js";
 import { promptAddTitheView, showTitheReportsView } from "./components/view_callbacks/tithe.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
-import { getParishDonationsRecords, getParishGroupsRecords, getParishMembers, getParishMembersVolumes, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishStaff, getParishTitheRecords, getParishEvents, getParishAssociations } from "./data_source/main.js";
+import { getParishDonationsRecords, getParishGroupsRecords, getParishMembers, getParishMembersVolumes, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishStaff, getParishTitheRecords, getParishEvents, getParishAssociations, getParishLeaders } from "./data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "./data_source/other_sources.js";
 import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
@@ -51,6 +52,7 @@ const drawerMenus = [
             new Menu('Outstation', 'bi-opencollective', registryClass, promptAddOutstationView),
             new Menu('SCC', 'bi-collection', registryClass, promptAddSCCView),
             new Menu('Group', 'bi-plus-circle', registryClass, promptAddGroupView),
+            new Menu('Leaders', 'bi-person-check', registryClass, promptAddParishAddLeaders),
         ],
         false
     ),
@@ -82,11 +84,13 @@ const drawerMenus = [
                     new SubMenu('from outside', reportsClass, showDonationsForUnrecognizedMembersReportsView)
                 ]
             ),
+            new Menu('Parish Leaders', 'bi-people', reportsClass, showParishLeadersReport),
         ],
         false
     ),
     new DrawerMenu('OVERVIEW', overView,
         [
+            new Menu('Parish Leaders', 'bi-people', overView, showParishLeadersView),
             new Menu('members', 'bi-people', overView, showMembersByOutstationReportsView,
                 [
                     new SubMenu('by SCC', overView, ShowMembersReportsView),
@@ -143,6 +147,7 @@ async function Main() {
         ParishDataHandle.parishStaff.push(...(await getParishStaff()));
         ParishDataHandle.parishMembersVolumes.push(...(await getParishMembersVolumes()));
         ParishDataHandle.parishAssociations.push(...(await getParishAssociations()));
+        ParishDataHandle.parishLevelLeaders.push(...(await getParishLeaders()));
 
         // ADD PRIESTS COMMUNITY AS AN SCC)
         ParishDataHandle.parishSCCs.push({

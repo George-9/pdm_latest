@@ -267,12 +267,11 @@ export function showFilterebleSCCsPage() {
 
     ModalExpertise.showModal({
         'actionHeading': `small Christian Communities (${ParishDataHandle.parishSCCs.length})`,
-        'modalHeadingStyles': [{ 'background': 'royablue' }, { 'color': 'white' }],
+        'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
         'topRowUserActions': [new PDFPrintButton(tableId)],
         'children': [column],
-        'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': '90%' }],
-        'fullScreen': false,
-        'dismisible': true,
+        'modalChildStyles': [{ 'width': 'fit-content' }],
+        'fullScreen': true,
     });
 }
 

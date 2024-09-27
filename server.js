@@ -29,6 +29,7 @@ import { addVolume as addMembersVolume, getVolumes as getMembersVolumes } from '
 import { addAssociation, deleteAssociation, getAssociations, updateAssociation } from './routes_callbacks/parish/post/association.js';
 import { addAssociationLeader, addAssociationMember } from './routes_callbacks/parish/post/association.js';
 import { addOutstationLeader, getOutstationLeaders, removeOutstationLeader } from './routes_callbacks/parish/post/outstation_leaders.js';
+import { addLeaderToParish, getParishLeaders } from './routes_callbacks/parish/post/parish_level_leaders.js';
 
 
 // __________________ADMIN
@@ -59,11 +60,14 @@ server.get('/favicon.ico', faviconCallBack);
 server.post('/parish/log/in', parishLogInCallback);
 server.post('/parish/details', parishGetCredentials);
 
+// parish leaders
+server.post('/parish/add/leader', addLeaderToParish);
+server.post('/load/parish/leaders', getParishLeaders);
+
 // outstation leadership
 server.post('/parish/add/outstation/leader', addOutstationLeader);
 server.post('/parish/remove/outstation/leader', removeOutstationLeader);
 server.post('/parish/load/outstation/leaders', getOutstationLeaders);
-
 
 // MEMBERS
 server.post('/parish/register/member', addMember);
