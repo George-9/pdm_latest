@@ -7,35 +7,27 @@ import { parishExists } from "../../../server_app/callback_utils.js";
  * if position is not occupied create it and assign member_id 
  * if position exists, update the member_id as the new position-holder
 */
-export function addLeaderToParish(req, resp) {
+export async function addLeaderToParish(req, resp) {
     const { parish_code, parish_password, position, member_id } = req.body;
     if (!parish_code || !parish_password || !position || !member_id) {
         return resp.json({ 'response': 'empty details' });
     }
 
+    // insert new position if it doesn't exist
+    // else update position member_id with new leader
     if (parishExists(parish_code, parish_password)) {
-        MongoDBContract
-            .collectionInstance(
-                parish_code,
-                DBDetails.parishLeadersCollection
-            ).updateOne({ 'position': position },
-                {
-                    '$set': {
-                        'member_id': member_id
-                    }
-                },
+        const result = await MongoDBContract
+            .collectionInstance(parish_code, DBDetails.parishLeadersCollection)
+            .updateOne(
+                { 'position': position },
+                { '$set': { 'member_id': member_id }, },
                 { 'upsert': true }
-            )
-            .then((result) => {
-                resp.json({
-                    'response': ((result.modifiedCount + result.upsertedCount) > 0)
-                        ? 'success'
-                        : 'could not save updates'
-                });
-            })
-            .catch((error) => {
-                resp.json({ 'response': 'something went wrong' });
-            });
+            );
+        return resp.json({
+            'response': (result.modifiedCount + result.upsertedCount > 0) ?
+                'success' :
+                'something went wrong saving provided details'
+        });
     } else {
         return resp.json({ 'response': 'unauthorised request' });
     }

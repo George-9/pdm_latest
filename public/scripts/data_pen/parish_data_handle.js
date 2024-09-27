@@ -4,7 +4,6 @@
  */
 export class ParishDataHandle {
     static allParishEvents = [];
-    static parishLeaders = [];
     static outstationLeaders = [];
     static parishMembers = [];
     static parishStaff = [];

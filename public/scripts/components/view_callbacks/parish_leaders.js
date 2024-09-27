@@ -12,6 +12,7 @@ import { getMemberById } from "../../data_pen/puppet.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
 import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
+import { getParishLeaders } from "../../data_source/main.js";
 
 export async function promptAddParishAddLeaders() {
     const postionInput = TextEdit({ 'placeholder': 'position' });
@@ -46,6 +47,7 @@ export async function promptAddParishAddLeaders() {
             );
             MessegePopup.showMessegePuppy([MondoText({ 'text': result['response'] })]);
             if (result['response'].match('success')) {
+                ParishDataHandle.parishLevelLeaders = await getParishLeaders();
                 clearTextEdits([postionInput, membersSelect]);
                 ModalExpertise.hideModal();
             }
@@ -189,10 +191,10 @@ export function showParishLeadersReport() {
             <tr>
                 <td>NO</td>
                 <td>NAME</td>
-                <td>TELEPHONE</td>
                 <td>POSITION</td>
-                <td>SCC</td>
+                <td>TELEPHONE</td>
                 <td>OUTSTATION</td>
+                <td>SCC</td>
             </tr>
         `
         addChildrenToView(table, [thead, tbody, tfoot]);
@@ -212,10 +214,10 @@ export function showParishLeadersReport() {
                 row.innerHTML = `
                     <td>${i + 1}</td>
                     <td>${member.name}</td>
-                    <td>${member.telephone_number}</td>
                     <td>${leader.position}</td>
-                    <td>${scc['name']}</td>
+                    <td><a href='tel:${member.telephone_number}'>${member.telephone_number}</a></td>
                     <td>${outstation['name']}</td>
+                    <td>${scc['name']}</td>
                 `;
                 tbody.appendChild(row);
             }
