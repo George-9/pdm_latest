@@ -500,9 +500,9 @@ export function showMembersReportsView() {
                         ModalExpertise.showModal({
                             'actionHeading': `${member['name']}`.toUpperCase(),
                             'modalHeadingStyles': [{ 'background-color': 'dodgerblue' }, { 'color': 'white' }],
-                            'modalChildStyles': [{ 'width': '60%' }],
+                            'modalChildStyles': [{ 'width': 'fit-content' }],
                             'children': [memberView(member)]
-                        })
+                        });
                     }
                 }
 
@@ -656,7 +656,7 @@ export function showMembersByOutstationReportsView() {
                     ModalExpertise.showModal({
                         'actionHeading': `${member['name']}`.toUpperCase(),
                         'modalHeadingStyles': [{ 'background-color': 'dodgerblue' }, { 'color': 'white' }],
-                        'modalChildStyles': [{ 'width': '60%' }],
+                        'modalChildStyles': [{ 'width': 'fit-content' }],
                         'children': [memberView(member)]
                     });
                 }
@@ -826,7 +826,7 @@ export function memberView(member) {
                             }
 
                             if (key.match('God_Parents')) {
-                                return GodParentsView(member)
+                                return GodParentsView(member);
                             }
 
                             if (key.match('volume')) {
@@ -1028,7 +1028,7 @@ export function showMemberEditView() {
                 ModalExpertise.showModal({
                     'topRowUserActions': [printMemberIcon, saveChangesButton],
                     'actionHeading': `editing ${member['name']}`,
-                    'modalChildStyles': [{ 'min-width': '60%' }, { 'width': '60%' }],
+                    'modalChildStyles': [{ 'min-width': 'fit-content' }, { 'width': 'fit-content' }],
                     'children': [
                         Column({
                             'classlist': ['f-a-w', 'scroll-y'],

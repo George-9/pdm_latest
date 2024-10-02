@@ -277,7 +277,7 @@ export function promptAddProject() {
     // column.classList.remove('fx-col');
 
     ModalExpertise.showModal({
-        'modalChildStyles': [{ 'min-width': '60%' }, { 'min-height': '500px' }],
+        'modalChildStyles': [{ 'min-width': 'fit-content' }, { 'min-height': '500px' }],
         'actionHeading': 'add Project records',
         'fullScreen': false,
         'modalChildStyles': [{ 'min-height': '600px' }, { 'min-width': '300px' }],

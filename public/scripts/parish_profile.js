@@ -197,7 +197,7 @@ function showProfileView() {
 
     const column = Column({
         'styles': [
-            { 'min-width': '60%' },
+            { 'min-width': 'fit-content' },
             { 'padding': '10px' },
         ],
         'classlist': ['f-w', 'a-c', 'just-center'],
@@ -360,10 +360,7 @@ function handleEventClick(info) {
 
     ModalExpertise.showModal({
         'actionHeading': clickedEvent.start,
-        'modalChildStyles': [
-            { 'width': 'fit-content' },
-            { 'height': '300px' },
-        ],
+        'modalChildStyles': [{ 'width': 'fit-content' },],
         'children': [column],
         'dismisible': true,
     });

@@ -77,7 +77,7 @@ export function promptAddSCCView() {
     ModalExpertise.showModal({
         'actionHeading': 'add an SCC',
         'modalHeadingStyles': [{ 'background-color': '#ff9999' }, { 'color': 'cornsilk' }],
-        'modalChildStyles': [{ 'height': '300px' }, { 'mi-width': '60%' }],
+        'modalChildStyles': [{ 'min-height': 'fit-content' }, { 'min-width': 'fit-content' }],
         'children': [column],
         'fullScreen': false,
         'dismisible': true
@@ -341,7 +341,7 @@ function ViewSCC(SCC) {
     ModalExpertise.showModal({
         'actionHeading': 'edit an SCC',
         'modalHeadingStyles': [{ 'background-color': '#ff9999' }, { 'color': 'cornsilk' }],
-        'modalChildStyles': [{ 'height': '300px' }, { 'mi-width': '60%' }],
+        'modalChildStyles': [{ 'min-height': '500px' }, { 'mi-width': 'fit-content' }],
         'children': [column],
         'fullScreen': false,
         'dismisible': true

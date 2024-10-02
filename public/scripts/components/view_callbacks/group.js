@@ -71,7 +71,7 @@ export function promptAddGroupView() {
     ModalExpertise.showModal({
         'actionHeading': 'register a group',
         'modalHeadingStyles': [{ 'background-color': '#ff9999' }, { 'color': 'cornsilk' }],
-        'modalChildStyles': [{ 'height': '300px' }],
+        'modalChildStyles': [{ 'width': 'fit-content' }, { 'height': 'fit-content' }],
         'children': [column],
         'fullScreen': false,
         'dismisible': true
