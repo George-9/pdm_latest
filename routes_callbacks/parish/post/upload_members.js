@@ -46,6 +46,13 @@ export async function uploadMembers(req, resp) {
                     || !member['outstation_id'] || !member['scc_id'] || !member['telephone_number']) {
                     skipped += 1;
                 } else {
+                    const GodParents = `${member['God_Parents']}`;
+                    if (GodParents) {
+                        member['God_Parents'] = GodParents.includes(',')
+                            ? GodParents.split(',')
+                            : GodParents.split('.');
+                    }
+
                     const outstationId = new ObjectId(member['outstation_id']);
                     const outstationExists = await MongoDBContract.findOneByFilterFromCollection(
                         parish_code,

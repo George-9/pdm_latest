@@ -940,9 +940,9 @@ export function showMemberEditView() {
     memberSearchEl.addEventListener('input', function (ev) {
         column.replaceChildren([]);
 
-        const searchKey = memberSearchEl.value;
+        const searchKey = `${memberSearchEl.value}`.toLowerCase();
         const matchMembers = ParishDataHandle.parishMembers.filter(function (member) {
-            return member['name'].match(searchKey);
+            return `${member['name']}`.toLowerCase().match(searchKey);
         });
 
         for (let i = 0; i < matchMembers.length; i++) {

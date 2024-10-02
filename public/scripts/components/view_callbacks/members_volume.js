@@ -1,5 +1,5 @@
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { Button, Column, MondoSelect, MondoText } from "../UI/cool_tool_ui.js";
+import { Button, Column, MondoSelect, MondoText, TextEdit } from "../UI/cool_tool_ui.js";
 import { Post } from "../../net_tools.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
@@ -10,6 +10,7 @@ import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { getParishMembersVolumes } from "../../data_source/main.js";
 
 export async function promptMembersAddVolume() {
+    const optionalVolumeName = TextEdit({ 'placeholder': 'enter volume name' });
     const newVolButton = Button({ 'text': 'new volume' });
     const submitButton = Button({ 'text': 'submit' });
     const newVolumeDisplay = MondoText({ 'text': 'volume' });
@@ -34,7 +35,7 @@ export async function promptMembersAddVolume() {
     submitButton.onclick = async function (event) {
         const saveResult = Post('/parish/add/members/volume',
             {
-                'volume': { 'name': newVolume }
+                'volume': { 'name': optionalVolumeName.value || newVolume }
             },
             { 'requiresParishDetails': true }
         )
@@ -56,6 +57,12 @@ export async function promptMembersAddVolume() {
         'styles': [{ 'min-height': '200px' }],
         'children': [
             newVolButton,
+            Column({
+                'children': [
+                    MondoText({ 'text': 'optional volume name' }),
+                    optionalVolumeName,
+                ]
+            }),
             newVolumeDisplay,
             submitButton
         ]
