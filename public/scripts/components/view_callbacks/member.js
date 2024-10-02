@@ -516,8 +516,7 @@ export function showMembersReportsView() {
             }
         }
 
-        setViews()
-
+        setViews();
         sccPicker.addEventListener('change', setViews);
     });
 
@@ -720,7 +719,7 @@ export function showMembersByOutstationReportsView() {
 }
 
 export function memberView(member) {
-    const outstation = memberGetOutstation(member, ParishDataHandle.parishOutstations)
+    const outstation = memberGetOutstation(member, ParishDataHandle.parishOutstations);
     const scc = memberGetSCC(member, ParishDataHandle.parishSCCs);
 
     member['outstation'] = outstation['name'];

@@ -65,13 +65,13 @@ export async function uploadMembers(req, resp) {
                         DBDetails.smallChritianCommunitiesCollection,
                         {
                             '_id': new ObjectId(member['scc_id']),
-                            // SCC must be of the provided Outstation that is, member cannot belong to an SCC
+                            // SCC muste of the provided Outstation that is, member cannot belong to an SCC
                             // that is from another Outstation
                             'outstation_id': member['outstation_id']
                         }
                     );
 
-                    const outstationSCCPass = outstationExists !== null && sccExists !== null;
+                    const outstationSCCPass = ((outstationExists !== null) && (sccExists !== null));
                     Logger.log(`existing outstation id: ${outstationExists._id}`);
                     Logger.log(`scc exists: ${sccExists}`);
                     Logger.log(outstationSCCPass);

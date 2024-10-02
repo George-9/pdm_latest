@@ -9,7 +9,14 @@ export class MongoDBContract {
         return new MongoClient(
             // process.env['debug']
             // ? MONGODB_TEST_CONNECTION_LINK
-            MONGODB_PRODUCTION_CONNECTION_LINK
+            MONGODB_PRODUCTION_CONNECTION_LINK,
+            {
+                maxPoolSize: 100, // Maximum number of connections in the pool
+                socketTimeoutMS: 30000, // Close sockets after 30 seconds of inactivity
+                connectTimeoutMS: 10000, // Timeout after 10 seconds if connection is not established
+                keepAlive: true, // Enable TCP keep-alive
+                keepAliveInitialDelay: 300000 // Initial delay before keep-alive probes are sent
+            }
         )
     }
     static adminDB() { return MongoDBContract.connectedClient().db('admin') }
