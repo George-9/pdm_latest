@@ -170,6 +170,31 @@ export function getAllMembersWithoutSCC() {
 }
 
 
+/**
+ * gets the tithe records of those members who belong to this SCC
+ * @param {object} SCC
+ */
+export function SCCGetTitheRecords(SCC, outstation) {
+    const SCCMembers = getSCCMembers(SCC, outstation);
+    return ParishDataHandle.parishTitheRecords.filter(function (titheRecord) {
+        return SCCMembers.some(function (SCCMember) {
+            return SCCMember['_id'] === titheRecord['member_id']
+        })
+    });
+}
+
+/**
+ * retrieves a volume by it's id
+ * @param {string} id volume id
+ * @returns {object} volume
+ */
+export function getVolumeById(id) {
+    return ParishDataHandle.parishMembersVolumes.find(function (volume) {
+        return volume['_id'] === id;
+    });
+}
+
+
 export function obtainObjectValueBykey(object, key) {
     if (object && (typeof object === 'object') && key) {
         const keys = Object.keys(object);

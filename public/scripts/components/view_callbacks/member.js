@@ -1,6 +1,6 @@
 import { mapValuesToUppercase } from "../../../global_tools/objects_tools.js";
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getGroupMembers, getMemberAgeToday, getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
+import { getGroupMembers, getMemberAgeToday, getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, getVolumeById, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
 import { getParishMembers } from "../../data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "../../data_source/other_sources.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
@@ -726,14 +726,15 @@ export function memberView(member) {
     member['outstation'] = outstation['name'];
     member['scc'] = scc['name'];
 
-    function GodParentView(member) {
+    function GodParentsView(member) {
         const column = Column({
             'children': []
         })
-        const GodParents = member['God_Parents'];
-        for (let i = 0; i < GodParents.length; i++) {
-            const GodParent = GodParents[i];
-            column.appendChild(MondoText({ 'text': `${i + 1}. ${GodParent}` }));
+
+        for (let i = 0; i < member['God_Parents'].length; i++) {
+            const GodParents = member['God_Parents'][i];
+            const text = MondoText({ 'text': `${i + 1}. ${GodParents}` })
+            column.appendChild(text);
         }
 
         return column;
@@ -818,7 +819,17 @@ export function memberView(member) {
                             }
 
                             if (key.match('God_Parents')) {
-                                return GodParentView(member)
+                                return GodParentsView(member)
+                            }
+
+                            if (key.match('volume')) {
+                                return MondoText({
+                                    'text': `${getVolumeById(member[key]
+                                        ? member[key]
+                                        : { 'name': '' })['name']}`
+                                        .split('_')
+                                        .join(' ')
+                                });
                             }
 
                             return valueEditor;
@@ -987,15 +998,29 @@ export function showMemberEditView() {
             }
 
             view.onclick = function (ev) {
+                const memberViewEl = memberView(member);
+                const id = member['member_number'];
+
+                memberViewEl.id = id;
+
+                const printMemberIcon = domCreate('i');
+                addClasslist(printMemberIcon, ['bi', 'bi-printer']);
+
+                printMemberIcon.onclick = function (ev) {
+                    ev.preventDefault();
+                    // printjs (print memberElView as it is)
+                    printJS({ 'printable': id, 'type': 'html' });
+                }
+
                 ModalExpertise.showModal({
-                    'topRowUserActions': [saveChangesButton],
+                    'topRowUserActions': [printMemberIcon, saveChangesButton],
                     'actionHeading': `editing ${member['name']}`,
                     'modalChildStyles': [{ 'min-width': '60%' }, { 'width': '60%' }],
                     'children': [
                         Column({
                             'classlist': ['f-a-w', 'scroll-y'],
                             'styles': [{ 'padding': '20px' }],
-                            'children': [memberView(member),]
+                            'children': [memberViewEl]
                         })
                     ],
                 });
