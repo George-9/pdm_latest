@@ -4,9 +4,10 @@ import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { Column } from "../UI/column.js";
 import { MondoText } from "../UI/mondo_text.js";
+import { TextEdit } from "../UI/textedit.js";
 
 export function promptUploadMembers() {
-    const fileInput = Text({ 'type': 'file' });
+    const fileInput = TextEdit({ 'type': 'file' });
     fileInput.setAttribute('accept', 'xlsx', 'xls', 'csv');
 
     function readExcel(file) {
