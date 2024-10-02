@@ -6,8 +6,7 @@ import { Column } from "../UI/column.js";
 import { MondoText } from "../UI/mondo_text.js";
 
 export function promptUploadMembers() {
-    const fileInput = domCreate('input');
-    fileInput.setAttribute('type', 'file');
+    const fileInput = Text({ 'type': 'file' });
     fileInput.setAttribute('accept', 'xlsx', 'xls', 'csv');
 
     function readExcel(file) {
