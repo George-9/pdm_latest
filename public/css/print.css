@@ -3,6 +3,10 @@
         border-collapse: collapse !important;
     }
 
+    .bi {
+        display: none;
+    }
+
     tr,
     td {
         border: 1px solid grey;
@@ -12,4 +16,5 @@
     tfoot {
         font-weight: 500;
     }
+
 }

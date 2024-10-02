@@ -749,6 +749,10 @@ export function memberView(member) {
         });
 
         for (const key in ParishDataHandle.SACRAMENTS) {
+            if (key.match(ParishDataHandle.SACRAMENTS.reconciliation)) {
+                continue;
+            }
+
             const checkerInput = document.createElement('input');
             checkerInput.type = 'checkbox';
             checkerInput.id = key;
@@ -814,6 +818,9 @@ export function memberView(member) {
                             'text': key.toUpperCase().split('_').join(' ')
                         }),
                         (() => {
+                            if (key.match('associations')) {
+                                return '';
+                            }
                             if (key.match('sacraments')) {
                                 return sacramentsView(member);
                             }
@@ -1008,8 +1015,14 @@ export function showMemberEditView() {
 
                 printMemberIcon.onclick = function (ev) {
                     ev.preventDefault();
-                    // printjs (print memberElView as it is)
-                    printJS({ 'printable': id, 'type': 'html' });
+
+                    printJS({
+                        'printable': id,
+                        'type': 'html',
+                        'header': member['name'],
+                        'style': `* {font-family: sans-serif; font-weight: '300'; max-width: 350px; }\
+                         .fx-row {display: flex;\ justify-content: space-between;}`
+                    });
                 }
 
                 ModalExpertise.showModal({
