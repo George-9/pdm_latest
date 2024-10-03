@@ -56,15 +56,15 @@ export async function uploadMembers(req, resp) {
                 }
 
                 const outstationId = new ObjectId(member['outstation_id']);
-                const outstationExists = await retry(async () => {
+                const outstationExists = await (async () => {
                     return await MongoDBContract.findOneByFilterFromCollection(
                         parish_code,
                         DBDetails.outstationsCollection,
                         { '_id': outstationId }
                     );
-                }, { retries: 3 });
+                })();
 
-                const sccExists = await retry(async () => {
+                const sccExists = await (async () => {
                     return await MongoDBContract.findOneByFilterFromCollection(
                         parish_code,
                         DBDetails.smallChritianCommunitiesCollection,
@@ -73,7 +73,7 @@ export async function uploadMembers(req, resp) {
                             'outstation_id': member['outstation_id']
                         }
                     );
-                }, { retries: 3 });
+                })();
 
                 const outstationSCCPass = ((outstationExists !== null) && (sccExists !== null));
                 Logger.log(`existing outstation id: ${outstationExists._id}`);
@@ -81,14 +81,14 @@ export async function uploadMembers(req, resp) {
                 Logger.log(outstationSCCPass);
 
                 if (outstationSCCPass) {
-                    let existing = await retry(async () => {
+                    let existing = await (async () => {
                         return await MongoDBContract.collectionInstance(
                             parish_code,
                             DBDetails.membersCollection
                         ).aggregate([{ $sort: { 'member_number': -1 } }])
                             .limit(1)
                             .toArray();
-                    }, { retries: 3 });
+                    })();
 
                     let memberNumber = 1;
                     if (existing && existing.length > 0) {
