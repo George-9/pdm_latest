@@ -1,7 +1,6 @@
 import { MongoClient } from "mongodb";
 import { DBDetails } from "./db_parish_details.js";
 
-// const MONGODB_TEST_CONNECTION_LINK = 'mongodb+srv://GeorgeMuigai:m001-mongodb-basics@cluster0.syndm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 const MONGODB_PRODUCTION_CONNECTION_LINK = 'mongodb://127.0.0.1:27017';
 
 export class MongoDBContract {

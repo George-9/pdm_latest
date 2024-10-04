@@ -39,12 +39,13 @@ export async function uploadMembers(req, resp) {
 
         for (let i = 0; i < members.length; i++) {
             const member = mapValuesToUppercase(members[i]);
-            Logger.log(member);
+            // Logger.log(member);
 
             try {
                 if (!member['name'] || !member['gender'] || !member['date_of_birth']
-                    || !member['outstation_id'] || !member['scc_id'] || !member['telephone_number']) {
+                    || !member['telephone_number']) {
                     skipped += 1;
+                    // Logger.log('member not found');
                     continue;
                 }
 
@@ -55,68 +56,65 @@ export async function uploadMembers(req, resp) {
                         : GodParents.split('.');
                 }
 
-                const outstationId = new ObjectId(member['outstation_id']);
-                const outstationExists = await (async () => {
-                    return await MongoDBContract.findOneByFilterFromCollection(
-                        parish_code,
-                        DBDetails.outstationsCollection,
-                        { '_id': outstationId }
-                    );
-                })();
+                // const outstationId = new ObjectId(member['outstation_id']);
+                // const outstationExists = await MongoDBContract
+                //     .findOneByFilterFromCollection(
+                //         parish_code,
+                //         DBDetails.outstationsCollection,
+                //         { '_id': outstationId }
+                //     );
 
-                const sccExists = await (async () => {
-                    return await MongoDBContract.findOneByFilterFromCollection(
-                        parish_code,
-                        DBDetails.smallChritianCommunitiesCollection,
-                        {
-                            '_id': new ObjectId(member['scc_id']),
-                            'outstation_id': member['outstation_id']
-                        }
-                    );
-                })();
+                // const sccExists = await MongoDBContract
+                //     .findOneByFilterFromCollection(
+                //         parish_code,
+                //         DBDetails.smallChritianCommunitiesCollection,
+                //         {
+                //             '_id': new ObjectId(member['scc_id']),
+                //             'outstation_id': member['outstation_id']
+                //         }
+                //     );
 
-                const outstationSCCPass = ((outstationExists !== null) && (sccExists !== null));
-                Logger.log(`existing outstation id: ${outstationExists._id}`);
-                Logger.log(`scc exists: ${sccExists}`);
-                Logger.log(outstationSCCPass);
+
+                // const outstationSCCPass = ((outstationExists !== null) && (sccExists !== null));
+                // Logger.log(`existing outstation id: ${outstationExists._id}`);
+                // Logger.log(`scc exists: ${sccExists}`);
+                // Logger.log(outstationSCCPass);
 
                 if (outstationSCCPass) {
-                    let existing = await (async () => {
-                        return await MongoDBContract.collectionInstance(
-                            parish_code,
-                            DBDetails.membersCollection
-                        ).aggregate([{ $sort: { 'member_number': -1 } }])
-                            .limit(1)
-                            .toArray();
-                    })();
+                    let existing = await MongoDBContract.collectionInstance(
+                        parish_code,
+                        DBDetails.membersCollection
+                    ).aggregate([{ $sort: { 'member_number': -1 } }])
+                        .limit(1)
+                        .toArray();
+
 
                     let memberNumber = 1;
                     if (existing && existing.length > 0) {
                         memberNumber = parseInt(existing[0]['member_number']) + 1;
                     }
                     member['member_number'] = memberNumber;
-                    Logger.log(`[${member}]`);
+                    // Logger.log(`[${member}]`);
 
-                    const insertResult = await retry(async () => {
-                        return await MongoDBContract.insertIntoCollection(member, parish_code, DBDetails.membersCollection);
-                    }, { retries: 3 });
+                    const insertResult = await MongoDBContract
+                        .insertIntoCollection(member, parish_code, DBDetails.membersCollection);
 
                     if (insertResult === true) {
                         insertCount += 1;
                         uploads.push(member);
                     } else {
                         skipped += 1;
-                        skips.push(member);
+                        // skips.push(member);
                     }
                 } else {
                     skipped += 1;
-                    skips.push(member);
+                    // skips.push(member);
                 }
             } catch (error) {
-                Logger.log(`${member['outstation_id']}`);
-                console.log(error);
+                // Logger.log(`${member['outstation_id']}`);
+                // console.log(error);
                 skipped += 1;
-                skips.push(member);
+                // skips.push(member);
             }
         }
 
