@@ -1,22 +1,31 @@
 import { MongoClient } from "mongodb";
 import { DBDetails } from "./db_parish_details.js";
 
-const MONGODB_PRODUCTION_CONNECTION_LINK = 'mongodb://127.0.0.1:27017';
+const MONGODB_PRODUCTION_CONNECTION_LINK = `mongodb://localhost:27017/`;
 
 export class MongoDBContract {
-    static connectedClient() {
-        return new MongoClient(
-            // process.env['debug']
-            // ? MONGODB_TEST_CONNECTION_LINK
-            MONGODB_PRODUCTION_CONNECTION_LINK,
-            {
-                socketTimeoutMS: 30000,
-                connectTimeoutMS: 10000,
-            }
-        )
+    /**@type {MongoClient} */
+    static connectedMongoCli;
+
+    static get connectedClient() {
+        if (MongoDBContract.connectedMongoCli) {
+            return MongoDBContract.connectedMongoCli;
+        }
+        else {
+            MongoDBContract.connectedMongoCli = new MongoClient(
+                MONGODB_PRODUCTION_CONNECTION_LINK,
+                {
+                    socketTimeoutMS: 300000,
+                    connectTimeoutMS: 1000000,
+                }
+            )
+        }
+
+        return MongoDBContract.connectedMongoCli;
     }
-    static adminDB() { return MongoDBContract.connectedClient().db('admin') }
-    static dbInstance(dbName) { return MongoDBContract.connectedClient().db(dbName) }
+
+    static adminDB() { return MongoDBContract.connectedClient.db('admin') }
+    static dbInstance(dbName) { return MongoDBContract.connectedClient.db(dbName) }
 
     /**
      * checks if a database exists
