@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 import { DBDetails } from "./db_parish_details.js";
 
-const MONGODB_PRODUCTION_CONNECTION_LINK = `mongodb://localhost:27017/`;
+const MONGODB_PRODUCTION_CONNECTION_LINK = `mongodb://localhost:27017`;
 
 export class MongoDBContract {
     /**@type {MongoClient} */
@@ -15,8 +15,8 @@ export class MongoDBContract {
             MongoDBContract.connectedMongoCli = new MongoClient(
                 MONGODB_PRODUCTION_CONNECTION_LINK,
                 {
-                    socketTimeoutMS: 300000,
-                    connectTimeoutMS: 1000000,
+                    socketTimeoutMS: 30000,
+                    connectTimeoutMS: 100000,
                 }
             )
         }
