@@ -42,7 +42,7 @@ export async function uploadMembers(req, resp) {
             // Logger.log(member);
 
             try {
-                if (!member['name'] || !member['gender'] || !member['date_of_birth']
+                if (!member['name'] || !member['volume'] || !member['gender'] || !member['date_of_birth']
                     || !member['telephone_number']) {
                     skipped += 1;
                     // Logger.log('member not found');
@@ -80,36 +80,36 @@ export async function uploadMembers(req, resp) {
                 // Logger.log(`scc exists: ${sccExists}`);
                 // Logger.log(outstationSCCPass);
 
-                if (outstationSCCPass) {
-                    let existing = await MongoDBContract.collectionInstance(
-                        parish_code,
-                        DBDetails.membersCollection
-                    ).aggregate([{ $sort: { 'member_number': -1 } }])
-                        .limit(1)
-                        .toArray();
+                // if (outstationSCCPass) {
+                let existing = await MongoDBContract.collectionInstance(
+                    parish_code,
+                    DBDetails.membersCollection
+                ).aggregate([{ $sort: { 'member_number': -1 } }])
+                    .limit(1)
+                    .toArray();
 
 
-                    let memberNumber = 1;
-                    if (existing && existing.length > 0) {
-                        memberNumber = parseInt(existing[0]['member_number']) + 1;
-                    }
-                    member['member_number'] = memberNumber;
-                    // Logger.log(`[${member}]`);
+                let memberNumber = 1;
+                if (existing && existing.length > 0) {
+                    memberNumber = parseInt(existing[0]['member_number']) + 1;
+                }
+                member['member_number'] = memberNumber;
+                // Logger.log(`[${member}]`);
 
-                    const insertResult = await MongoDBContract
-                        .insertIntoCollection(member, parish_code, DBDetails.membersCollection);
+                const insertResult = await MongoDBContract
+                    .insertIntoCollection(member, parish_code, DBDetails.membersCollection);
 
-                    if (insertResult === true) {
-                        insertCount += 1;
-                        uploads.push(member);
-                    } else {
-                        skipped += 1;
-                        // skips.push(member);
-                    }
+                if (insertResult === true) {
+                    insertCount += 1;
+                    uploads.push(member);
                 } else {
                     skipped += 1;
                     // skips.push(member);
                 }
+                // } else {
+                //     skipped += 1;
+                //     // skips.push(member);
+                // }
             } catch (error) {
                 // Logger.log(`${member['outstation_id']}`);
                 // console.log(error);
