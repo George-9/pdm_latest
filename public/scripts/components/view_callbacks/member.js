@@ -18,8 +18,6 @@ import { Button, MondoSelect, MondoText, Row, TextEdit, VerticalScrollView } fro
 import { addClasslist, StyleView } from "../utils/stylus.js";
 import { TextEditValueValidator } from "../utils/textedit_value_validator.js";
 
-
-
 export function promptRegiterMember() {
     const marginRuleStyles = [{ 'margin-top': '15px' }]
 
