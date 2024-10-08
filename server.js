@@ -15,7 +15,7 @@ import { addSCC, updateSCC } from './routes_callbacks/parish/post/add_scc.js';
 import { getOutstations } from './routes_callbacks/parish/post/get_outstations.js';
 import { getSmallChristianCommunities } from './routes_callbacks/parish/post/get_sccs.js';
 import { getMembersFiltered } from './routes_callbacks/parish/post/get_members_filtered.js';
-import { addTitheRecord } from './routes_callbacks/parish/post/record_tithe.js';
+import { addTitheRecord, addTitheRecordByOutstation, loadAllOutstationLevelTitheRecords } from './routes_callbacks/parish/post/record_tithe.js';
 import { updateMemberDetails } from './routes_callbacks/parish/post/update_member.js';
 import { loadAllOfferingRecords } from './routes_callbacks/parish/post/get_all_offering_records.js';
 import { loadAllTitheRecords } from './routes_callbacks/parish/post/get_tithe_records.js';
@@ -30,7 +30,6 @@ import { addAssociation, deleteAssociation, getAssociations, updateAssociation }
 import { addAssociationLeader, addAssociationMember } from './routes_callbacks/parish/post/association.js';
 import { addOutstationLeader, getOutstationLeaders, removeOutstationLeader } from './routes_callbacks/parish/post/outstation_leaders.js';
 import { addLeaderToParish, getParishLeaders } from './routes_callbacks/parish/post/parish_level_leaders.js';
-
 
 // __________________ADMIN
 
@@ -109,12 +108,14 @@ server.post('/parish/add/association/member', addAssociationMember);
 server.post('/parish/update/association', updateAssociation);
 server.post('/parish/delete/association', deleteAssociation);
 
-
 /** FINANCE */
 
 // TITHE
 server.post('/parish/record/tithe', addTitheRecord);
 server.post('/parish/load/all/tithe/records', loadAllTitheRecords);
+// OUTSTION LEVEL
+server.post('/parish/record/outstation/level/tithe', addTitheRecordByOutstation);
+server.post('/parish/load/outstations/level/tithe/records', loadAllOutstationLevelTitheRecords);
 
 
 // OFFERING

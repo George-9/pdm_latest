@@ -19,6 +19,7 @@ export class DBDetails {
     static smallChritianCommunitiesCollection = 'small_christian_communties';
     static parishGroupsCollection = 'groups';
     static titheCollection = 'tithe';
+    static titheByOutstationsCollection = 'outstation_tithe';
     static offeringCollection = 'offering';
     static outstationsCollection = 'outstations';
     static projectsCollection = 'projects';

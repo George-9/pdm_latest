@@ -25,3 +25,46 @@ export async function addTitheRecord(req, resp) {
         return resp.json({ 'response': 'unauthorised request' });
     }
 }
+
+export async function addTitheRecordByOutstation(req, resp) {
+    const { parish_code, parish_password, tithe } = req.body;
+    if (!parish_code || !parish_password || !tithe) {
+        return resp.json({ 'response': 'wrong tithe details' });
+    }
+
+    if (await parishExists(parish_code, parish_password)) {
+        let saveResult = await MongoDBContract
+            .insertIntoCollection(
+                tithe,
+                parish_code,
+                DBDetails.titheByOutstationsCollection
+            );
+
+        return resp.json({
+            'response': saveResult
+                ? 'success'
+                : 'something went wrong'
+        });
+    } else {
+        return resp.json({ 'response': 'unauthorised request' });
+    }
+}
+
+export async function loadAllOutstationLevelTitheRecords(req, resp) {
+    const { parish_code, parish_password } = req.body;
+    if (!parish_code || !parish_password) {
+        return resp.json({ 'response': 'unknown request' });
+    }
+
+    if (await parishExists(parish_code, parish_password)) {
+        let offeringRecords = await MongoDBContract.findManyByFilterFromCollection(
+            parish_code,
+            DBDetails.titheByOutstationsCollection,
+            {}
+        );
+
+        return resp.json({ 'response': offeringRecords || [] });
+    } else {
+        return resp.json({ 'response': 'unauthorised request' });
+    }
+}

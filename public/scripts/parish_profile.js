@@ -10,6 +10,7 @@ import { showMembersReportsView as ShowMembersReportsView, promptRegiterMember, 
 import { promptMembersAddVolume as promptAddMembersVolume, viewMembersInVolume, viewVolumesPage } from "./components/view_callbacks/members_volume.js";
 import { promptAddOffering, showOfferingReportsByDateAndTypeOutsationView, showOfferingReportView } from "./components/view_callbacks/offering.js";
 import { promptAddOutstationView, viewOutstationsPage, viewOutstationsTable } from "./components/view_callbacks/outstation.js";
+import { promptAddOutstationLevelTithe, showParishLevelTitheRecords } from "./components/view_callbacks/outstationLevelTithe.js";
 import { showParishEventsView } from "./components/view_callbacks/parish_events.js";
 import { promptAddParishAddLeaders, showParishLeadersReport, showParishLeadersView } from "./components/view_callbacks/parish_leaders.js";
 import { promptAddStaffToParish as promptAddParishStaff, ViewAllParishStaff, ViewParishStaffByOutsation } from "./components/view_callbacks/parish_staff.js";
@@ -18,7 +19,7 @@ import { promptLogIn } from "./components/view_callbacks/prompt_login.js";
 import { promptAddSCCView, showFilterebleSCCsPage, viewSCCsPage } from "./components/view_callbacks/scc.js";
 import { promptAddTitheView, showTitheReportsView } from "./components/view_callbacks/tithe.js";
 import { ParishDataHandle } from "./data_pen/parish_data_handle.js";
-import { getParishDonationsRecords, getParishGroupsRecords, getParishMembers, getParishMembersVolumes, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishStaff, getParishTitheRecords, getParishEvents, getParishAssociations, getParishLeaders } from "./data_source/main.js";
+import { getParishDonationsRecords, getParishGroupsRecords, getParishMembers, getParishMembersVolumes, getParishOfferingsRecords, getParishOutstations, getParishProjectsRecords, getParishSCCs, getParishStaff, getParishTitheRecords, getParishEvents, getParishAssociations, getParishLeaders, getOutstationsLevelTitheRecords } from "./data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "./data_source/other_sources.js";
 import { domCreate, domQuery, domQueryById } from "./dom/query.js";
 import { clearTextEdits } from "./dom/text_edit_utils.js";
@@ -60,7 +61,11 @@ const drawerMenus = [
         dataEntry,
         [
             new Menu('Offering', 'bi-cash', dataEntry, promptAddOffering),
-            new Menu('Tithe', 'bi-gift', dataEntry, promptAddTitheView),
+            new Menu('Tithe', 'bi-gift', dataEntry, promptAddTitheView,
+                [
+                    new SubMenu('outstation level', dataEntry, promptAddOutstationLevelTithe)
+                ]
+            ),
             new Menu('projects', 'bi-building-add', dataEntry, promptAddProject),
             new Menu('donations', 'bi-heart', dataEntry, promptAddDonationsView),
         ],
@@ -70,7 +75,11 @@ const drawerMenus = [
         'REPORTS',
         reportsClass,
         [
-            new Menu('tithe', 'bi-cash-coin', reportsClass, showTitheReportsView),
+            new Menu('tithe', 'bi-cash-coin', reportsClass, showTitheReportsView,
+                [
+                    new SubMenu('outstation level', reportsClass, showParishLevelTitheRecords),
+                ]
+            ),
             new Menu('offering', 'bi-cash-coin', reportsClass, showOfferingReportView,
                 [
                     new SubMenu('advanced search', reportsClass, showOfferingReportsByDateAndTypeOutsationView)
@@ -148,6 +157,7 @@ async function Main() {
         ParishDataHandle.parishMembersVolumes.push(...(await getParishMembersVolumes()));
         ParishDataHandle.parishAssociations.push(...(await getParishAssociations()));
         ParishDataHandle.parishLevelLeaders.push(...(await getParishLeaders()));
+        ParishDataHandle.outstationLevelTitheRecords.push(...(await getOutstationsLevelTitheRecords()));
 
         // ADD PRIESTS COMMUNITY AS AN SCC)
         ParishDataHandle.parishSCCs.push({

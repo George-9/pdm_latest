@@ -145,6 +145,19 @@ export async function getParishTitheRecords() {
 }
 
 /**
+ * fetches the whole list of parish level tithe records
+ * @returns { Promise<object[]> }
+ */
+export async function getOutstationsLevelTitheRecords() {
+    return (await Post(
+        '/parish/load/outstations/level/tithe/records',
+        {},
+        {
+            'requiresParishDetails': true
+        }))['response']
+}
+
+/**
  * fetches the whole list of parish projects records
  * @returns { Promise<object[]> }
  */

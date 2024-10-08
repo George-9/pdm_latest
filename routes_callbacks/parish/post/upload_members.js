@@ -1,9 +1,7 @@
-import { ObjectId } from "mongodb";
 import { DBDetails } from "../../../db_utils.js/db_parish_details.js";
 import { MongoDBContract } from "../../../db_utils.js/mongodatabase_contract.js";
 import { parishExists } from "../../../server_app/callback_utils.js";
-import { Logger } from "../../../debug_tools/Log.js";
-import { mapValuesToUppercase } from "../../../public/global_tools/objects_tools.js";
+import {Logger} from '../../../debug_tools/Log.js';
 
 export async function serverPost(
     url,
@@ -38,22 +36,19 @@ export async function uploadMembers(req, resp) {
         let insertCount = 0, skipped = 0;
 
         for (let i = 0; i < members.length; i++) {
-            const member = mapValuesToUppercase(members[i]);
+            const member = members[i];
             // Logger.log(member);
-
             try {
-                if (!member['name'] || !member['volume'] || !member['gender'] || !member['date_of_birth']
-                    || !member['telephone_number']) {
+                if (!member['name'] || !member['volume'] || !member['gender'] || !member['date_of_birth']) {
                     skipped += 1;
-                    // Logger.log('member not found');
-                    continue;
-                }
-
-                const GodParents = `${member['God_Parents']}`;
-                if (GodParents) {
-                    member['God_Parents'] = GodParents.includes(',')
-                        ? GodParents.split(',')
-                        : GodParents.split('.');
+                    console.log('skipped here...');
+                }else {
+                    const GODPARENTKEY = Object.keys(member).find(function (key) {
+                        return `${key}`.toUpperCase().match('GOD')
+                    });
+                    if (GODPARENTKEY) {
+                        const GODPARENTS = member[GODPARENTKEY];
+                    member[GODPARENTKEY] = GODPARENTS.includes(',')? GODPARENTS.split(','): GODPARENTS.split('.');
                 }
 
                 // const outstationId = new ObjectId(member['outstation_id']);
@@ -79,43 +74,30 @@ export async function uploadMembers(req, resp) {
                 // Logger.log(`existing outstation id: ${outstationExists._id}`);
                 // Logger.log(`scc exists: ${sccExists}`);
                 // Logger.log(outstationSCCPass);
-
+                
                 // if (outstationSCCPass) {
-                let existing = await MongoDBContract.collectionInstance(
+               
+                // member['member_number'] = memberNumber;
+                // Logger.log(`[${member}]`);
+                
+                const insertResult = await MongoDBContract.insertIntoCollection(
+                    member,
                     parish_code,
                     DBDetails.membersCollection
-                ).aggregate([{ $sort: { 'member_number': -1 } }])
-                    .limit(1)
-                    .toArray();
-
-
-                let memberNumber = 1;
-                if (existing && existing.length > 0) {
-                    memberNumber = parseInt(existing[0]['member_number']) + 1;
-                }
-                member['member_number'] = memberNumber;
-                // Logger.log(`[${member}]`);
-
-                const insertResult = await MongoDBContract
-                    .insertIntoCollection(member, parish_code, DBDetails.membersCollection);
-
+                );
+                
                 if (insertResult === true) {
                     insertCount += 1;
                     uploads.push(member);
                 } else {
+                    Logger.log(`[escarpment]`);
                     skipped += 1;
-                    // skips.push(member);
                 }
-                // } else {
-                //     skipped += 1;
-                //     // skips.push(member);
-                // }
-            } catch (error) {
-                // Logger.log(`${member['outstation_id']}`);
-                // console.log(error);
-                skipped += 1;
-                // skips.push(member);
             }
+        } catch (error) {
+                Logger.log(`error: ${error}`);
+                skipped += 1;
+               }
         }
 
         return resp.json({
@@ -131,20 +113,20 @@ export async function uploadMembers(req, resp) {
 // export async function uploadMembers(req, resp) {
 //     const { parish_code, parish_password, members } = req.body;
 //     if (!parish_code || !parish_password || !members) {
-//         return resp.json({ 'response': 'empty details' });
+    //         return resp.json({ 'response': 'empty details' });
 //     }
 
 //     if (await parishExists(parish_code, parish_password)) {
-//         const uploads = [];
-//         const skips = [];
-//         let insertCount = 0, skipped = 0;
-
-//         const batchSize = 100; // Define your batch size
-//         for (let i = 0; i < members.length; i += batchSize) {
-//             const batch = members.slice(i, i + batchSize);
-//             await processBatch(batch, parish_code, uploads, skips);
-//         }
-
+    //         const uploads = [];
+    //         const skips = [];
+    //         let insertCount = 0, skipped = 0;
+    
+    //         const batchSize = 100; // Define your batch size
+    //         for (let i = 0; i < members.length; i += batchSize) {
+        //             const batch = members.slice(i, i + batchSize);
+        //             await processBatch(batch, parish_code, uploads, skips);
+        //         }
+        
 //         return resp.json({
 //             'response': `successfully uploaded ${insertCount} and skipped ${skipped}`,
 //             'uploaded': uploads,
