@@ -1,27 +1,18 @@
 import { MongoClient } from "mongodb";
 import { DBDetails } from "./db_parish_details.js";
 
-const MONGODB_PRODUCTION_CONNECTION_LINK = `mongodb://localhost:27017`;
+const MONGODB_PRODUCTION_CONNECTION_LINK = `mongodb://127.0.0.1:27017`;
 
 export class MongoDBContract {
     /**@type {MongoClient} */
-    static connectedMongoCli;
-
     static get connectedClient() {
-        if (MongoDBContract.connectedMongoCli) {
-            return MongoDBContract.connectedMongoCli;
-        }
-        else {
-            MongoDBContract.connectedMongoCli = new MongoClient(
-                MONGODB_PRODUCTION_CONNECTION_LINK,
-                {
-                    socketTimeoutMS: 30000,
-                    connectTimeoutMS: 100000,
-                }
-            )
-        }
-
-        return MongoDBContract.connectedMongoCli;
+        return new MongoClient(
+            MONGODB_PRODUCTION_CONNECTION_LINK,
+            {
+                socketTimeoutMS: 30000,
+                connectTimeoutMS: 100000,
+            }
+        )
     }
 
     static adminDB() { return MongoDBContract.connectedClient.db('admin') }
