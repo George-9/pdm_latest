@@ -31,13 +31,16 @@ export async function uploadMembers(req, resp) {
     }
 
     if (await parishExists(parish_code, parish_password)) {
-        const uploads = [];
-        const skips = [];
-        let insertCount = 0, skipped = 0;
-
         for (let i = 0; i < members.length; i++) {
             const member = members[i];
-            // Logger.log(member);
+            console.log('member',member);
+            
+            if (member['_id']) {
+                delete member['_id'];
+            }
+            
+            console.log('member',member);
+            
             try {
                 if (!member['name'] || !member['volume'] || !member['gender'] || !member['date_of_birth']) {
                     skipped += 1;
@@ -50,61 +53,23 @@ export async function uploadMembers(req, resp) {
                         const GODPARENTS = member[GODPARENTKEY];
                     member[GODPARENTKEY] = GODPARENTS.includes(',')? GODPARENTS.split(','): GODPARENTS.split('.');
                 }
-
-                // const outstationId = new ObjectId(member['outstation_id']);
-                // const outstationExists = await MongoDBContract
-                //     .findOneByFilterFromCollection(
-                //         parish_code,
-                //         DBDetails.outstationsCollection,
-                //         { '_id': outstationId }
-                //     );
-
-                // const sccExists = await MongoDBContract
-                //     .findOneByFilterFromCollection(
-                //         parish_code,
-                //         DBDetails.smallChritianCommunitiesCollection,
-                //         {
-                //             '_id': new ObjectId(member['scc_id']),
-                //             'outstation_id': member['outstation_id']
-                //         }
-                //     );
-
-
-                // const outstationSCCPass = ((outstationExists !== null) && (sccExists !== null));
-                // Logger.log(`existing outstation id: ${outstationExists._id}`);
-                // Logger.log(`scc exists: ${sccExists}`);
-                // Logger.log(outstationSCCPass);
                 
-                // if (outstationSCCPass) {
-               
-                // member['member_number'] = memberNumber;
-                // Logger.log(`[${member}]`);
+                const insertResult = await MongoDBContract.dbInstance(
+                    parish_code)
+                    .collection(DBDetails.membersCollection)
+                    .insertMany(members);
                 
-                const insertResult = await MongoDBContract.insertIntoCollection(
-                    member,
-                    parish_code,
-                    DBDetails.membersCollection
-                );
-                
-                if (insertResult === true) {
-                    insertCount += 1;
-                    uploads.push(member);
-                } else {
-                    Logger.log(`[escarpment]`);
-                    skipped += 1;
-                }
+                    return resp.json({
+                        'response': `successfully uploaded ${insertResult.insertedCount} and skipped ${members.length - insertResult.insertedCount}`,
+                        'uploaded': uploads,
+                        'skips': skips
+                    });
             }
         } catch (error) {
                 Logger.log(`error: ${error}`);
-                skipped += 1;
                }
         }
 
-        return resp.json({
-            'response': `successfully uploaded ${insertCount} and skipped ${skipped}`,
-            'uploaded': uploads,
-            'skips': skips
-        });
     } else {
         return resp.json({ 'response': 'unauthorised request' });
     }
