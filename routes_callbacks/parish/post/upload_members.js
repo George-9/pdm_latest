@@ -69,9 +69,9 @@ export async function uploadMembers(req, resp) {
         }
         
         return resp.json({
-            'response': `successfully uploaded ${insertResult.insertedCount} and skipped ${members.length - insertResult.insertedCount}`,
-            'uploaded': uploads,
-            'skips': skips
+            'response': `successfully uploaded ${inserts} and skipped ${skipped}`,
+            'uploaded': inserts,
+            'skips': skipped
         });
 
     } else {

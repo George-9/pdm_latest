@@ -22,6 +22,7 @@ export function promptUploadMembers() {
             const data = event.target.result;
             const jsonArray = JSON.parse(data);
 
+            /**@type {object[]} */
             let correctedData = jsonArray.map(function (member) {
                 let tmp = { ...member, 'member_number': member['NO'] };
 
@@ -39,13 +40,17 @@ export function promptUploadMembers() {
                 return mapValuesToUppercase(tmp);
             });
 
-            console.log(correctedData);
-            let result = await Post('/parish/upload/members', { members: correctedData }, { 'requiresParishDetails': true });
-            console.log(result);
+            let limit = 300;
+            for (let i = 0; i < correctedData.length; i += limit, limit += 300) {
+                const segement = correctedData.slice(i, limit);
+                let result = await Post('/parish/upload/members', { members: segement }, { 'requiresParishDetails': true });
+                console.log(result);
 
-            if (result) {
-                MessegePopup.showMessegePuppy([MondoText({ 'text': result['response'] })]);
+                if (result) {
+                    MessegePopup.showMessegePuppy([MondoText({ 'text': result['response'] })]);
+                }
             }
+
         };
 
         reader.readAsText(file);
