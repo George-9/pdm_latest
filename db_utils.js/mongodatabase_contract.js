@@ -6,8 +6,7 @@ const MONGODB_PRODUCTION_CONNECTION_LINK = `mongodb://127.0.0.1:27017`;
 export class MongoDBContract {
     /**@type {MongoClient} */
     static get connectedClient() {
-        return new MongoClient(
-            MONGODB_PRODUCTION_CONNECTION_LINK,
+        return new MongoClient(MONGODB_PRODUCTION_CONNECTION_LINK,
             {
                 socketTimeoutMS: 30000,
                 connectTimeoutMS: 100000,

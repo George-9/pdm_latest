@@ -30,16 +30,14 @@ export async function uploadMembers(req, resp) {
         return resp.json({ 'response': 'empty details' });
     }
 
+    let inserts = 0,skipped=0;
+
     if (await parishExists(parish_code, parish_password)) {
         for (let i = 0; i < members.length; i++) {
             const member = members[i];
-            console.log('member',member);
-            
             if (member['_id']) {
                 delete member['_id'];
             }
-            
-            console.log('member',member);
             
             try {
                 if (!member['name'] || !member['volume'] || !member['gender'] || !member['date_of_birth']) {
@@ -53,22 +51,28 @@ export async function uploadMembers(req, resp) {
                         const GODPARENTS = member[GODPARENTKEY];
                     member[GODPARENTKEY] = GODPARENTS.includes(',')? GODPARENTS.split(','): GODPARENTS.split('.');
                 }
-                
+                    
                 const insertResult = await MongoDBContract.dbInstance(
                     parish_code)
                     .collection(DBDetails.membersCollection)
-                    .insertMany(members);
+                    .insertOne(member);
                 
-                    return resp.json({
-                        'response': `successfully uploaded ${insertResult.insertedCount} and skipped ${members.length - insertResult.insertedCount}`,
-                        'uploaded': uploads,
-                        'skips': skips
-                    });
-            }
-        } catch (error) {
+                    if (insertResult.insertedId) {
+                        inserts+=1
+                    }else{
+                        skipped+=1;
+                    }
+                }
+            } catch (error) {
                 Logger.log(`error: ${error}`);
-               }
+            }
         }
+        
+        return resp.json({
+            'response': `successfully uploaded ${insertResult.insertedCount} and skipped ${members.length - insertResult.insertedCount}`,
+            'uploaded': uploads,
+            'skips': skips
+        });
 
     } else {
         return resp.json({ 'response': 'unauthorised request' });
