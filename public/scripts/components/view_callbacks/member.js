@@ -1,6 +1,6 @@
 import { mapValuesToUppercase } from "../../../global_tools/objects_tools.js";
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getGroupMembers, getMemberAgeToday, getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, getVolumeById, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
+import { getGroupMembers, getMemberAgeToday, getOutstationById, getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, getVolumeById, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
 import { getParishMembers } from "../../data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "../../data_source/other_sources.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
@@ -720,8 +720,8 @@ export function memberView(member) {
     const outstation = memberGetOutstation(member, ParishDataHandle.parishOutstations);
     const scc = memberGetSCC(member, ParishDataHandle.parishSCCs);
 
-    member['outstation'] = outstation['name'];
-    member['scc'] = scc['name'];
+    // member['outstation'] = outstation['name'];
+    // member['scc'] = scc['name'];
 
     function GodParentsView(member) {
         const column = Column({
@@ -824,16 +824,6 @@ export function memberView(member) {
 
                             if (key.match('God_Parents')) {
                                 return GodParentsView(member);
-                            }
-
-                            if (key.match('volume')) {
-                                return MondoText({
-                                    'text': `${getVolumeById(member[key]
-                                        ? member[key]
-                                        : { 'name': '' })['name']}`
-                                        .split('_')
-                                        .join(' ')
-                                });
                             }
 
                             return valueEditor;
@@ -957,22 +947,26 @@ export function showMemberEditView() {
 
         const searchKey = `${memberSearchEl.value}`.toLowerCase();
         const matchMembers = ParishDataHandle.parishMembers.filter(function (member) {
-            return `${member['name']}`.toLowerCase().match(searchKey);
+            return `${member['name']}`.toLowerCase().match(searchKey)
+                ||
+                member['member_number'] === searchKey
+                ||
+                member['no'] === searchKey;
         });
 
         for (let i = 0; i < matchMembers.length; i++) {
             const member = matchMembers[i];
             const memberName = member['name'];
-            const memberOutstationName = memberGetOutstation(member)['name'];
-            const membersccName = memberGetSCC(member['scc_id'])['name'];
+            // const memberOutstationName = mem (getOutstationById(member['outstation_id']))['name'];
+            // const membersccName = memberGetSCC(member['scc_id'])['name'];
 
             const view = Column({
                 'styles': [{ 'margin': '3px' }, { 'pading': '3px' }, { 'border': '1px solid grey' }, { 'border-radius': '3px' }],
                 'classlist': ['c-p'],
                 'children': [
                     MondoText({ 'text': memberName }),
-                    MondoText({ 'text': memberOutstationName }),
-                    MondoText({ 'text': membersccName }),
+                    // MondoText({ 'text': memberOutstationName }),
+                    // MondoText({ 'text': membersccName }),
                 ]
             });
 
