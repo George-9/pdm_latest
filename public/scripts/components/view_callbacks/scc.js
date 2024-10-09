@@ -193,12 +193,12 @@ export function showFilterebleSCCsPage() {
     const thead = domCreate('thead');
 
     thead.innerHTML = `
-        <tr>
+        <tr class="thd">
             <td>NO</td>
             <td>SCC</td>
             <td>FEAST DATE</td>
             <td>MEMBER COUNT</td>
-            </tr>
+        </tr>
             `
     addChildrenToView(table, [thead, tbody, tfoot]);
 

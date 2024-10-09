@@ -147,3 +147,9 @@
 .f-a-w {
     width: -webkit-fill-available;
 }
+
+
+/* table heading */
+.thd {
+    font-weight: 700;
+}

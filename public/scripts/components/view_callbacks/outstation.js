@@ -94,7 +94,19 @@ export function viewOutstationsTable() {
             <td>${sccCount}</td>
             <td>${memberCount}</td>
         `
-        table.appendChild(row);
+        tbody.appendChild(row);
+
+        if ((i + 1) === ParishDataHandle.parishOutstations.length) {
+
+
+            const lastRow = domCreate('tr');
+            lastRow.innerHTML = `
+        <td colspan="2">TOTAL</td>
+        <td>${ParishDataHandle.parishSCCs.length}</td>
+        <td>${ParishDataHandle.parishMembers.length}</td>
+        `
+            tbody.appendChild(lastRow);
+        }
     });
 
     const column = Column({
@@ -174,7 +186,6 @@ export function viewOutstationsPage() {
             viewMembersIcon.title = 'view members';
             addClasslist(viewMembersIcon, ['bi', 'bi-people-fill', 'bi-pad']);
             viewMembersIcon.onclick = function () {
-                viewOutstationMembersFilterableBySCCAndVolumeAndGroupAndAssociationAndBaptismDate(outstation);
             }
 
             let viewSCCsIcon = domCreate('i');
@@ -1236,169 +1247,5 @@ export function viewOutstationMembersFilterableBySCCAndVolumeAndGroupAndAssociat
         'modalChildStyles': [{}],
         'fullScreen': false,
         'dismisible': true,
-    });
-}
-
-export function viewOutstationMembersFilterableBySCCAndVolumeAndGroupAndAssociationAndBaptismDate(outstation) {
-    const tableId = 'outstation-members-table';
-
-    const table = domCreate('table');
-    table.id = tableId;
-
-    const thead = domCreate('thead');
-    const tbody = domCreate('tbody');
-    const tfoot = domCreate('tfoot');
-
-    thead.innerHTML = `
-        <tr>
-            <td>NO</td>
-            <td>NAME</td>
-            <td>TELEPHONE</td>
-            <td>SCC</td>
-            <td>VOLUME</td>
-            <td>GROUP</td>
-            <td>ASSOCIATION</td>
-            <td>BAPTISM DATE</td>
-        </tr>
-    `
-    addChildrenToView(table, [thead, tbody, tfoot]);
-
-    const sccPicker = MondoSelect({ 'styles': [{ 'margin-bottom': '10px' }] });
-    ParishDataHandle.parishSCCs.forEach(function (scc) {
-        sccPicker.innerHTML += `<option value="${scc['_id']}">${scc['name']}</option>`;
-    });
-
-    const volumePicker = MondoSelect({ 'styles': [{ 'margin-bottom': '10px' }] });
-    ParishDataHandle.parishMembersVolumes.forEach(function (volume) {
-        volumePicker.innerHTML += `<option value="${volume['_id']}">${volume['name']}</option>`;
-    });
-
-    const groupPicker = MondoSelect({ 'styles': [{ 'margin-bottom': '10px' }] });
-    ParishDataHandle.parishGroups.forEach(function (group) {
-        groupPicker.innerHTML += `<option value="${group['_id']}">${group['name']}</option>`;
-    });
-
-    const associationPicker = MondoSelect({ 'styles': [{ 'margin-bottom': '10px' }] });
-    ParishDataHandle.parishAssociations.forEach(function (association) {
-        associationPicker.innerHTML += `<option value="${association['_id']}">${association['name']}</option>`;
-    });
-
-    function loadView(sccId = null, volumeId = null, groupId = null, associationId = null) {
-        tbody.innerHTML = ''; // Clear existing table data
-
-        let members = ParishDataHandle.parishMembers.filter(function (member) {
-            return member['outstation_id'] === outstation['_id'];
-        });
-
-        if (sccId) {
-            members = members.filter(function (member) {
-                return member['scc_id'] === sccId;
-            });
-        }
-
-        if (volumeId) {
-            members = members.filter(function (member) {
-                return member['volume'] === volumeId;
-            });
-        }
-
-        if (groupId) {
-            members = members.filter(function (member) {
-                return member['group'] === groupId;
-            });
-        }
-
-        if (associationId) {
-            members = members.filter(function (member) {
-                return member['association'] === associationId;
-            });
-        }
-
-        members.forEach(function (member, i) {
-            let scc = ParishDataHandle.parishSCCs.find(function (scc) {
-                return scc['_id'] === member['scc_id'];
-            }) || { 'name': 'EVERY SCC' };
-
-            let volume = ParishDataHandle.parishMembersVolumes.find(function (volume) {
-                return volume['_id'] === member['volume'];
-            }) || { 'name': 'EVERY VOLUME' };
-
-            let group = ParishDataHandle.parishGroups.find(function (group) {
-                return group['_id'] === member['group'];
-            }) || { 'name': 'EVERY GROUP' };
-
-            let association = ParishDataHandle.parishAssociations.find(function (association) {
-                return association['_id'] === member['association'];
-            }) || { 'name': 'EVERY ASSOCIATION' };
-
-            const row = domCreate('tr');
-            row.innerHTML = `
-                <td>${i + 1}</td>
-                <td>${member['name']}</td>
-                <td>${member['telephone_number']}</td>
-                <td>${scc['name']}</td>
-                <td>${volume['name']}</td>
-                <td>${group['name']}</td>
-                <td>${association['name']}</td>
-                <td>${member['date_of_birth']}</td>
-            `
-            table.appendChild(row);
-        });
-    }
-
-    // Initial table load (showing all members)
-    loadView();
-
-    // Event listener for volume selector change
-    sccPicker.addEventListener('change', function () {
-        const selectedSccId = sccPicker.value;
-        const selectedVolumeId = volumePicker.value;
-        const selectedGroupId = groupPicker.value;
-        const selectedAssociationId = associationPicker.value;
-        loadView(selectedSccId, selectedVolumeId, selectedGroupId, selectedAssociationId);
-    });
-
-    volumePicker.addEventListener('change', function () {
-        const selectedSccId = sccPicker.value;
-        const selectedVolumeId = volumePicker.value;
-        const selectedGroupId = groupPicker.value;
-        const selectedAssociationId = associationPicker.value;
-        loadView(selectedSccId, selectedVolumeId, selectedGroupId, selectedAssociationId);
-    });
-
-    groupPicker.addEventListener('change', function () {
-        const selectedSccId = sccPicker.value;
-        const selectedVolumeId = volumePicker.value;
-        const selectedGroupId = groupPicker.value;
-        const selectedAssociationId = associationPicker.value;
-        loadView(selectedSccId, selectedVolumeId, selectedGroupId, selectedAssociationId);
-    });
-
-    associationPicker.addEventListener('change', function () {
-        const selectedSccId = sccPicker.value;
-        const selectedVolumeId = volumePicker.value;
-        const selectedGroupId = groupPicker.value;
-        const selectedAssociationId = associationPicker.value;
-        loadView(selectedSccId, selectedVolumeId, selectedGroupId, selectedAssociationId);
-    });
-
-    const column = Column({
-        'styles': [{ 'margin': '10px' }, { 'padding': '10px' }],
-        'classlist': ['f-w', 'a-c', 'just-center', 'scroll-y'],
-        'children': [
-            HorizontalScrollView({
-                'children': [sccPicker, volumePicker, groupPicker, associationPicker]
-            }),
-            table
-        ]
-    });
-
-    ModalExpertise.showModal({
-        'topRowUserActions': [new PDFPrintButton(tableId)],
-        'modalHeadingStyles': [{ 'background': 'royalblue' }, { 'color': 'white' }],
-        'actionHeading': `${outstation['name']} outstation members`,
-        'children': [column],
-        'modalChildStyles': [{}],
-        'fullScreen': true
     });
 }
