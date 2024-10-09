@@ -74,8 +74,8 @@ export function viewOutstationsTable() {
     addChildrenToView(table, [thead, tbody, tfoot]);
 
     PDFPrintButton.printingHeading = `
-        ${LocalStorageContract.completeParishName()}
-        Outstations Report
+        ${LocalStorageContract.completeParishName()}\
+        Outstations Report\
     `.toUpperCase()
 
     ParishDataHandle.parishOutstations.forEach(function (outstation, i) {
@@ -505,6 +505,8 @@ export function promptRemoveOutstationLeader(outstation) {
 }
 
 export function viewOutstationSCCs(outstation) {
+    PDFPrintButton.printingHeading = `${outstation['name']} Small Christian Communities`.toUpperCase();
+
     const tableId = 'outstation-sccs-table';
 
     const table = domCreate('table');

@@ -8,6 +8,7 @@ import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
 import { marginRuleStyles } from "../../parish_profile.js";
+import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { OutstationPicker } from "../tailored_ui/outstation_picker.js";
@@ -130,6 +131,7 @@ export function viewSCCsPage() {
     });
 
     function loadView() {
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()} SMALL CHRISTIAN COMMUNITIES`
         sortedData.forEach(function (data, i) {
             const row = domCreate('tr');
             row.innerHTML = `
@@ -206,9 +208,10 @@ export function showFilterebleSCCsPage() {
     })
 
     function setSCCs() {
-
         let selectedOutstation = outstationPicker.value;
         let selectedOutstationSCCs = getOutstationSCCs(selectedOutstation);
+
+        PDFPrintButton.printingHeading = `${(JSON.parse(selectedOutstation))['name']} Outstation Small Christian Communities`.toUpperCase();
 
         console.log(selectedOutstationSCCs);
         console.log(selectedOutstation);
@@ -218,7 +221,7 @@ export function showFilterebleSCCsPage() {
 
         let count;
         selectedOutstationSCCs.forEach(function (scc, i) {
-            let members = getSCCMembersFromList(getOutstationMembers(selectedOutstation), scc).length;
+            let members = getSCCMembersFromList(getOutstationMembers(selectedOutstation), scc).length || 0;
 
             const row = domCreate('tr');
             row.innerHTML = `
@@ -233,9 +236,9 @@ export function showFilterebleSCCsPage() {
 
         const priestCommunityRow = domCreate('tr');
         priestCommunityRow.innerHTML = `
-            <td>${count + 2}</td>
-            <td>${PRIESTS_COMMUNITY_NAME}</td>
-            <td>${getOutstationMembers(selectedOutstation).filter(function (member) {
+        <td>${count + 2}</td>
+        <td>${PRIESTS_COMMUNITY_NAME}</td>
+        <td>${getOutstationMembers(selectedOutstation).filter(function (member) {
             return member['scc_id'] === PRIESTS_COMMUNITY_NAME
         }).length}</td>
         `
@@ -243,8 +246,8 @@ export function showFilterebleSCCsPage() {
 
         const lastRow = domCreate('tr');
         lastRow.innerHTML = `
-            <td colspan="2">TOTAL</td>
-            <td>${getOutstationMembers(selectedOutstation).length}</td>
+        <td colspan="3">TOTAL</td>
+        <td>${getOutstationMembers(selectedOutstation).length}</td>
         `
         tfoot.appendChild(lastRow);
     }
