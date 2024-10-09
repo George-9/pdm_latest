@@ -226,8 +226,8 @@ export function showFilterebleSCCsPage() {
             const row = domCreate('tr');
             row.innerHTML = `
                 <td>${i + 1}</td>
-                <td>${scc['name']}</td>
-                <td>${scc['feast_date'] ?? 'not set'}</td>
+                <td>${`${scc['name']}`.trim().toUpperCase()}</td>
+                <td>${`${scc['feast_date'] ?? 'not set'}`.trim().toUpperCase()}</td>
                 <td>${members}</td>
             `
             tbody.appendChild(row);
@@ -237,7 +237,7 @@ export function showFilterebleSCCsPage() {
         const priestCommunityRow = domCreate('tr');
         priestCommunityRow.innerHTML = `
         <td>${count + 2}</td>
-        <td>${PRIESTS_COMMUNITY_NAME}</td>
+        <td>${`${PRIESTS_COMMUNITY_NAME}`.trim().toUpperCase()}</td>
         <td>${getOutstationMembers(selectedOutstation).filter(function (member) {
             return member['scc_id'] === PRIESTS_COMMUNITY_NAME
         }).length}</td>

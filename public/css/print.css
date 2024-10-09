@@ -9,12 +9,12 @@
 
     tr,
     td {
-        border: 1px solid grey;
+        border: 1px solid black;
     }
 
     thead,
     tfoot {
-        font-weight: 500;
+        font-weight: 500 !important;
     }
 
 }
