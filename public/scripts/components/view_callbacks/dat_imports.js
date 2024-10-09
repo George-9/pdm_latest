@@ -19,29 +19,34 @@ export function promptUploadMembers() {
     function readExcel(file) {
         const reader = new FileReader();
         reader.onload = async function (event) {
-            const data = event.target.result;
-            const jsonArray = JSON.parse(data);
+            const fileData = event.target.result;
+            const workBook = XLSX.read(fileData, { 'type': 'binary' });
+            const sheetNames = workBook.SheetNames;
+            const sheet1Data = workBook.Sheets[sheetNames[0]];
+            const correctedData = XLSX.utils.sheet_to_json(sheet1Data);
 
-            /**@type {object[]} */
-            let correctedData = jsonArray.map(function (member) {
-                let tmp = { ...member, 'member_number': member['NO'] };
+            // const jsonArray = JSON.parse(data);
 
-                if (!tmp['gender']) {
-                    tmp['gender'] = '_';
-                }
+            // /**@type {object[]} */
+            // let correctedData = jsonArray.map(function (member) {
+            //     let tmp = { ...member, 'member_number': member['NO'] };
 
-                if (!tmp['volume']) {
-                    tmp['volume'] = '_';
-                }
+            //     if (!tmp['gender']) {
+            //         tmp['gender'] = '_';
+            //     }
 
-                delete tmp['_id'];
-                delete tmp['NO'];
+            //     if (!tmp['volume']) {
+            //         tmp['volume'] = '_';
+            //     }
 
-                return mapValuesToUppercase(tmp);
-            });
+            //     delete tmp['_id'];
+            //     delete tmp['NO'];
 
-            let limit = 300;
-            for (let i = 0; i < correctedData.length; i += limit, limit += 300) {
+            //     return mapValuesToUppercase(tmp);
+            // });
+
+            let limit = 100;
+            for (let i = 0; i < correctedData.length; i += limit) {
                 const segement = correctedData.slice(i, limit);
                 let result = await Post('/parish/upload/members', { members: segement }, { 'requiresParishDetails': true });
                 console.log(result);
@@ -53,7 +58,7 @@ export function promptUploadMembers() {
 
         };
 
-        reader.readAsText(file);
+        reader.readAsBinaryString(file);
     }
 
     submitButton.onclick = function (ev) {
