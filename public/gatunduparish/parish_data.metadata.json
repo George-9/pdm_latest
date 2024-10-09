@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"682dcd42397a48b2b0311b6fefa2f83f","collectionName":"parish_data","type":"collection"}
