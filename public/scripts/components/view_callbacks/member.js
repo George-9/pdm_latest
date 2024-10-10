@@ -445,7 +445,10 @@ export function showMembersReportsView() {
     const tbody = domCreate('tbody');
     addChildrenToView(table, [tableHeader, tbody]);
 
-    outstationPicker.addEventListener('change', setViews)
+    outstationPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
+        setViews();
+    });
 
     // set the heading of the currently selected outstation
 
