@@ -445,13 +445,20 @@ export function showMembersReportsView() {
     const tbody = domCreate('tbody');
     addChildrenToView(table, [tableHeader, tbody]);
 
-    outstationPicker.addEventListener('change', function (ev) {
-        ev.preventDefault();
+    outstationPicker.addEventListener('change', setViews)
 
+    // set the heading of the currently selected outstation
+
+    function setViews() {
+        tbody.replaceChildren([]);
         sccPicker.replaceChildren([]);
 
         const outstation = JSON.parse(outstationPicker.value);
         let sccs = getOutstationSCCs(outstation);
+
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
+             ${outstation['name']} Outstation
+             ${sccPicker.value['name']} SCC members`.toUpperCase();
 
         for (let i = 0; i < sccs.length; i++) {
             const scc = sccs[i];
@@ -464,59 +471,47 @@ export function showMembersReportsView() {
         }
 
         addPriestCommunityOptionToPicker(sccPicker);
-
         sccPicker.options[0].selected = true;
-        // set the heading of the currently selected outstation
-        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
-         ${JSON.parse(outstationPicker.value)['name']} Outstation . ${JSON.parse(sccPicker.value)['name']} SCC members`.toUpperCase();
 
-        const setViews = function () {
-            PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
-             ${JSON.parse(outstationPicker.value)['name']} Outstation . ${JSON.parse(sccPicker.value)['name']} SCC members`.toUpperCase();
+        let outstationMembers = getOutstationMembers(outstationPicker.value);
+        outstationMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
 
-            let outstationMembers = getOutstationMembers(outstationPicker.value);
-            outstationMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
-            tbody.replaceChildren([]);
+        for (let i = 0; i < outstationMembers.length; i++) {
+            const member = outstationMembers[i];
+            const row = domCreate('tr');
 
-            for (let i = 0; i < outstationMembers.length; i++) {
-                const member = outstationMembers[i];
-                const row = domCreate('tr');
-
-                let telephoneNumber = member['telephone_number'];
-                row.innerHTML = `
+            let telephoneNumber = member['telephone_number'];
+            row.innerHTML = `
                     <td>${i + 1}</td>
                     <td>${member['name']}</td>
                     <td><a href="${'tel:' + telephoneNumber}">${telephoneNumber}</a></td>
-                `
-                addClasslist(row, ['highlightable'])
-                // const viewMemberTd = domCreate('td');
-                // const tdContent = domCreate('i');
-                // addClasslist(tdContent, ['bi', 'bi-arrows-angle-expand']);
-
-                row.onclick = function (ev) {
-                    if (ev.target === row) {
-                        ModalExpertise.showModal({
-                            'actionHeading': `${member['name']}`.toUpperCase(),
-                            'modalHeadingStyles': [{ 'background-color': 'dodgerblue' }, { 'color': 'white' }],
-                            'modalChildStyles': [{ 'width': 'fit-content' }],
-                            'children': [memberView(member)]
-                        });
-                    }
+                `;
+            addClasslist(row, ['highlightable']);
+            // const viewMemberTd = domCreate('td');
+            // const tdContent = domCreate('i');
+            // addClasslist(tdContent, ['bi', 'bi-arrows-angle-expand']);
+            row.onclick = function (ev) {
+                if (ev.target === row) {
+                    ModalExpertise.showModal({
+                        'actionHeading': `${member['name']}`.toUpperCase(),
+                        'modalHeadingStyles': [{ 'background-color': 'dodgerblue' }, { 'color': 'white' }],
+                        'modalChildStyles': [{ 'width': 'fit-content' }],
+                        'children': [memberView(member)]
+                    });
                 }
+            };
 
-                // addChildrenToView(viewMemberTd, [tdContent]);
-                // const printMemberView = domCreate('td');
-                // const printTdContent = new PDFPrintButton('');
-                // addChildrenToView(printMemberView, [printTdContent]);
-                // addChildrenToView(row, [viewMemberTd]);
-
-                tbody.appendChild(row);
-            }
+            // addChildrenToView(viewMemberTd, [tdContent]);
+            // const printMemberView = domCreate('td');
+            // const printTdContent = new PDFPrintButton('');
+            // addChildrenToView(printMemberView, [printTdContent]);
+            // addChildrenToView(row, [viewMemberTd]);
+            tbody.appendChild(row);
         }
+    }
 
-        setViews();
-        sccPicker.addEventListener('change', setViews);
-    });
+    setViews();
+    sccPicker.addEventListener('change', setViews);
 
     const rowStyle = [{ 'width': '100%' }], classlist = ['a-c', 'space-between'],
         styles = [

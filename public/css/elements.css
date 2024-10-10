@@ -26,9 +26,9 @@ table {
     font-family: sans-serif;
     font-size: 0.8rem;
     letter-spacing: 1px;
-    width: 100%;
+    width: -webkit-fill-available;
     /* Make tables responsive */
-    max-width: 100%;
+    /* max-width: fit-content; */
     /* Prevent overflow on smaller screens */
     table-layout: fixed;
     /* For even column distribution */

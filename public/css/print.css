@@ -1,4 +1,8 @@
 @media print {
+    * {
+        width: fit-content !important;
+    }
+
     table {
         border-collapse: collapse !important;
     }

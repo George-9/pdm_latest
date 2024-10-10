@@ -19,10 +19,10 @@ export const OfferingTypes = {
     'SUNDAY OFFERING': 'sunday_offering',
     'OTHER OFFERING': 'other_offering',
     // CATHOLIC COLLECTIONS
-    'PETER\' PENCE': 'peter_pence',
+    'PETER\'S PENCE': 'peter_pence',
     'MISSION SUNDAY': 'mission_sunday',
     'EPIPHANY': 'epiphany',
-    'HOLY SEPUCHZE': 'holy_sepuchze',
+    'HOLY SEPULCHRE': 'holy_sepuchze',
     'VOCATION SUNDAY': 'vocation_sunday',
     'KENDNA': 'kendna'
 }
@@ -122,7 +122,6 @@ export async function showOfferingReportView() {
     table.id = offeringTableId;
     StyleView(table, [{
         'margin': '20px',
-        'min-width': '300px',
         'border-collapse': 'collapse'
     }]);
 
@@ -219,7 +218,9 @@ export async function showOfferingReportView() {
     });
 
     function showWholeParishOfferingRecords() {
-        PDFPrintButton.printingHeading = LocalStorageContract.completeParishName() + ' TITHE RECORDS'
+        PDFPrintButton.printingHeading = LocalStorageContract.completeParishName()
+            + offeringTypeOption.value
+            + ' TITHE RECORDS';
 
         const tableId = 'all-outstations-offering';
         const table = domCreate('table');
@@ -227,11 +228,11 @@ export async function showOfferingReportView() {
 
         const tableHead = domCreate('thead');
         tableHead.innerHTML = `
-            <tr>
+        <tr>
                 <td>NO</td>
                 <td>OUTSTATION</td>
                 <td>AMOUNT</td>
-            </tr>
+        </tr>
         `
         const tbody = domCreate('tbody');
         const tfoot = domCreate('tfoot');
@@ -308,7 +309,7 @@ export async function showOfferingReportView() {
     //         { 'color': 'black' },
     //         { 'width': 'auto' },
     //         { 'border-radius': '120px' },
-    //     ])
+    //     ]);
 
     ModalExpertise.showModal({
         'actionHeading': 'offering reports',
@@ -318,6 +319,10 @@ export async function showOfferingReportView() {
         'fullScreen': true,
         'dismisible': true,
     });
+
+
+    PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}\
+    ${(JSON.parse(outstationPicker.value)['name'])} OUTSTATION OFFERING RECORDS`;
 }
 
 export async function showOfferingReportsByDateAndTypeOutsationView() {
@@ -371,7 +376,6 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
     table.id = offeringTableId;
     StyleView(table, [{
         'margin': '20px',
-        'min-width': '300px',
         'border-collapse': 'collapse'
     }]);
 
@@ -390,13 +394,17 @@ export async function showOfferingReportsByDateAndTypeOutsationView() {
     addChildrenToView(table, [tableHeader, tbody, tFooter]);
 
     function setRowsValue() {
-        tbody.replaceChildren([]);
-        tFooter.replaceChildren([]);
-
         const outstation = JSON.parse(outstationPicker.value);
         const outstationId = outstation['_id'];
 
-        PDFPrintButton.printingHeading = `${outstation['name']} OUTSTATION OFFERING`;
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()} ${outstation['name']}\
+        OFFERING RECORDS
+        `;
+
+        tbody.replaceChildren([]);
+        tFooter.replaceChildren([]);
+
+        // PDFPrintButton.printingHeading = `${outstation['name']} OUTSTATION OFFERING`;
 
         let selectedOutstationOfferings = ParishDataHandle.parishOfferingRecords.filter(function (offering) {
             return offering['outstation_id'] === outstationId;

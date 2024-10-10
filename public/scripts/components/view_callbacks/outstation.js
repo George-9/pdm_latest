@@ -97,14 +97,12 @@ export function viewOutstationsTable() {
         tbody.appendChild(row);
 
         if ((i + 1) === ParishDataHandle.parishOutstations.length) {
-
-
             const lastRow = domCreate('tr');
             lastRow.innerHTML = `
-        <td colspan="2">TOTAL</td>
-        <td>${ParishDataHandle.parishSCCs.length}</td>
-        <td>${ParishDataHandle.parishMembers.length}</td>
-        `
+                <td colspan="2">TOTAL</td>
+                <td>${ParishDataHandle.parishSCCs.length}</td>
+                <td>${ParishDataHandle.parishMembers.length}</td>
+            `
             tbody.appendChild(lastRow);
         }
     });

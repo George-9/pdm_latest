@@ -6,6 +6,7 @@ import { domCreate } from "../../dom/query.js";
 import { clearTextEdits } from "../../dom/text_edit_utils.js";
 import { Post } from "../../net_tools.js";
 import { marginRuleStyles } from "../../parish_profile.js";
+import { LocalStorageContract } from "../../storage/LocalStorageContract.js";
 import { ModalExpertise } from "../actions/modal.js";
 import { MessegePopup } from "../actions/pop_up.js";
 import { PDFPrintButton } from "../tailored_ui/print_button.js";
@@ -66,6 +67,7 @@ export function promptAddGroupView() {
             button
         ]
     });
+
     StyleView(column, [{ 'padding': '10px' }]);
 
     ModalExpertise.showModal({
@@ -189,6 +191,9 @@ export function showGroupsOverview() {
     });
 
     function setGroups() {
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}\
+         GROUPS`
+
         if (ParishDataHandle.parishGroups.length > 1) {
             tbody.replaceChildren([]);
             tfoot.replaceChildren([]);
