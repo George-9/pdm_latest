@@ -22,6 +22,14 @@ export function promptRegiterMember() {
     const marginRuleStyles = [{ 'margin-top': '15px' }]
 
     const nameI = TextEdit({ 'placeholder': 'name', 'styles': marginRuleStyles });
+    nameI.addEventListener('keypress', function (ev) {
+        const key = ev.key;
+
+        if (key === 'Enter') {
+            registerMember(ev);
+        }
+    });
+
     const dobI = TextEdit({ 'placeholder': 'date of birth', 'type': 'date', 'styles': marginRuleStyles });
     const motherNameI = TextEdit({ 'placeholder': 'mother\'s name', 'styles': marginRuleStyles });
     const fatherNameI = TextEdit({ 'placeholder': 'father\'s name', 'styles': marginRuleStyles });
@@ -61,7 +69,6 @@ export function promptRegiterMember() {
         <option selected value="${PRIESTS_COMMUNITY_NAME}">${PRIESTS_COMMUNITY_NAME}</option>
         <option value="WITH SCC">WITH SCC</option>
     `;
-
 
     const outstationPicker = OutstationPicker({
         'outstations': ParishDataHandle.parishOutstations,
@@ -117,80 +124,83 @@ export function promptRegiterMember() {
     const button = Button({
         'text': 'submit',
         'styles': marginRuleStyles,
-        onclick: async function (ev) {
-            try {
-                TextEditValueValidator.validate('name', nameI);
-                // TextEditValueValidator.validate('date of birth', dobI);
-                TextEditValueValidator.validate('gender', genderPicker);
-                // TextEditValueValidator.validate('telephone number', motherNameI);
-                // TextEditValueValidator.validate('father\'s name', fatherNameI);
-                // TextEditValueValidator.validate('GodParent\'s name', GodParentNameI);
-
-                if (!outstationPicker.value || !sccPicker.value) {
-                    return MessegePopup.showMessegePuppy([
-                        MondoText({ 'text': 'outstation and SCC must not be empty' })
-                    ]);
-                }
-
-                // Validate volume selection
-                if (volumePicker.value === "") {
-                    return MessegePopup.showMessegePuppy([
-                        MondoText({ 'text': 'Please select a volume.' })
-                    ]);
-                }
-
-                // Get the _id of the selected volume
-                const selectedVolumeId = ParishDataHandle.parishMembersVolumes.find(v => v.name === volumePicker.value)?._id;
-
-                if (!selectedVolumeId) {
-                    return MessegePopup.showMessegePuppy([
-                        MondoText({ 'text': 'Invalid volume selected.' })
-                    ]);
-                }
-
-                let theGodParents = [...(`${GodParentNameI.value ?? ''}`.split(',') || [])];
-
-                const body = {
-                    member: mapValuesToUppercase({
-                        'name': `${nameI.value}`.trim(),
-                        'gender': genderPicker.value,
-                        'date_of_birth': `${dobI.value || (new Date()).toDateString()}`.trim(),
-                        'mother': `${motherNameI.value}`.trim(),
-                        'father': `${fatherNameI.value}`,
-                        'God_Parents': theGodParents,
-                        'outstation_id': (JSON.parse(outstationPicker.value))['_id'],
-                        'scc_id': (sccPicker.style.display === 'block' && sccPicker.value) ? (JSON.parse(sccPicker.value))['_id'] : 'PRIEST COMMUNITY',
-                        'baptismal_number': 0,
-                        'sacraments': [],
-                        'associations': [],
-                        'telephone_number': telephoneNumberI.value,
-                        'volume': selectedVolumeId, // Add selected volume _id
-                    })
-                };
-
-                Object.keys(body.member).forEach(function (key) {
-                    if (!body.member[key] || `${body.member[key]}`.match('undefined')) {
-                        body.member[key] = '_'
-                    }
-                });
-
-                let result = await Post('/parish/register/member',
-                    body,
-                    { 'requiresParishDetails': true }
-                );
-
-                const msg = result['response'];
-                MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
-
-                if (msg.match('success') || msg.match('save')) {
-                    clearTextEdits([nameI, dobI, motherNameI, fatherNameI, GodParentNameI]);
-                    ParishDataHandle.parishMembers = await getParishMembers();
-                }
-            } catch (error) {
-                MessegePopup.showMessegePuppy([MondoText({ 'text': error })]);
-            }
-        }
+        onclick: registerMember
     });
+
+
+    async function registerMember(ev) {
+        try {
+            TextEditValueValidator.validate('name', nameI);
+            // TextEditValueValidator.validate('date of birth', dobI);
+            TextEditValueValidator.validate('gender', genderPicker);
+            // TextEditValueValidator.validate('telephone number', motherNameI);
+            // TextEditValueValidator.validate('father\'s name', fatherNameI);
+            // TextEditValueValidator.validate('GodParent\'s name', GodParentNameI);
+
+            if (!outstationPicker.value || !sccPicker.value) {
+                return MessegePopup.showMessegePuppy([
+                    MondoText({ 'text': 'outstation and SCC must not be empty' })
+                ]);
+            }
+
+            // Validate volume selection
+            if (volumePicker.value === "") {
+                return MessegePopup.showMessegePuppy([
+                    MondoText({ 'text': 'Please select a volume.' })
+                ]);
+            }
+
+            // Get the _id of the selected volume
+            const selectedVolumeId = ParishDataHandle.parishMembersVolumes.find(v => v.name === volumePicker.value)?._id;
+
+            if (!selectedVolumeId) {
+                return MessegePopup.showMessegePuppy([
+                    MondoText({ 'text': 'Invalid volume selected.' })
+                ]);
+            }
+
+            let theGodParents = [...(`${GodParentNameI.value ?? ''}`.split(',') || [])];
+
+            const body = {
+                member: mapValuesToUppercase({
+                    'name': `${nameI.value}`.trim(),
+                    'gender': genderPicker.value,
+                    'date_of_birth': `${dobI.value || (new Date()).toDateString()}`.trim(),
+                    'mother': `${motherNameI.value}`.trim(),
+                    'father': `${fatherNameI.value}`,
+                    'God_Parents': theGodParents,
+                    'outstation_id': (JSON.parse(outstationPicker.value))['_id'],
+                    'scc_id': (sccPicker.style.display === 'block' && sccPicker.value) ? (JSON.parse(sccPicker.value))['_id'] : 'PRIEST COMMUNITY',
+                    'baptismal_number': 0,
+                    'sacraments': [],
+                    'associations': [],
+                    'telephone_number': telephoneNumberI.value,
+                    'volume': selectedVolumeId, // Add selected volume _id
+                })
+            };
+
+            Object.keys(body.member).forEach(function (key) {
+                if (!body.member[key] || `${body.member[key]}`.match('undefined')) {
+                    body.member[key] = '_'
+                }
+            });
+
+            let result = await Post('/parish/register/member',
+                body,
+                { 'requiresParishDetails': true }
+            );
+
+            const msg = result['response'];
+            MessegePopup.showMessegePuppy([MondoText({ 'text': msg })]);
+
+            if (msg.match('success') || msg.match('save')) {
+                clearTextEdits([nameI, dobI, motherNameI, fatherNameI, GodParentNameI]);
+                ParishDataHandle.parishMembers = await getParishMembers();
+            }
+        } catch (error) {
+            MessegePopup.showMessegePuppy([MondoText({ 'text': error })]);
+        }
+    }
 
     const column = Column({
         'styles': [{ 'padding': '20px' }],
