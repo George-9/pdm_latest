@@ -97,8 +97,6 @@
         height: 90% !important;
         padding-bottom: 48px !important;
         flex: auto;
-        flex-shrink: 1;
-        flex-grow: 1;
         opacity: 1 !important;
         height: 100vh !important;
         overflow-y: hidden !important;

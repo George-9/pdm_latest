@@ -1,6 +1,6 @@
 import { mapValuesToUppercase } from "../../../global_tools/objects_tools.js";
 import { ParishDataHandle } from "../../data_pen/parish_data_handle.js";
-import { getGroupMembers, getMemberAgeToday, getOutstationById, getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, getVolumeById, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
+import { getGroupMembers, getMemberAgeToday, getOutstationMembers, getOutstationSCCs, getSCCMembersFromList, getVolumeById, memberGetOutstation, memberGetSCC } from "../../data_pen/puppet.js";
 import { getParishMembers } from "../../data_source/main.js";
 import { PRIESTS_COMMUNITY_NAME } from "../../data_source/other_sources.js";
 import { addChildrenToView } from "../../dom/addChildren.js";
@@ -62,32 +62,38 @@ export function promptRegiterMember() {
         <option value="WITH SCC">WITH SCC</option>
     `;
 
+
     const outstationPicker = OutstationPicker({
         'outstations': ParishDataHandle.parishOutstations,
         'styles': { ...marginRuleStyles },
         'onchange': function (ev) {
             ev.preventDefault();
-
-            StyleView(categoryPicker, [{ 'display': 'block' }]);
-            sccPicker.replaceChildren([]);
-
-            const outstation = JSON.parse(outstationPicker.value);
-            let sccs = ParishDataHandle.parishSCCs.filter(function (scc) {
-                return scc['outstation_id'] === outstation['_id']
-            });
-
-            for (let i = 0; i < sccs.length; i++) {
-                const scc = sccs[i];
-
-                let option = domCreate('option');
-                option.innerText = scc['name']
-                option.value = JSON.stringify(scc);
-
-                sccPicker.appendChild(option);
-            }
-            sccPicker.options[0].selected = true;
+            setViews(ev.target);
         }
     });
+
+    setViews(outstationPicker);
+
+    function setViews(outstationPicker) {
+        StyleView(categoryPicker, [{ 'display': 'block' }]);
+        sccPicker.replaceChildren([]);
+
+        const outstation = JSON.parse(outstationPicker.value);
+        let sccs = ParishDataHandle.parishSCCs.filter(function (scc) {
+            return scc['outstation_id'] === outstation['_id']
+        });
+
+        for (let i = 0; i < sccs.length; i++) {
+            const scc = sccs[i];
+
+            let option = domCreate('option');
+            option.innerText = scc['name']
+            option.value = JSON.stringify(scc);
+
+            sccPicker.appendChild(option);
+        }
+        sccPicker.options[0].selected = true;
+    }
 
     outstationPicker.addEventListener('click', function (ev) {
         ev.preventDefault();
@@ -114,11 +120,11 @@ export function promptRegiterMember() {
         onclick: async function (ev) {
             try {
                 TextEditValueValidator.validate('name', nameI);
-                TextEditValueValidator.validate('date of birth', dobI);
+                // TextEditValueValidator.validate('date of birth', dobI);
                 TextEditValueValidator.validate('gender', genderPicker);
                 // TextEditValueValidator.validate('telephone number', motherNameI);
                 // TextEditValueValidator.validate('father\'s name', fatherNameI);
-                TextEditValueValidator.validate('GodParent\'s name', GodParentNameI);
+                // TextEditValueValidator.validate('GodParent\'s name', GodParentNameI);
 
                 if (!outstationPicker.value || !sccPicker.value) {
                     return MessegePopup.showMessegePuppy([
@@ -142,19 +148,13 @@ export function promptRegiterMember() {
                     ]);
                 }
 
-
-                let theGodParents;
-                if (GodParentNameI.value && GodParentNameI.value.includes(',')) {
-                    theGodParents = [...(GodParentNameI.value.split(',') || [])];
-                } else {
-                    theGodParents = [`${GodParentNameI.value}`.trim()];
-                }
+                let theGodParents = [...(`${GodParentNameI.value ?? ''}`.split(',') || [])];
 
                 const body = {
                     member: mapValuesToUppercase({
                         'name': `${nameI.value}`.trim(),
                         'gender': genderPicker.value,
-                        'date_of_birth': `${dobI.value}`.trim(),
+                        'date_of_birth': `${dobI.value || (new Date()).toDateString()}`.trim(),
                         'mother': `${motherNameI.value}`.trim(),
                         'father': `${fatherNameI.value}`,
                         'God_Parents': theGodParents,
