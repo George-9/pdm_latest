@@ -164,8 +164,7 @@ export function promptAddTitheView() {
 
   ModalExpertise.showModal({
     actionHeading: "add tithe record",
-    fullScreen: false,
-    dismisible: true,
+    fullScreen: true,
     modalChildStyles: [{ "min-height": "90vh" }],
     modalHeadingStyles: [{ "background-color": "green" }, { color: "white" }],
     children: [memberSearchView],
