@@ -176,8 +176,12 @@ export function promptAddTitheView() {
     const searchKey = memberSearchI.value;
     let match = ParishDataHandle.parishMembers.filter(function (member) {
       return (
-        `${member["name"]}`.match(searchKey) ||
-        `${member["member_number"]}`.match(searchKey)
+        `${member["name"]}`
+          .toLocaleLowerCase()
+          .match(`${searchKey}`.toLocaleLowerCase()) ||
+        `${member["member_number"]}`
+          .toLocaleLowerCase()
+          .match(`${searchKey}`.toLocaleLowerCase())
       );
     });
 
