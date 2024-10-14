@@ -58,6 +58,7 @@ export function promptAddTitheView() {
     styles: [HIDDEN_STYLE],
     placeholder: "name",
   });
+
   const outstationPicker = OutstationPicker({
     outstations: ParishDataHandle.parishOutstations,
     styles: [{ display: "none" }],
@@ -109,17 +110,24 @@ export function promptAddTitheView() {
           },
         };
       } else {
-        TextEditValueValidator.validate(
-          "unknown member name",
-          unRecognizedMemberNameI
-        );
+        // TextEditValueValidator.validate(
+        //   "unknown member name",
+        //   unRecognizedMemberNameI
+        // );
         TextEditValueValidator.validate(
           "unknown member name",
           outstationPicker
         );
         body = {
           tithe: {
-            name: `${unRecognizedMemberNameI.value}`.trim().toUpperCase(),
+            name: unRecognizedMemberNameI.value
+              .trim()
+              .toUpperCase()
+              ||
+              `anonymous ` +
+              (new Date()).toGMTString().split("").map(function (c = "") { return c.codePointAt(0); })
+                .join("")
+                .substr(20, 40),
             outstation_id: outstationPicker.value["id"],
             date: dateI.value,
             amount: parseFloat(amountI.value),
@@ -384,9 +392,8 @@ export function showTitheReportsView() {
     }
 
     addPriestCommunityOptionToPicker(sccPicker);
-    PDFPrintButton.printingHeading = `${
-      JSON.parse(selectedOutstation)["name"]
-    } . ${JSON.parse(selectedSCC)["name"]} TITHE RECORDS`;
+    PDFPrintButton.printingHeading = `${JSON.parse(selectedOutstation)["name"]
+      } . ${JSON.parse(selectedSCC)["name"]} TITHE RECORDS`;
   }
 
   function showOutstationTotalTithe() {
@@ -402,7 +409,7 @@ export function showTitheReportsView() {
           titheRecord["member_id"] === member["_id"] &&
           (member["outstation_id"] === outstationPicker.value["_id"] ||
             member["outstation_id"] ===
-              JSON.parse(outstationPicker.value)["_id"])
+            JSON.parse(outstationPicker.value)["_id"])
         ) {
           outstationTotalTithe += amount;
         }
