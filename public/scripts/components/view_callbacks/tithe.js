@@ -59,6 +59,12 @@ export function promptAddTitheView() {
     placeholder: "name",
   });
 
+  unRecognizedMemberNameI.addEventListener('keyup', function (ev) {
+    if (ev.key === 'Enter') {
+      amountI.focus();
+    }
+  })
+
   const outstationPicker = OutstationPicker({
     outstations: ParishDataHandle.parishOutstations,
     styles: [{ display: "none" }],
@@ -134,6 +140,7 @@ export function promptAddTitheView() {
             category: TitheCategory.unknown_member,
           },
         };
+
       }
 
       let result = await Post("/parish/record/tithe", body, {
@@ -143,8 +150,9 @@ export function promptAddTitheView() {
 
       MessegePopup.showMessegePuppy([MondoText({ text: msg })]);
       if (msg.match("success") || msg.match("save")) {
-        clearTextEdits([memberSearchI, amountI]);
+        clearTextEdits([memberSearchI, amountI, unRecognizedMemberNameI]);
         memberSearchI.focus();
+        unRecognizedMemberNameI.focus();
       }
     } catch (error) {
       MessegePopup.showMessegePuppy([MondoText({ text: error })]);
