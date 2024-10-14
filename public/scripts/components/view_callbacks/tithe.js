@@ -45,11 +45,7 @@ export function promptAddTitheView() {
   const dateId = "date-el";
 
   const titheCategoryPicker = MondoSelect({
-    styles: [
-      {
-        "margin-bottom": "4px",
-      },
-    ],
+    styles: [{ "margin-bottom": "4px" }],
   });
 
   titheCategoryPicker.innerHTML = `
@@ -86,6 +82,13 @@ export function promptAddTitheView() {
     { placeholder: "amount" },
     { keyboardType: "number" }
   );
+
+  amountI.addEventListener("keyup", function (ev) {
+    if (ev.key === "Enter") {
+      saveTitheRecord();
+    }
+  });
+
   async function saveTitheRecord() {
     try {
       let body;
@@ -133,6 +136,7 @@ export function promptAddTitheView() {
       MessegePopup.showMessegePuppy([MondoText({ text: msg })]);
       if (msg.match("success") || msg.match("save")) {
         clearTextEdits([memberSearchI, amountI]);
+        memberSearchI.focus();
       }
     } catch (error) {
       MessegePopup.showMessegePuppy([MondoText({ text: error })]);
@@ -250,6 +254,7 @@ export function promptAddTitheView() {
 
         memberSearchView.insertBefore(clone, domQueryById(dateId));
         searchResultViewContainer.replaceChildren([]);
+        amountI.focus();
       };
 
       return view;

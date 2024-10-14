@@ -243,7 +243,6 @@ export function promptRegiterMember() {
     });
 }
 
-
 // export function promptRegiterMember() {
 //     const marginRuleStyles = [{ 'margin-top': '15px' }]
 
