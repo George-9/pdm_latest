@@ -455,12 +455,11 @@ export function showMembersReportsView() {
     addChildrenToView(table, [tableHeader, tbody]);
 
     outstationPicker.addEventListener('change', function (ev) {
-        ev.preventDefault();
         setViews();
     });
 
     // set the heading of the currently selected outstation
-
+    sccPicker.addEventListener('change', setViews);
     function setViews() {
         tbody.replaceChildren([]);
         sccPicker.replaceChildren([]);
@@ -487,7 +486,7 @@ export function showMembersReportsView() {
 
         let outstationMembers = getOutstationMembers(outstationPicker.value);
         outstationMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
-
+        
         for (let i = 0; i < outstationMembers.length; i++) {
             const member = outstationMembers[i];
             const row = domCreate('tr');
@@ -523,7 +522,6 @@ export function showMembersReportsView() {
     }
 
     setViews();
-    sccPicker.addEventListener('change', setViews);
 
     const rowStyle = [{ 'width': '100%' }], classlist = ['a-c', 'space-between'],
         styles = [

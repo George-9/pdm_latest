@@ -40,6 +40,7 @@ export const TitheCategory = {
   member: "member",
   unknown_member: "unkown_member",
 };
+
 export function promptAddTitheView() {
   let selectedMemberId, searchResultViewContainer;
   const dateId = "date-el";
@@ -357,6 +358,7 @@ export function showTitheReportsView() {
     tbody.replaceChildren([]);
     tFooter.replaceChildren([]);
 
+    let totalTithe = 0;
     for (let i = 0; i < SCCTitheRecords.length; i++) {
       const titheRecord = SCCTitheRecords[i];
       let amount = titheRecord["amount"];
@@ -370,15 +372,17 @@ export function showTitheReportsView() {
             `;
 
       selectedSCCTotalTithe += amount;
+      // totalTithe += amount;
+
       tbody.appendChild(row);
     }
 
-    // const row = domCreate('tr');
-    // row.innerHTML = `
-    //     <td colspan="3">TOTAL</td>
-    //     <td>${selectedSCCTotalTithe}</td>
-    // `
-    // tFooter.appendChild(row);
+    const row = domCreate('tr');
+    row.innerHTML = `
+        <td colspan="3">TOTAL</td>
+        <td>${selectedSCCTotalTithe}</td>
+    `
+    tFooter.appendChild(row);
   });
 
   function setViews() {
@@ -434,11 +438,12 @@ export function showTitheReportsView() {
 
   const printButton = new PDFPrintButton(tableId);
 
-  const containerColumn = Column({
-    classlist: ["f-w", "a-c", "scroll-y"],
+  const containerColumn = VerticalScrollView({
+    classlist: ["f-w", "scroll-y"],
+    styles: [{ 'height': '70vh' }],
     children: [
       HorizontalScrollView({
-        classlist: ["a-c", "just-center"],
+        classlist: ["just-center"],
         children: [table],
       }),
       // outstationTotalTitheDispensor,
@@ -476,7 +481,7 @@ export function showTitheReportsView() {
             <th>NO</th>
             <th>SCC</th>
             <th>amount</th>
-            </tr>
+        </tr>
             `;
     addChildrenToView(table, [tableHeader]);
     let parishTotalTithe = 0;
