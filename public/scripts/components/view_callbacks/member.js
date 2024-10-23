@@ -424,7 +424,6 @@ export function promptRegiterMember() {
 // }
 
 export function showMembersReportsView() {
-
     const tableId = 'members-table';
     const printButton = new PDFPrintButton(tableId);
     const outstationPicker = OutstationPicker({
@@ -434,7 +433,11 @@ export function showMembersReportsView() {
 
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 
-    const sccPicker = MondoSelect({ 'styles': marginRuleStyles });
+    const sccPicker = domCreate('select');//MondoSelect({ 'styles': marginRuleStyles });
+    sccPicker.onchange(function (ev) {
+        setViews();
+    });
+
     StyleView(sccPicker, [{ 'padding': '10px' }]);
 
     const table = domCreate('table');
@@ -455,22 +458,17 @@ export function showMembersReportsView() {
     addChildrenToView(table, [tableHeader, tbody]);
 
     outstationPicker.addEventListener('change', function (ev) {
+        ev.preventDefault();
         setViews();
     });
 
     // set the heading of the currently selected outstation
-    sccPicker.addEventListener('change', setViews);
+
     function setViews() {
         tbody.replaceChildren([]);
         sccPicker.replaceChildren([]);
 
-        const outstation = JSON.parse(outstationPicker.value);
         let sccs = getOutstationSCCs(outstation);
-
-        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
-             ${outstation['name']} Outstation
-             ${sccPicker.value['name']} SCC members`.toUpperCase();
-
         for (let i = 0; i < sccs.length; i++) {
             const scc = sccs[i];
 
@@ -484,9 +482,23 @@ export function showMembersReportsView() {
         addPriestCommunityOptionToPicker(sccPicker);
         sccPicker.options[0].selected = true;
 
+        setViews();
+    });
+
+    // set the heading of the currently selected outstation
+
+    function setViews() {
+        tbody.replaceChildren([]);
+
+        const outstation = JSON.parse(outstationPicker.value);
+
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
+        ${outstation['name']} Outstation
+        ${sccPicker.value['name']} SCC members`.toUpperCase();
+
         let outstationMembers = getOutstationMembers(outstationPicker.value);
         outstationMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
-        
+
         for (let i = 0; i < outstationMembers.length; i++) {
             const member = outstationMembers[i];
             const row = domCreate('tr');
@@ -523,7 +535,8 @@ export function showMembersReportsView() {
 
     setViews();
 
-    const rowStyle = [{ 'width': '100%' }], classlist = ['a-c', 'space-between'],
+    const rowStyle = [{ 'width': '100%' }],
+        classlist = ['a-c', 'space-between'],
         styles = [
             { 'font-size': '12px' },
             { 'font-weight': '800' }
@@ -562,7 +575,7 @@ export function showMembersReportsView() {
                 'classlist': ['f-w', 'a-c', 'scroll-y'],
                 'children': [
                     pickersRow,
-                    table
+                    VerticalScrollView({ 'children': [table] }),
                 ]
             })
         })
