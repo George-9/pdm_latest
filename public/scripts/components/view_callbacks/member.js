@@ -205,7 +205,7 @@ export function showMembersReportsView() {
 
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 
-    const sccPicker = MondoSelect({ 'styles': marginRuleStyles });
+    const sccPicker = domCreate('select');//MondoSelect({ 'styles': marginRuleStyles });
     StyleView(sccPicker, [{ 'padding': '10px' }]);
 
     const table = domCreate('table');
@@ -363,7 +363,9 @@ export function showMembersByOutstationReportsView() {
 
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 
-    const sccPicker = MondoSelect({ 'styles': marginRuleStyles });
+    //MondoSelect({ 'styles': marginRuleStyles });
+    const sccPicker = domCreate('select');
+
     StyleView(sccPicker, [{ 'padding': '10px' }]);
 
     const table = domCreate('table');
@@ -374,25 +376,22 @@ export function showMembersByOutstationReportsView() {
 
     const tableHeader = domCreate('thead');
     tableHeader.innerHTML = `
-        <tr>
-            <td>NO</td>
-            <td>NAME</td>
-            <td>TELEPHONE</td>
-        </tr>
+    <tr>
+    <td>NO</td>
+    <td>NAME</td>
+    <td>TELEPHONE</td>
+    </tr>
     `
     const tbody = domCreate('tbody');
     addChildrenToView(table, [tableHeader, tbody]);
 
     outstationPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
-        setViews();
-    });
-
-    function setViews() {
-        const outstation = JSON.parse(outstationPicker.value);
-        let sccs = getOutstationSCCs(outstation);
 
         sccPicker.replaceChildren([]);
+
+        const outstation = JSON.parse(outstationPicker.value);
+        let sccs = getOutstationSCCs(outstation);
 
         for (let i = 0; i < sccs.length; i++) {
             const scc = sccs[i];
@@ -407,9 +406,14 @@ export function showMembersByOutstationReportsView() {
         addPriestCommunityOptionToPicker(sccPicker);
 
         sccPicker.options[0].selected = true;
+
+        setViews();
+    });
+
+    function setViews() {
         // set the heading of the currently selected outstation
         PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
-         ${JSON.parse(outstationPicker.value)['name']} Outstation members`.toUpperCase();
+        ${JSON.parse(outstationPicker.value)['name']} Outstation members`.toUpperCase();
 
         let outstationMembers = getOutstationMembers(outstationPicker.value);
 
