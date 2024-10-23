@@ -468,7 +468,13 @@ export function showMembersReportsView() {
         tbody.replaceChildren([]);
         sccPicker.replaceChildren([]);
 
+        const outstation = JSON.parse(outstationPicker.value);
         let sccs = getOutstationSCCs(outstation);
+
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
+             ${outstation['name']} Outstation
+             ${sccPicker.value['name']} SCC members`.toUpperCase();
+
         for (let i = 0; i < sccs.length; i++) {
             const scc = sccs[i];
 
@@ -481,20 +487,6 @@ export function showMembersReportsView() {
 
         addPriestCommunityOptionToPicker(sccPicker);
         sccPicker.options[0].selected = true;
-
-        setViews();
-    });
-
-    // set the heading of the currently selected outstation
-
-    function setViews() {
-        tbody.replaceChildren([]);
-
-        const outstation = JSON.parse(outstationPicker.value);
-
-        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
-        ${outstation['name']} Outstation
-        ${sccPicker.value['name']} SCC members`.toUpperCase();
 
         let outstationMembers = getOutstationMembers(outstationPicker.value);
         outstationMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
@@ -623,9 +615,7 @@ export function showMembersByOutstationReportsView() {
     outstationPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
         setViews();
-    });
 
-    function setViews() {
         const outstation = JSON.parse(outstationPicker.value);
         let sccs = getOutstationSCCs(outstation);
 
@@ -644,6 +634,10 @@ export function showMembersByOutstationReportsView() {
         addPriestCommunityOptionToPicker(sccPicker);
 
         sccPicker.options[0].selected = true;
+    });
+
+    function setViews() {
+
         // set the heading of the currently selected outstation
         PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
          ${JSON.parse(outstationPicker.value)['name']} Outstation members`.toUpperCase();
@@ -908,25 +902,15 @@ export function showMembersByGroupView() {
     addChildrenToView(table, [tableHeader, tbody])
 
     function setViews() {
-<<<<<<< HEAD
         const selectedOutstation = JSON.parse(outstationPicker.value);
         const selectedGroup = JSON.parse(groupPicker.value);
         PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
             ${selectedOutstation['name']} outstation . ${selectedGroup['name']} members
         `.toUpperCase()
-=======
-
-        const selectedOutstation = JSON.parse(outstationPicker.value)
-        const selectedOutstationMembers = getOutstationMembers(selectedOutstation);
->>>>>>> 869abae (added view members by group and outstation)
 
         if (tbody.children.length > 0) {
             tbody.replaceChildren([])
         }
-<<<<<<< HEAD
-=======
-        const selectedGroup = JSON.parse(groupPicker.value);
->>>>>>> 869abae (added view members by group and outstation)
         const selectedGroupMembers = getGroupMembers(selectedGroup);
         const outstationAndGroupMembers = selectedGroupMembers.filter(function (member) {
             return member['outstation_id'] === selectedOutstation['_id'];
@@ -939,10 +923,6 @@ export function showMembersByGroupView() {
         } else {
             for (let i = 0; i < outstationAndGroupMembers.length; i++) {
                 const member = outstationAndGroupMembers[i];
-<<<<<<< HEAD
-=======
-                const dob = member['date_of_birth'];
->>>>>>> 869abae (added view members by group and outstation)
 
                 const row = domCreate('tr');
                 row.innerHTML = `
