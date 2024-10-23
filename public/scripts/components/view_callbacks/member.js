@@ -458,23 +458,9 @@ export function showMembersReportsView() {
     addChildrenToView(table, [tableHeader, tbody]);
 
     outstationPicker.addEventListener('change', function (ev) {
-        ev.preventDefault();
-        setViews();
-    });
-
-    // set the heading of the currently selected outstation
-
-    function setViews() {
-        tbody.replaceChildren([]);
         sccPicker.replaceChildren([]);
 
-        const outstation = JSON.parse(outstationPicker.value);
         let sccs = getOutstationSCCs(outstation);
-
-        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
-             ${outstation['name']} Outstation
-             ${sccPicker.value['name']} SCC members`.toUpperCase();
-
         for (let i = 0; i < sccs.length; i++) {
             const scc = sccs[i];
 
@@ -487,6 +473,20 @@ export function showMembersReportsView() {
 
         addPriestCommunityOptionToPicker(sccPicker);
         sccPicker.options[0].selected = true;
+
+        setViews();
+    });
+
+    // set the heading of the currently selected outstation
+
+    function setViews() {
+        tbody.replaceChildren([]);
+
+        const outstation = JSON.parse(outstationPicker.value);
+
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
+        ${outstation['name']} Outstation
+        ${sccPicker.value['name']} SCC members`.toUpperCase();
 
         let outstationMembers = getOutstationMembers(outstationPicker.value);
         outstationMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
