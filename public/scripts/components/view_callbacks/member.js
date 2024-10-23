@@ -424,7 +424,6 @@ export function promptRegiterMember() {
 // }
 
 export function showMembersReportsView() {
-
     const tableId = 'members-table';
     const printButton = new PDFPrintButton(tableId);
     const outstationPicker = OutstationPicker({
@@ -434,7 +433,11 @@ export function showMembersReportsView() {
 
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 
-    const sccPicker = MondoSelect({ 'styles': marginRuleStyles });
+    const sccPicker = domCreate('select');//MondoSelect({ 'styles': marginRuleStyles });
+    sccPicker.onchange(function (ev) {
+        setViews();
+    });
+
     StyleView(sccPicker, [{ 'padding': '10px' }]);
 
     const table = domCreate('table');
@@ -523,9 +526,9 @@ export function showMembersReportsView() {
     }
 
     setViews();
-    sccPicker.addEventListener('change', setViews);
 
-    const rowStyle = [{ 'width': '100%' }], classlist = ['a-c', 'space-between'],
+    const rowStyle = [{ 'width': '100%' }],
+        classlist = ['a-c', 'space-between'],
         styles = [
             { 'font-size': '12px' },
             { 'font-weight': '800' }
@@ -564,7 +567,7 @@ export function showMembersReportsView() {
                 'classlist': ['f-w', 'a-c', 'scroll-y'],
                 'children': [
                     pickersRow,
-                    table
+                    VerticalScrollView({ 'children': [table] }),
                 ]
             })
         })
