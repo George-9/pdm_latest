@@ -895,15 +895,25 @@ export function showMembersByGroupView() {
     addChildrenToView(table, [tableHeader, tbody])
 
     function setViews() {
+<<<<<<< HEAD
         const selectedOutstation = JSON.parse(outstationPicker.value);
         const selectedGroup = JSON.parse(groupPicker.value);
         PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
             ${selectedOutstation['name']} outstation . ${selectedGroup['name']} members
         `.toUpperCase()
+=======
+
+        const selectedOutstation = JSON.parse(outstationPicker.value)
+        const selectedOutstationMembers = getOutstationMembers(selectedOutstation);
+>>>>>>> 869abae (added view members by group and outstation)
 
         if (tbody.children.length > 0) {
             tbody.replaceChildren([])
         }
+<<<<<<< HEAD
+=======
+        const selectedGroup = JSON.parse(groupPicker.value);
+>>>>>>> 869abae (added view members by group and outstation)
         const selectedGroupMembers = getGroupMembers(selectedGroup);
         const outstationAndGroupMembers = selectedGroupMembers.filter(function (member) {
             return member['outstation_id'] === selectedOutstation['_id'];
@@ -916,6 +926,10 @@ export function showMembersByGroupView() {
         } else {
             for (let i = 0; i < outstationAndGroupMembers.length; i++) {
                 const member = outstationAndGroupMembers[i];
+<<<<<<< HEAD
+=======
+                const dob = member['date_of_birth'];
+>>>>>>> 869abae (added view members by group and outstation)
 
                 const row = domCreate('tr');
                 row.innerHTML = `
