@@ -592,7 +592,11 @@ export function showMembersByOutstationReportsView() {
 
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 
-    const sccPicker = MondoSelect({ 'styles': marginRuleStyles });
+    const sccPicker = domCreate('select');//MondoSelect({ 'styles': marginRuleStyles });
+    sccPicker.addEventListener('change', function (ev) {
+        tbody.replaceChildren([]);
+    });
+
     StyleView(sccPicker, [{ 'padding': '10px' }]);
 
     const table = domCreate('table');
@@ -608,16 +612,13 @@ export function showMembersByOutstationReportsView() {
             <td>NAME</td>
             <td>TELEPHONE</td>
         </tr>
-    `
+        `
     const tbody = domCreate('tbody');
     addChildrenToView(table, [tableHeader, tbody]);
 
     outstationPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
-        setViews();
-    });
 
-    function setViews() {
         const outstation = JSON.parse(outstationPicker.value);
         let sccs = getOutstationSCCs(outstation);
 
@@ -637,12 +638,13 @@ export function showMembersByOutstationReportsView() {
 
         sccPicker.options[0].selected = true;
         // set the heading of the currently selected outstation
+    });
+
+    function setViews() {
         PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
          ${JSON.parse(outstationPicker.value)['name']} Outstation members`.toUpperCase();
 
         let outstationMembers = getOutstationMembers(outstationPicker.value);
-
-        tbody.replaceChildren([]);
 
         for (let i = 0; i < outstationMembers.length; i++) {
             const member = outstationMembers[i];
@@ -653,7 +655,7 @@ export function showMembersByOutstationReportsView() {
                             <td>${i + 1}</td>
                             <td class="txt-s">${member['name']}</td>
                             <td><a href="${'tel:' + telephoneNumber}">${telephoneNumber}</a></td>
-                        `;
+            `;
             addClasslist(row, ['highlightable']);
             // const viewMemberTd = domCreate('td');
             // const tdContent = domCreate('i');
