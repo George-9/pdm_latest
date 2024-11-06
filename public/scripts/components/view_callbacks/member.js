@@ -434,9 +434,15 @@ export function showMembersReportsView() {
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 
     const sccPicker = domCreate('select');//MondoSelect({ 'styles': marginRuleStyles });
-    sccPicker.onchange(function (ev) {
+    sccPicker.onchange = function (ev) {
         setViews();
-    });
+
+        const outstation = JSON.parse(outstationPicker.value);
+        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
+             ${outstation['name']} Outstation
+             ${sccPicker.value['name']} SCC members`.toUpperCase();
+
+    }
 
     StyleView(sccPicker, [{ 'padding': '10px' }]);
 
@@ -459,21 +465,18 @@ export function showMembersReportsView() {
 
     outstationPicker.addEventListener('change', function (ev) {
         ev.preventDefault();
+
+        setSCCs();
         setViews();
     });
 
-    // set the heading of the currently selected outstation
 
-    function setViews() {
-        tbody.replaceChildren([]);
+
+    function setSCCs() {
         sccPicker.replaceChildren([]);
 
-        const outstation = JSON.parse(outstationPicker.value);
+        const outstation = outstationPicker.value;
         let sccs = getOutstationSCCs(outstation);
-
-        PDFPrintButton.printingHeading = `${LocalStorageContract.completeParishName()}
-             ${outstation['name']} Outstation
-             ${sccPicker.value['name']} SCC members`.toUpperCase();
 
         for (let i = 0; i < sccs.length; i++) {
             const scc = sccs[i];
@@ -486,7 +489,15 @@ export function showMembersReportsView() {
         }
 
         addPriestCommunityOptionToPicker(sccPicker);
+
         sccPicker.options[0].selected = true;
+    }
+
+
+
+    // set the heading of the currently selected outstation
+    function setViews() {
+        tbody.replaceChildren([]);
 
         let outstationMembers = getOutstationMembers(outstationPicker.value);
         outstationMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
@@ -525,6 +536,7 @@ export function showMembersReportsView() {
         }
     }
 
+    setSCCs();
     setViews();
 
     const rowStyle = [{ 'width': '100%' }],
@@ -539,24 +551,20 @@ export function showMembersReportsView() {
         'classlist': ['a-c', 'a-bl'],
         'children': [
             Row({
+                'classlist': [...classlist, 'a-c', 'a-bl'],
+                'styles': rowStyle,
                 'children': [
-                    Row({
-                        'classlist': [...classlist, 'a-c', 'a-bl'],
-                        'styles': rowStyle,
-                        'children': [
-                            MondoText({ 'text': 'OUTSTATION ', 'styles': styles }),
-                            outstationPicker,
-                        ]
-                    }),
-                    Row({
-                        'classlist': [...classlist, 'a-c', 'a-bl'],
-                        'styles': rowStyle,
-                        'children': [
-                            MondoText({ 'text': 'SCC', 'styles': styles }),
-                            sccPicker
-                        ],
-                    })
+                    MondoText({ 'text': 'OUTSTATION ', 'styles': styles }),
+                    outstationPicker,
                 ]
+            }),
+            Row({
+                'classlist': [...classlist, 'a-c', 'a-bl'],
+                'styles': rowStyle,
+                'children': [
+                    MondoText({ 'text': 'SCC', 'styles': styles }),
+                    sccPicker
+                ],
             })
         ]
     });
@@ -564,10 +572,14 @@ export function showMembersReportsView() {
     const membersColumn = Column({
         children: ParishDataHandle.parishMembers.map(function (m) {
             return Column({
-                'classlist': ['f-w', 'a-c', 'scroll-y'],
+                'classlist': ['f-w', 'a-c', 'fx-col', 'scroll-y'],
                 'children': [
                     pickersRow,
-                    VerticalScrollView({ 'children': [table] }),
+                    Column({
+                        'styles': [],
+                        'classlist': ['f-w', 'a-c', 'scroll-y'],
+                        'children': [table]
+                    }),
                 ]
             })
         })
@@ -708,12 +720,12 @@ export function showMembersByOutstationReportsView() {
     });
 
     const membersColumn = Column({
+        'styles': [{ 'padding-bottom': '30px' }, { 'height': '80vh' }, { 'width': '98vw' }],
         'classlist': ['f-w', 'a-c', 'f-a-w'],
         'children': [
             pickersRow,
             Column({
-                'styles': [{ 'padding-bottom': '30px' }, { 'height': '80vh' }],
-                'classlist': ['f-w', 'f-a-w', 'a-c', 'scroll-y'],
+                'styles': [{ 'padding-bottom': '30px' }, { 'height': '80vh' }, { 'width': '98vw' }],
                 'children': [table],
             }),
         ]
