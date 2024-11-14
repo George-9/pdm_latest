@@ -466,7 +466,7 @@ export function showMembersReportsView() {
 
             let option = domCreate('option');
             option.innerText = scc['name']
-            option.value = JSON.stringify(scc);
+            option.value = scc;
 
             sccPicker.appendChild(option);
         }
