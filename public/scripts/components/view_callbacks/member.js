@@ -434,9 +434,9 @@ export function showMembersReportsView() {
     StyleView(outstationPicker, [{ 'padding': '10px' }]);
 
     const sccPicker = domCreate('select');//MondoSelect({ 'styles': marginRuleStyles });
-    sccPicker.onchange(function (ev) {
+    sccPicker.onchange= function (ev) {
         setViews();
-    });
+    };
 
     StyleView(sccPicker, [{ 'padding': '10px' }]);
 
