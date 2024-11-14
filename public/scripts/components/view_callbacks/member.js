@@ -466,7 +466,7 @@ export function showMembersReportsView() {
 
             let option = domCreate('option');
             option.innerText = scc['name']
-            option.value = scc;
+            option.value = JSON.stringify(scc);
 
             sccPicker.appendChild(option);
         }
@@ -489,7 +489,7 @@ export function showMembersReportsView() {
         ${sccPicker.value['name']} SCC members`.toUpperCase();
 
         let outstationMembers = getOutstationMembers(outstationPicker.value);
-        outstationMembers = getSCCMembersFromList(outstationMembers, sccPicker.value);
+        outstationMembers = getSCCMembersFromList(outstationMembers, JSON.parse(sccPicker.value));
 
         for (let i = 0; i < outstationMembers.length; i++) {
             const member = outstationMembers[i];
